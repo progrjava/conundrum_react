@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center; 
+    overflow: hidden;
+}
+
+header {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    margin-top: 20px;
+    background: rgba(47, 45, 56, 0.8);
+    padding: 16px 32px;
+    border-radius: 15px;
+    max-width: 100%;
+    width: fit-content; 
+    max-width: 100%; 
+    position: relative; /* Отображает header поверх видео */
+    z-index: 10;
+}
+
+header button{
+    padding: 11px 35px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+}
+
+.start-button {
+    border: 1px solid #FBFBFE;
+    border-radius: 15px;
+    margin-right: 20px;
+}
+
+.start-button:hover {
+    border: 1px solid rgba(237, 126, 152, 0.8);
+}
+
+header button:hover {
+    color: rgba(237, 126, 152, 0.8);
+}
+
+.start-button:active {
+    border: 1px solid rgba(237, 126, 152, 0.8);
+}
+
+header button:active {
+    color: rgba(237, 126, 152, 0.8);
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+}
+
+.background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; /* Обрезает видео, чтобы заполнить экран */
+    z-index: -1; /* Перемещает видео на задний план */
+}
+
+
+.main-logo-title {
+    margin-top: 345px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-logo-title svg {
+    display: block;
+}
+
+.main-logo-title h1 {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 50px;
+    line-height: 66px;
+    color: rgba(47, 45, 56, 0.8);
+}
+
+.main-logo-title {
+    position: relative;
+    z-index: 10;
+}
+
+
+.theme-changer {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 15px 20px;
+    position: absolute;
+    left: 30px;
+    bottom: 20px;
+    background: rgba(47, 45, 56, 0.8);
+    border-radius: 15px;
+}
+
+.theme-changer svg {
+    display: block;
+    cursor: pointer;
+}
+
+.theme-changer svg:hover {
+    path {
+        stroke: #ED7E98;
+        stroke-opacity: 1.0;
+    }
+}
+
+.theme-changer svg:active {
+    path {
+        stroke: #ED7E98;
+        stroke-opacity: 0.7;
+    }
+}

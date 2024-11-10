@@ -1,8 +1,13 @@
+import Header from "./components/Header";
+import Main from "./components/Main";
 
 
 function App() {
   return (
-    <div>CONUNDRUM</div>
+    <div>
+      <Header />
+      <Main/>
+    </div>
   );
 }
 
