@@ -3,28 +3,26 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 body {
-    display: flex;
-    justify-content: center; 
     overflow: hidden;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
 }
 
 header {
-    margin-left: auto;
-    margin-right: auto;
+    position: relative;
     display: flex;
-    margin-top: 20px;
     background: rgba(47, 45, 56, 0.8);
     padding: 16px 32px;
     border-radius: 15px;
     max-width: 100%;
     width: fit-content; 
-    max-width: 100%; 
-    position: relative; /* Отображает header поверх видео */
-    z-index: 10;
+    z-index: 1000;
+    margin: 20px auto 0 auto;
 }
 
 header button{
@@ -65,22 +63,29 @@ header button:active {
     border-radius: 15px;
 }
 
-.background-video {
+
+
+.background-video-main {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    object-fit: cover; /* Обрезает видео, чтобы заполнить экран */
-    z-index: -1; /* Перемещает видео на задний план */
+    object-fit: cover; 
+    z-index: -1; 
 }
 
 
 .main-logo-title {
-    margin-top: 345px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: fit-content;
+    z-index: 10;
 }
 
 .main-logo-title svg {
@@ -95,12 +100,6 @@ header button:active {
     line-height: 66px;
     color: rgba(47, 45, 56, 0.8);
 }
-
-.main-logo-title {
-    position: relative;
-    z-index: 10;
-}
-
 
 .theme-changer {
     display: flex;
@@ -132,3 +131,89 @@ header button:active {
         stroke-opacity: 0.7;
     }
 }
+
+.about-popup, .manual-popup {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    padding: 80px 32px 16px 32px;
+    background: #2F2D38;
+    border-radius: 15px;
+    z-index: -1;
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0.3s ease;
+}
+
+.about-popup.visible, .manual-popup.visible{
+    opacity: 1;
+    visibility: visible;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.about-popup.hidden, .manual-popup.hidden {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+}
+
+
+.about-popup-div, .manual-popup-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: #513888;
+    border-radius: 15px;
+    width: 560px;
+}
+
+.about-popup-text h3 {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+}
+
+.about-popup-text span {
+    color: #ED7E98;
+}
+
+.about-popup-text .paragraph {
+    margin-top: 16px;
+}
+
+.about-popup-paragraphs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.about-popup-div .logotype {
+    display: block;
+    margin-top: 32px;
+}
+
+

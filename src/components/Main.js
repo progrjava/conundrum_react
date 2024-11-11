@@ -5,10 +5,8 @@ export class Main extends Component {
     render() {
         return (
             <main>
-                <div>
-                    <video autoPlay muted loop className="background-video"
-                    src="/src/main_background.mp4"/>
-                </div>
+                <video autoPlay muted loop className="background-video-main"
+                src="/src/main_background.mp4"/>
                 <div className='main-logo-title'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="124" fill="none">
                         <path fill="#2F2D38" fill-opacity="0.8" d="M64.104 121.404c-11.586 

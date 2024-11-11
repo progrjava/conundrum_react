@@ -1,20 +1,41 @@
-import React from 'react'
+import React, { Component } from 'react';
+import AboutPopup from './AboutPopup';
+import ManualPopup from './ManualPopup';
 
-export default function Header() {
-    
-    return (
-        <header>
-            <div>
-                <button className='start-button'>
-                    Начать
-                </button>
-                <button className='about-button'>
-                    О проекте
-                </button>
-                <button className='manual-button'>
-                    Инструкция
-                </button>
-            </div>
-        </header>
-    )
+export class Header extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isAboutVisible: false,
+            isManualVisible: false,
+        };
+    }
+
+    toggleAboutPopup = () => {
+        this.setState(prevState => ({
+            isAboutVisible: !prevState.isAboutVisible,
+            isManualVisible: false,
+        }));
+    };
+
+    toggleManualPopup = () => {
+        this.setState(prevState => ({
+            isManualVisible: !prevState.isManualVisible,
+            isAboutVisible: false,
+        }));
+    };
+
+    render() {
+        return (
+            <header>
+                <button className='start-button'>Начать</button>
+                <button className='about-button' onClick={this.toggleAboutPopup}>О проекте</button>
+                <button className='manual-button' onClick={this.toggleManualPopup}>Инструкция</button>
+                <AboutPopup isVisible={this.state.isAboutVisible}/>
+                <ManualPopup isVisible={this.state.isManualVisible}/>
+            </header>
+        )
+    }
 }
+
+export default Header
