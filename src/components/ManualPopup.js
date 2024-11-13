@@ -6,17 +6,17 @@ export class ManualPopup extends Component {
             <div className={`manual-popup ${this.props.isVisible ? 'visible' : 'hidden'}`}>
                 <div className='manual-popup-div'>
                     <h2>Как пользоваться нашим сервисом?</h2>
-                    <p>Создание головоломки - кроссворд</p>
+                    <p className='manual-popup-subtitle'>Создание головоломки - кроссворд</p>
                     <div className='manual-list'>
-                        <div className='manual-item'>
+                        <div className='manual-item manual-item0'>
                             <p>0. Перейдите в раздел создания головоломки, кликнув 
                                 на кнопку</p>
                             <div className='start-button-example'>
                                 Начать
                             </div>
                         </div>
-                        <div className='manual-item'>
-                            <p>1. Нажмите на кнопку</p>
+                        <div className='manual-item  manual-item1'>
+                            <p className='manual-item1-text'>1. Нажмите на кнопку</p>
                             <div className='create-puzzle-button-example'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none">
                                     <path fill="#FBFBFE" fill-rule="evenodd" d="M15 .667C7.084.667.667 7.084.667 
@@ -27,31 +27,31 @@ export class ManualPopup extends Component {
                                 <p>Создать головоломку</p>
                             </div>
                         </div>
-                        <div className='manual-item'>
+                        <div className='manual-item  manual-item2'>
                             <p>2. Выберите вид головоломки</p>
                             <div>
-                                <input type="checkbox" id="scales" name="scales" unchecked />
+                                <input type="radio" id="scales" name="scales"/>
                                 <label for="scales">Кроссворд</label>
                             </div>
                         </div>                        
-                        <div className='manual-item'>
+                        <div className='manual-item  manual-item3'>
                             <p>3. Выберите вид взаимодействия на своё усмотрение</p>
                         </div>
-                        <div className='manual-item'>
+                        <div className='manual-item  manual-item4'>
                             <p>4. Укажите</p>
                             <div className='count-words-input-example'>
                                 <p>КОЛИЧЕСТВО СЛОВ</p>
-                                <input type='number' min={1} max={30}></input>
+                                <input type="number" min="1" step="1"/>
                             </div>
                         </div>
-                        <div className='manual-item'>
+                        <div className='manual-item  manual-item5'>
                             <p>5. Нажмите на кнопку</p>
-                            <button className='generate-button-example'>
+                            <div className='generate-button-example'>
                                 Генерировать
-                            </button>
+                            </div>
                         </div>
                     </div>
-                    <p>Смена темы</p>
+                    <p className='manual-popup-subtitle'>Смена темы</p>
                     <div className='theme-change-manual'>
                         <p>За смену темы отвечает кнопка, где “Луна” - тёмная тема, а “Солнце” 
                             - светлая тема</p>
@@ -70,11 +70,6 @@ export class ManualPopup extends Component {
                                      5.333l-1.334 1.334M5.333 26.667l1.334-1.334M5.333 5.333l1.334 
                                      1.334M1.333 16h1.334"/>
                                 </g>
-                                <defs>
-                                    <clipPath id="a">
-                                        <path fill="#fff" d="M0 0h32v32H0z"/>
-                                    </clipPath>
-                                </defs>
                             </svg>
                         </div>
                     </div>

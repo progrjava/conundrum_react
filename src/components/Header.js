@@ -29,8 +29,8 @@ export class Header extends Component {
         return (
             <header>
                 <button className='start-button'>Начать</button>
-                <button className='about-button' onClick={this.toggleAboutPopup}>О проекте</button>
-                <button className='manual-button' onClick={this.toggleManualPopup}>Инструкция</button>
+                <button className={`about-button ${this.state.isAboutVisible ? 'pressed' : ''}`} onClick={this.toggleAboutPopup}>О проекте</button>
+                <button className={`manual-button ${this.state.isManualVisible ? 'pressed' : ''}`} onClick={this.toggleManualPopup}>Инструкция</button>
                 <AboutPopup isVisible={this.state.isAboutVisible}/>
                 <ManualPopup isVisible={this.state.isManualVisible}/>
             </header>

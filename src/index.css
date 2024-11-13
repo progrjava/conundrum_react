@@ -63,7 +63,11 @@ header button:active {
     border-radius: 15px;
 }
 
-
+.about-button.pressed, .manual-button.pressed {
+    background: #FBFBFE;
+    color: #2F2D38;
+    border-radius: 15px;
+}
 
 .background-video-main {
     position: fixed;
@@ -216,4 +220,220 @@ header button:active {
     margin-top: 32px;
 }
 
+.manual-popup-div h2 {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 24px;
+}
 
+.manual-popup-subtitle {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.manual-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.manual-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: baseline;
+    align-items: center;
+    gap: 16px;
+    line-height: 24px;
+}
+
+.start-button-example {
+    justify-content: center;
+    align-items: center;
+    padding: 12px 36px;
+    border: 1px solid #FBFBFE;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    color: #FBFBFE;
+    transition: transform 0.1s ease;
+}
+
+.start-button-example:hover {
+    border: 1px solid #ED7E98;
+    transform: translateX(-1px);
+    color: #ED7E98;
+}
+
+.create-puzzle-button-example:hover {
+    svg {
+        path {
+            fill: #ED7E98;
+        }
+    }
+    p {
+        color: #ED7E98;
+        text-shadow: 0px 2px 4px black;
+    }
+}
+
+.create-puzzle-button-example {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.create-puzzle-button-example p {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.manual-item2 div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.manual-item2 input[type='radio'] {
+    display: none;
+}
+
+.manual-item2 input[type="radio"] + label {
+    position: relative;
+    padding-left: 24px;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+
+}
+
+.manual-item2 input[type="radio"] + label::before {
+    box-sizing: border-box;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background: #2F2D38;
+    border: 2px solid rgba(237, 126, 152, 0.8);
+    border-radius: 50%; 
+}
+
+.manual-item2 input[type="radio"]:checked + label::before {
+    background: rgba(98, 233, 83, 0.8);
+    border: none;
+}
+
+input[type="radio"]:checked + label {
+    color: #62E953;
+}
+
+.count-words-input-example {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px;
+    gap: 16px;
+    background: #2F2D38;
+    border-radius: 15px;
+}
+
+.count-words-input-example p {
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.count-words-input-example input {
+    box-sizing: border-box;
+    width: 58px;
+    height: 24px;
+    border: 2px solid #513888;
+    background: transparent;
+    border-radius: 50px;
+    color: #FBFBFE;
+    font-weight: 400;
+    font-size: 18px;
+    text-align: center;
+}
+
+.count-words-input-example input:focus{
+    outline: none;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.generate-button-example {
+    box-sizing: border-box;
+    padding: 12px 36px;
+    background: #62E953;
+    border: 1px solid #62E953;
+    border-radius: 15px;
+    font-weight: 500;
+    font-size: 16px;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #2F2D38;
+    cursor: pointer;
+}
+
+.generate-button-example:hover {
+    border: 1px solid #ED7E98;
+    color: #ED7E98;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    
+}
+
+.theme-change-manual {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.theme-change-manual p {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+}
+
+.theme-changer-example {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    gap: 16px;
+    background: #FBFBFE;
+    border-radius: 15px;
+}
+
+.theme-changer-example svg {
+    cursor: pointer;
+}
+
+.theme-changer-example svg:hover {
+    path {
+        stroke: #ED7E98;
+    }
+}

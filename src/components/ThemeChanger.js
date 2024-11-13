@@ -11,14 +11,11 @@ export class ThemeChanger extends Component {
                     12.658 0 0 0 4 15.342Z"/>
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
-                  <g stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" 
-                  stroke-width="4" clip-path="url(#a)">
-                    <path d="M16 24a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM29.333 
-                    16h1.334M16 2.667V1.333M16 30.667v-1.334M26.667 26.667l-1.334-1.334M26.667 
-                    5.333l-1.334 1.334M5.333 26.667l1.334-1.334M5.333 5.333l1.334 1.334M1.333
-                     16h1.334"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h32v32H0z"/>
-                     </clipPath>
-                     </defs>
+                    <g stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" clip-path="url(#a)">
+                        <path d="M16 24a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM29.333 16h1.334M16 2.667V1.333M16 
+                        30.667v-1.334M26.667 26.667l-1.334-1.334M26.667 5.333l-1.334 1.334M5.333 26.667l1.334-1.334M5.333 
+                        5.333l1.334 1.334M1.333 16h1.334"/>
+                    </g>
                 </svg>
             </div>
         )
