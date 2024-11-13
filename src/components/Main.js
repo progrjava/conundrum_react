@@ -3,6 +3,9 @@ import ThemeChanger from './ThemeChanger'
 
 export class Main extends Component {
     render() {
+        const { isBlackTheme, toggleTheme } = this.props;
+
+
         return (
             <main>
                 <video autoPlay muted loop className="background-video-main"
@@ -45,7 +48,7 @@ export class Main extends Component {
                     </svg>
                     <h1>Разгадывай, учись, побеждай!</h1>
                 </div>
-                <ThemeChanger/>
+                <ThemeChanger isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/>
             </main>
         )
     }

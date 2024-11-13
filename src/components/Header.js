@@ -26,6 +26,7 @@ export class Header extends Component {
     };
 
     render() {
+
         return (
             <header>
                 <button className='start-button'>Начать</button>
