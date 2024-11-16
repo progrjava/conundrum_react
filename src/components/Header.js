@@ -26,10 +26,9 @@ export class Header extends Component {
     };
 
     render() {
-
         return (
             <header>
-                <button className='start-button'>Начать</button>
+                <button className='start-button' onClick={this.props.startApp}>Начать</button>
                 <button className={`about-button ${this.state.isAboutVisible ? 'pressed' : ''}`} onClick={this.toggleAboutPopup}>О проекте</button>
                 <button className={`manual-button ${this.state.isManualVisible ? 'pressed' : ''}`} onClick={this.toggleManualPopup}>Инструкция</button>
                 <AboutPopup isVisible={this.state.isAboutVisible}/>

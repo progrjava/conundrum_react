@@ -48,7 +48,9 @@ export class Main extends Component {
                     </svg>
                     <h1>Разгадывай, учись, побеждай!</h1>
                 </div>
-                <ThemeChanger isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/>
+                <div className='theme-changer-main-page'>
+                    <ThemeChanger isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/>
+                </div>
             </main>
         )
     }

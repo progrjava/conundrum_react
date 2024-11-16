@@ -258,10 +258,13 @@ header button:active {
     flex-direction: row;
     gap: 20px;
     padding: 15px 20px;
+    border-radius: 15px;
+}
+
+.theme-changer-main-page {
     position: absolute;
     left: 30px;
     bottom: 20px;
-    border-radius: 15px;
 }
 
 .theme-changer svg {
@@ -580,4 +583,278 @@ input[type=number]::-webkit-inner-spin-button {
     path {
         stroke: #ED7E98;
     }
+}
+
+.register-div {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+}
+
+
+.signInUp-back {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; 
+    z-index: -1; 
+}
+
+.register-account {
+    display: inline-block;
+    padding: 55px;
+    background: #2F2D38;
+    border-radius: 15px;
+    margin-left: 30px;
+}
+
+.register-account-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.back-to-main-page {
+    cursor: pointer;
+    display: block;
+}
+
+.register-title {
+    display: block;
+    line-height: 1;
+    margin: 15px 0 55px 0;
+    font-weight: 700;
+    font-size: 56px;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+}
+
+.if-have-account {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 55px;
+}
+
+.if-have-account p {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+}
+
+.sign-in-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: #62E953;
+    background-color: transparent;
+    border: none;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    cursor: pointer;
+}
+
+.reg-input-data {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 55px;
+}
+
+.reg-login-input, .reg-password-input {
+    flex: 1;
+    background: #FBFBFE;
+    border-radius: 15px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    color: #2F2D38;
+    padding: 10px 24px;
+    border: none;
+}
+
+.reg-password-input {
+    padding: 0;
+    border-radius: 0;
+}
+
+.reg-login-input:focus, .reg-password-input:focus {
+    outline: none;
+}
+
+.reg-input-password-div {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    background: #FBFBFE;
+    border-radius: 15px;
+    padding: 10px 24px;
+}
+
+.eye-closed {
+    display: block;
+    cursor: pointer;
+    flex-shrink: 0; 
+}
+
+.birthday-role-gender-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content:space-between;
+}
+
+.reg-birthday-input {
+    width: 130px;
+    max-height: 30px;
+    background: #FBFBFE;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 24px;
+    position: relative;
+}
+
+.reg-birthday-input input {
+    outline: none;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: #2F2D38;
+    border: none;
+    appearance: none;
+}
+
+
+.reg-birthday-input input::-webkit-calendar-picker-indicator {
+    margin-left: -11px;
+    opacity: 0;
+}
+
+.reg-birthday-input svg {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 24px;
+    pointer-events: none;
+}
+
+.reg-role, .reg-gender {
+    display: flex;
+    align-items: center;
+    background: #FBFBFE;
+    border-radius: 15px;
+    position: relative;
+    width: auto;
+}
+
+.reg-role {
+    padding: 10px 24px;
+}
+
+.reg-role-select, .reg-gender-select {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: #2F2D38;
+    border: none;
+    background: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none; 
+    outline: none;
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path stroke="%232F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m18 9-6 6-6-6" opacity="0.8"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0px center; 
+    background-size: 24px 24px; 
+}
+
+.reg-role-select {
+    width: 170px;
+}
+
+
+.reg-gender {
+    padding: 10px 13px;
+}
+
+.reg-gender-select{
+    width: 70px;
+}
+
+.reg-role-select option:checked, .reg-gender-select option:checked {
+    background: #62E953; 
+}
+
+.reg-role-select option, .reg-gender-select option {
+    background-color: #FBFBFE; 
+}
+
+.create-account-button {
+    margin-top: 190px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 36px;
+    border: 1px solid #FBFBFE;
+    border-radius: 15px;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+}
+
+.sign-up-logotype {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
+
+.sign-up-theme-changer {
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
 }
