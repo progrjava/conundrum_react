@@ -90,6 +90,90 @@ body {
         color: #2F2D38;
         transition: color 0.5s ease;
     }
+
+    .register-account, .login-account {
+        background: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
+    .back-to-main-page path {
+        stroke:#FBFBFE;
+        transition: stroke 0.5s ease;
+    }
+
+    .register-title, .login-title {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    .if-have-account p, .if-have-not-account p {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    .sign-in-button, .sign-up-button {
+        color: #62E953;
+        transition: color 0.5s ease;
+    }
+
+    .reg-login-input, .reg-password-input, .reg-input-password-div,
+    .log-login-input, .log-password-input, .log-input-password-div {
+        background: #FBFBFE;
+        color: #2F2D38;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .eye-closed path, .eye-open path{
+        stroke: #2F2D38;
+        transition: stroke 0.5s ease;
+    }
+
+    .reg-birthday-input{
+        background: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    .reg-birthday-input input {
+        background-color: #FBFBFE;
+        color: #2F2D38;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .reg-birthday-input svg g {
+        stroke: #2F2D38;
+        transition: stroke 0.5s ease;
+    }
+
+    .reg-role, .reg-gender {
+        background: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    .reg-role-select, .reg-gender-select {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    .reg-role-select option, .reg-gender-select option{
+        background-color: #FBFBFE; 
+        transition: background-color 0.5s ease;
+    }
+
+    .create-account-button, .login-account-button {
+        border: 1px solid #FBFBFE;
+        color: #FBFBFE;
+        transition: border 0.5s ease, color 0.5s ease;
+    }
+
+    .sign-up-logotype path {
+        opacity: 1;
+        transition: opacity 0.5s ease;
+    }
+
+    .reg-role-select, .reg-gender-select {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path stroke="%232F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m18 9-6 6-6-6" opacity="0.8"/></svg>');
+        transition: background-image 0.5s ease;
+    }
 }
 
 .white-theme {
@@ -168,6 +252,90 @@ body {
     .generate-button-example {
         color: #FBFBFE;
         transition: color 0.5s ease;
+    }
+
+    .register-account, .login-account {
+        background: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    .back-to-main-page path {
+        stroke: #2F2D38;
+        transition: stroke 0.5s ease;
+    }
+
+    .register-title, .login-title {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    .if-have-account p, .if-have-not-account p {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    .sign-in-button, .sign-up-button {
+        color: #14c700;
+        transition: color 0.5s ease;
+    }
+
+    .reg-login-input, .reg-password-input, .reg-input-password-div,
+    .log-login-input, .log-password-input, .log-input-password-div {
+        background: #2F2D38;
+        color:#FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .eye-closed path, .eye-open path{
+        stroke: #FBFBFE;
+        transition: stroke 0.5s ease;
+    }
+
+    .reg-birthday-input{
+        background: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
+    .reg-birthday-input input {
+        background-color: #2F2D38;
+        color: #FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .reg-birthday-input svg g {
+        stroke: #FBFBFE;
+        transition: stroke 0.5s ease;
+    }
+
+    .reg-role, .reg-gender {
+        background: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
+    .reg-role-select, .reg-gender-select {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    .reg-role-select option, .reg-gender-select option{
+        background-color: #2F2D38; 
+        transition: background-color 0.5s ease;
+    }
+
+    .create-account-button, .login-account-button {
+        border: 1px solid #2F2D38;
+        color: #2F2D38;
+        transition: border 0.5s ease, color 0.5s ease;
+    }
+
+    .sign-up-logotype path  {
+        opacity: 0.8;
+        transition: opacity 0.5s ease;
+    }
+
+    .reg-role-select, .reg-gender-select {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path stroke="%23FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m18 9-6 6-6-6" opacity="0.8"/></svg>');
+        transition: background-image 0.5s ease;
     }
 }
 
@@ -585,7 +753,7 @@ input[type=number]::-webkit-inner-spin-button {
     }
 }
 
-.register-div {
+.sign-in-up-wrapper {
     position: fixed; 
     top: 0;
     left: 0;
@@ -607,15 +775,16 @@ input[type=number]::-webkit-inner-spin-button {
     z-index: -1; 
 }
 
-.register-account {
+.register-account, .login-account {
     display: inline-block;
     padding: 55px;
     background: #2F2D38;
     border-radius: 15px;
     margin-left: 30px;
+    width: 530px;
 }
 
-.register-account-info {
+.register-account-info, .login-account-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -626,17 +795,22 @@ input[type=number]::-webkit-inner-spin-button {
     display: block;
 }
 
-.register-title {
+.back-to-main-page:hover path{
+    stroke:#ED7E98;
+    transition: stroke 0.2s ease;
+}
+
+.register-title, .login-title {
     display: block;
     line-height: 1;
     margin: 15px 0 55px 0;
     font-weight: 700;
     font-size: 56px;
     letter-spacing: 0.5px;
-    color: #FBFBFE;
+    align-self: center;
 }
 
-.if-have-account {
+.if-have-account, .if-have-not-account {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -644,15 +818,14 @@ input[type=number]::-webkit-inner-spin-button {
     margin-bottom: 55px;
 }
 
-.if-have-account p {
+.if-have-account p, .if-have-not-account p {
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.5px;
-    color: #FBFBFE;
 }
 
-.sign-in-button {
+.sign-in-button, .sign-up-button {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -662,7 +835,6 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.5px;
-    color: #62E953;
     background-color: transparent;
     border: none;
     font-family: 'Roboto Slab';
@@ -670,16 +842,24 @@ input[type=number]::-webkit-inner-spin-button {
     cursor: pointer;
 }
 
-.reg-input-data {
+.sign-in-button:hover, .sign-up-button:hover {
+    color:#ED7E98;
+    transition: color 0.2s ease;
+}
+
+.reg-input-data, .log-input-data {
     display: flex;
     flex-direction: column;
     gap: 30px;
+}
+
+.reg-input-data {
     margin-bottom: 55px;
 }
 
-.reg-login-input, .reg-password-input {
+.reg-login-input, .reg-password-input,
+.log-login-input, .log-password-input {
     flex: 1;
-    background: #FBFBFE;
     border-radius: 15px;
     font-family: 'Roboto Slab';
     font-style: normal;
@@ -689,31 +869,30 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     align-items: center;
     letter-spacing: 0.5px;
-    color: #2F2D38;
     padding: 10px 24px;
     border: none;
 }
 
-.reg-password-input {
+.reg-password-input, .log-password-input {
     padding: 0;
     border-radius: 0;
 }
 
-.reg-login-input:focus, .reg-password-input:focus {
+.reg-login-input:focus, .reg-password-input:focus,
+.log-login-input:focus, .log-password-input:focus {
     outline: none;
 }
 
-.reg-input-password-div {
+.reg-input-password-div, .log-input-password-div {
     display: flex;
     flex-direction: row;
     gap: 5px;
     align-items: center;
-    background: #FBFBFE;
     border-radius: 15px;
     padding: 10px 24px;
 }
 
-.eye-closed {
+.eye-closed, .eye-open {
     display: block;
     cursor: pointer;
     flex-shrink: 0; 
@@ -729,7 +908,6 @@ input[type=number]::-webkit-inner-spin-button {
 .reg-birthday-input {
     width: 130px;
     max-height: 30px;
-    background: #FBFBFE;
     border-radius: 15px;
     display: flex;
     flex-direction: row;
@@ -746,7 +924,6 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.5px;
-    color: #2F2D38;
     border: none;
     appearance: none;
 }
@@ -768,7 +945,6 @@ input[type=number]::-webkit-inner-spin-button {
 .reg-role, .reg-gender {
     display: flex;
     align-items: center;
-    background: #FBFBFE;
     border-radius: 15px;
     position: relative;
     width: auto;
@@ -785,7 +961,6 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.5px;
-    color: #2F2D38;
     border: none;
     background: transparent;
     -webkit-appearance: none;
@@ -794,7 +969,6 @@ input[type=number]::-webkit-inner-spin-button {
     appearance: none; 
     outline: none;
     cursor: pointer;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path stroke="%232F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m18 9-6 6-6-6" opacity="0.8"/></svg>');
     background-repeat: no-repeat;
     background-position: right 0px center; 
     background-size: 24px 24px; 
@@ -803,7 +977,6 @@ input[type=number]::-webkit-inner-spin-button {
 .reg-role-select {
     width: 170px;
 }
-
 
 .reg-gender {
     padding: 10px 13px;
@@ -817,12 +990,7 @@ input[type=number]::-webkit-inner-spin-button {
     background: #62E953; 
 }
 
-.reg-role-select option, .reg-gender-select option {
-    background-color: #FBFBFE; 
-}
-
-.create-account-button {
-    margin-top: 190px;
+.create-account-button, .login-account-button {
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
@@ -831,7 +999,6 @@ input[type=number]::-webkit-inner-spin-button {
     justify-content: center;
     align-items: center;
     padding: 12px 36px;
-    border: 1px solid #FBFBFE;
     border-radius: 15px;
     background: transparent;
     cursor: pointer;
@@ -844,7 +1011,21 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
     text-align: center;
     letter-spacing: 0.5px;
-    color: #FBFBFE;
+}
+
+.create-account-button {
+    margin-top: 190px;
+
+}
+
+.login-account-button {
+    margin-top: 110px;
+}
+
+.create-account-button:hover,
+.login-account-button:hover {
+    border-color: #ED7E98;
+    color: #ED7E98;
 }
 
 .sign-up-logotype {
@@ -855,6 +1036,6 @@ input[type=number]::-webkit-inner-spin-button {
 
 .sign-up-theme-changer {
     position: absolute;
-    left: 30px;
+    right: 30px;
     bottom: 30px;
 }

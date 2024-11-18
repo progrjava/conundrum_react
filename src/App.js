@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import Header from './components/Header'
-import Main from './components/Main'
 import SignInUp from './components/SignInUp';
+import MainPage from './components/MainPage';
 
 export class App extends Component {
   constructor(props){
@@ -20,6 +19,9 @@ export class App extends Component {
     this.setState({isStarted : true})
   }
   
+  goToMainPage = () => {
+    this.setState({isStarted : false})
+  }
 
   render() {
     const themeClass = this.state.isBlackTheme ? 'black-theme' : 'white-theme';
@@ -27,12 +29,9 @@ export class App extends Component {
     return (
       <div className={themeClass}>
         {this.state.isStarted ? (
-          <SignInUp isBlackTheme={this.state.isBlackTheme} toggleTheme={this.toggleTheme}/>
+          <SignInUp goToMainPage={this.goToMainPage} isBlackTheme={this.state.isBlackTheme} toggleTheme={this.toggleTheme} startApp={this.startApp}/>
         ) : (
-          <>
-            <Header startApp={this.startApp}/>
-            <Main isBlackTheme={this.state.isBlackTheme} toggleTheme={this.toggleTheme}/>
-          </>
+          <MainPage startApp={this.startApp} isBlackTheme={this.state.isBlackTheme} toggleTheme={this.toggleTheme}/>
         )}
       </div>
     )
