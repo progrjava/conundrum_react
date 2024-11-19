@@ -29,9 +29,15 @@ export class App extends Component {
     return (
       <div className={themeClass}>
         {this.state.isStarted ? (
-          <SignInUp goToMainPage={this.goToMainPage} isBlackTheme={this.state.isBlackTheme} toggleTheme={this.toggleTheme} startApp={this.startApp}/>
+          <SignInUp
+            goToMainPage={this.goToMainPage} 
+            isBlackTheme={this.state.isBlackTheme} 
+            toggleTheme={this.toggleTheme}/>
         ) : (
-          <MainPage startApp={this.startApp} isBlackTheme={this.state.isBlackTheme} toggleTheme={this.toggleTheme}/>
+          <MainPage 
+          startApp={this.startApp} 
+          isBlackTheme={this.state.isBlackTheme}
+          toggleTheme={this.toggleTheme}/>
         )}
       </div>
     )
