@@ -14,7 +14,7 @@ body {
 }
 
 .black-theme {
-    header {
+    .main-page-header {
         background: rgba(47, 45, 56, 0.8);
         transition: background-color 0.5s ease;
     }
@@ -24,7 +24,7 @@ body {
         transition: border 0.5s ease;
     }
 
-    header button {
+    .main-page-header button {
         color: #FBFBFE;
         transition: color 0.5s ease;
     }
@@ -165,7 +165,7 @@ body {
         transition: border 0.5s ease, color 0.5s ease;
     }
 
-    .sign-up-logotype path {
+    .sign-up-logotype path, .personal-account-logotype path {
         opacity: 1;
         transition: opacity 0.5s ease;
     }
@@ -174,10 +174,27 @@ body {
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path stroke="%232F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m18 9-6 6-6-6" opacity="0.8"/></svg>');
         transition: background-image 0.5s ease;
     }
+
+    .about-account-info {
+        background: #2F2D38;
+        color: #FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .user-avatar {
+        background: rgb(81, 56, 136);
+        color: #FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .password-edit-icon path {
+        stroke: #FBFBFE;
+        transition: stroke 0.5s ease;
+    }
 }
 
 .white-theme {
-    header {
+    .main-page-header {
         background: rgba(251, 251, 254, 0.8);
         transition: background-color 0.5s ease;
     }
@@ -187,7 +204,7 @@ body {
         transition: border 0.5s ease;
     }
 
-    header button {
+    .main-page-header button {
         color: #2F2D38;
         transition: color 0.5s ease;
     }
@@ -328,7 +345,7 @@ body {
         transition: border 0.5s ease, color 0.5s ease;
     }
 
-    .sign-up-logotype path  {
+    .sign-up-logotype path, .personal-account-logotype path  {
         opacity: 0.8;
         transition: opacity 0.5s ease;
     }
@@ -337,9 +354,26 @@ body {
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path stroke="%23FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m18 9-6 6-6-6" opacity="0.8"/></svg>');
         transition: background-image 0.5s ease;
     }
+
+    .about-account-info {
+        background: #FBFBFE;
+        color: #2F2D38;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .user-avatar {
+        background: rgba(81, 56, 136, 0.8);
+        color: #FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .password-edit-icon path {
+        stroke: #2F2D38;
+        transition: stroke 0.5s ease;
+    }
 }
 
-header {
+.main-page-header {
     position: relative;
     display: flex;
     padding: 16px 32px;
@@ -350,7 +384,7 @@ header {
     margin: 20px auto 0 auto;
 }
 
-header button{
+.main-page-header button{
     padding: 11px 35px;
     font-family: 'Roboto Slab';
     font-style: normal;
@@ -372,7 +406,7 @@ header button{
     border: 1px solid rgba(237, 126, 152, 0.8);
 }
 
-header button:hover {
+.main-page-header button:hover {
     color: rgba(237, 126, 152, 0.8);
 }
 
@@ -380,7 +414,7 @@ header button:hover {
     border: 1px solid rgba(237, 126, 152, 0.8);
 }
 
-header button:active {
+.main-page-header button:active {
     color: rgba(237, 126, 152, 0.8);
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 15px;
@@ -765,7 +799,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 
-.signInUp-back {
+.signInUp-back, .personal-account-back {
     position: fixed;
     top: 0;
     left: 0;
@@ -1038,4 +1072,176 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     right: 30px;
     bottom: 30px;
+}
+
+
+
+.personal-account-main {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-account-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px;
+    gap: 90px;
+    border-radius: 15px;
+    max-width: 700px;
+}
+
+.about-account-info h1 {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    align-self: center;
+    letter-spacing: 0.5px;
+}
+
+.account-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 30px;
+}
+
+.main-info-about-user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.user-avatar {
+    width: 83px;
+    height: 83px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar p {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+}
+
+.user-login-role-gender {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 30px;
+    gap: 15px;
+}
+
+.user-login-role-gender p {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+}
+
+.user-role-and-gender {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-date-of-birthday, .user-password {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 30px;
+}
+
+.user-date-of-birthday p, .user-password p, .admin-stats p {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+}
+
+.password-edit-icon {
+    cursor: pointer;
+}
+
+.password-edit-icon:hover path{
+    stroke: #ED7E98;
+    transition: stroke 0.2s ease;
+}
+
+.password-edit-icon:active path{
+    stroke: #ED7E98;
+    opacity: 0.75;
+}
+
+.admin-stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 30px;
+}
+
+.personal-account-theme-changer {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+}
+
+.log-out-button {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 36px;
+    margin: 0 auto;
+    border: 1px solid #ED7E98;
+    border-radius: 15px;
+    background: transparent;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #ED7E98;
+    cursor: pointer;
+}
+
+.log-out-button:active {
+    opacity: 0.75;
+}
+
+.personal-account-logotype {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
 }

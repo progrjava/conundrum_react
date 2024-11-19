@@ -6,8 +6,7 @@ export class MainPage extends Component {
   render() {
     return (
       <div>
-        <Header 
-          startApp={this.props.startApp}/>
+        <Header startApp={this.props.startApp}/>
         <Main isBlackTheme={this.props.isBlackTheme} toggleTheme={this.props.toggleTheme}/>
       </div>
     )

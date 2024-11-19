@@ -33,13 +33,15 @@ export class SignInUp extends Component {
                     goToMainPage={this.props.goToMainPage}
                     isPasswordVisible={this.state.isPasswordVisible}
                     togglePasswordVisibility={this.togglePasswordVisibility}
-                    switchLoginProcess={this.switchLoginProcess}/>
+                    switchLoginProcess={this.switchLoginProcess}
+                    logInAndLogOut={this.props.logInAndLogOut}/>
                 ) : (
                     <SignInField
                     goToMainPage={this.props.goToMainPage}
                     isPasswordVisible={this.state.isPasswordVisible}
                     togglePasswordVisibility={this.togglePasswordVisibility}
-                    switchLoginProcess={this.switchLoginProcess}/>
+                    switchLoginProcess={this.switchLoginProcess}
+                    logInAndLogOut={this.props.logInAndLogOut}/>
                 )}
                 <svg className='sign-up-logotype' xmlns="http://www.w3.org/2000/svg" width="500" height="60" fill="none">
                     <path fill="#513888" d="M32.052 58.744c-5.793 0-11.158-1.315-16.08-3.944-4.929-2.63-8.819-6.2-11.677-10.709C1.429 

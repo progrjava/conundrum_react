@@ -42,7 +42,7 @@ export class SignInField extends Component {
                         </svg>
                     </div>
                 </div>
-                <button className='login-account-button'>
+                <button className='login-account-button' onClick={this.props.logInAndLogOut}>
                     Войти
                 </button>
             </div>

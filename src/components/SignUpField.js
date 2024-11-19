@@ -75,7 +75,7 @@ export class SignUpField extends Component {
                         </select>
                     </div>
                 </div>
-                <button className='create-account-button'>
+                <button className='create-account-button' onClick={this.props.logInAndLogOut}>
                     Создать аккаунт
                 </button>
             </div>
