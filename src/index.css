@@ -116,7 +116,7 @@ body {
         transition: color 0.5s ease;
     }
 
-    .reg-login-input, .reg-password-input, .reg-input-password-div,
+    .reg-username-input, .reg-login-input, .reg-password-input, .reg-input-password-div,
     .log-login-input, .log-password-input, .log-input-password-div {
         background: #FBFBFE;
         color: #2F2D38;
@@ -191,6 +191,13 @@ body {
         stroke: #FBFBFE;
         transition: stroke 0.5s ease;
     }
+
+    .edit-profile-button {
+        border: 1px solid #FBFBFE;
+        color: #FBFBFE;
+        transition: border 0.5s ease, color 0.5s ease;
+    }
+    
 }
 
 .white-theme {
@@ -296,7 +303,7 @@ body {
         transition: color 0.5s ease;
     }
 
-    .reg-login-input, .reg-password-input, .reg-input-password-div,
+    .reg-username-input, .reg-login-input, .reg-password-input, .reg-input-password-div,
     .log-login-input, .log-password-input, .log-input-password-div {
         background: #2F2D38;
         color:#FBFBFE;
@@ -370,6 +377,12 @@ body {
     .password-edit-icon path {
         stroke: #2F2D38;
         transition: stroke 0.5s ease;
+    }
+
+    .edit-profile-button {
+        border: 1px solid #2F2D38;
+        color: #2F2D38;
+        transition: border 0.5s ease, color 0.5s ease;
     }
 }
 
@@ -891,7 +904,7 @@ input[type=number]::-webkit-inner-spin-button {
     margin-bottom: 55px;
 }
 
-.reg-login-input, .reg-password-input,
+.reg-username-input, .reg-login-input, .reg-password-input,
 .log-login-input, .log-password-input {
     flex: 1;
     border-radius: 15px;
@@ -912,7 +925,7 @@ input[type=number]::-webkit-inner-spin-button {
     border-radius: 0;
 }
 
-.reg-login-input:focus, .reg-password-input:focus,
+.reg-username-input, .reg-login-input:focus, .reg-password-input:focus,
 .log-login-input:focus, .log-password-input:focus {
     outline: none;
 }
@@ -1048,7 +1061,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .create-account-button {
-    margin-top: 190px;
+    margin-top: 50px;
 
 }
 
@@ -1070,10 +1083,9 @@ input[type=number]::-webkit-inner-spin-button {
 
 .sign-up-theme-changer {
     position: absolute;
-    right: 30px;
+    left: 30px;
     bottom: 30px;
 }
-
 
 
 .personal-account-main {
@@ -1091,8 +1103,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px;
-    gap: 90px;
+    padding: 30px 60px;
     border-radius: 15px;
     max-width: 700px;
 }
@@ -1106,6 +1117,7 @@ input[type=number]::-webkit-inner-spin-button {
     text-align: center;
     align-self: center;
     letter-spacing: 0.5px;
+    margin-bottom: 50px;
 }
 
 .account-data {
@@ -1114,23 +1126,24 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: flex-start;
     padding: 0px;
     gap: 30px;
+    margin-bottom: 50px;
 }
 
 .main-info-about-user {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 30px;
 }
 
 .user-avatar {
-    width: 83px;
-    height: 83px;
+    width: 102px;
+    height: 102px;
     border-radius: 50%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 5px;
 }
 
 .user-avatar p {
@@ -1142,7 +1155,7 @@ input[type=number]::-webkit-inner-spin-button {
     letter-spacing: 0.5px;
 }
 
-.user-login-role-gender {
+.user-login-email-password {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -1150,7 +1163,7 @@ input[type=number]::-webkit-inner-spin-button {
     gap: 15px;
 }
 
-.user-login-role-gender p {
+.user-login-email-password p {
     font-weight: 700;
     font-size: 18px;
     line-height: 24px;
@@ -1166,15 +1179,14 @@ input[type=number]::-webkit-inner-spin-button {
     gap: 15px;
 }
 
-.user-date-of-birthday, .user-password {
+.user-password-data {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 15px;
-    padding: 10px 30px;
 }
 
-.user-date-of-birthday p, .user-password p, .admin-stats p {
+.user-date-of-birthday p, .user-password-data p, .admin-stats p, .user-role-and-gender p {
     font-weight: 700;
     font-size: 18px;
     line-height: 24px;
@@ -1202,7 +1214,6 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: column;
     justify-content: center;
     gap: 10px;
-    padding: 10px 30px;
 }
 
 .personal-account-theme-changer {
@@ -1211,7 +1222,7 @@ input[type=number]::-webkit-inner-spin-button {
     left: 30px;
 }
 
-.log-out-button {
+.log-out-button, .edit-profile-button {
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
@@ -1219,7 +1230,6 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
     padding: 12px 36px;
     margin: 0 auto;
-    border: 1px solid #ED7E98;
     border-radius: 15px;
     background: transparent;
     font-family: 'Roboto Slab';
@@ -1231,11 +1241,24 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
     text-align: center;
     letter-spacing: 0.5px;
-    color: #ED7E98;
     cursor: pointer;
 }
 
-.log-out-button:active {
+.edit-profile-button {
+    margin-bottom: 20px;
+}
+
+.edit-profile-button:hover {
+    border: 1px solid #14c700;
+    color: #14c700;
+}
+
+.log-out-button {
+    border: 1px solid #ED7E98;
+    color: #ED7E98;
+}
+
+.log-out-button:active, .edit-profile-button:active {
     opacity: 0.75;
 }
 
