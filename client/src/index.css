@@ -116,7 +116,7 @@ body {
         transition: color 0.5s ease;
     }
 
-    .reg-username-input, .reg-login-input, .reg-password-input, .reg-input-password-div,
+    .reg-login-input, .reg-password-input, .reg-input-password-div,
     .log-login-input, .log-password-input, .log-input-password-div {
         background: #FBFBFE;
         color: #2F2D38;
@@ -191,13 +191,6 @@ body {
         stroke: #FBFBFE;
         transition: stroke 0.5s ease;
     }
-
-    .edit-profile-button {
-        border: 1px solid #FBFBFE;
-        color: #FBFBFE;
-        transition: border 0.5s ease, color 0.5s ease;
-    }
-    
 }
 
 .white-theme {
@@ -303,7 +296,7 @@ body {
         transition: color 0.5s ease;
     }
 
-    .reg-username-input, .reg-login-input, .reg-password-input, .reg-input-password-div,
+    .reg-login-input, .reg-password-input, .reg-input-password-div,
     .log-login-input, .log-password-input, .log-input-password-div {
         background: #2F2D38;
         color:#FBFBFE;
@@ -377,12 +370,6 @@ body {
     .password-edit-icon path {
         stroke: #2F2D38;
         transition: stroke 0.5s ease;
-    }
-
-    .edit-profile-button {
-        border: 1px solid #2F2D38;
-        color: #2F2D38;
-        transition: border 0.5s ease, color 0.5s ease;
     }
 }
 
@@ -822,6 +809,10 @@ input[type=number]::-webkit-inner-spin-button {
     z-index: -1; 
 }
 
+.register-form, .login-form {
+    position: relative;
+}
+
 .register-account, .login-account {
     display: inline-block;
     padding: 55px;
@@ -904,7 +895,7 @@ input[type=number]::-webkit-inner-spin-button {
     margin-bottom: 55px;
 }
 
-.reg-username-input, .reg-login-input, .reg-password-input,
+.reg-login-input, .reg-password-input,
 .log-login-input, .log-password-input {
     flex: 1;
     border-radius: 15px;
@@ -925,7 +916,7 @@ input[type=number]::-webkit-inner-spin-button {
     border-radius: 0;
 }
 
-.reg-username-input, .reg-login-input:focus, .reg-password-input:focus,
+.reg-login-input:focus, .reg-password-input:focus,
 .log-login-input:focus, .log-password-input:focus {
     outline: none;
 }
@@ -1037,6 +1028,20 @@ input[type=number]::-webkit-inner-spin-button {
     background: #62E953; 
 }
 
+.create-account-message, .login-message {
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    margin-top: 25px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color:#14c700;
+}
+
 .create-account-button, .login-account-button {
     margin-left: auto;
     margin-right: auto;
@@ -1061,7 +1066,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .create-account-button {
-    margin-top: 50px;
+    margin-top: 190px;
 
 }
 
@@ -1083,9 +1088,10 @@ input[type=number]::-webkit-inner-spin-button {
 
 .sign-up-theme-changer {
     position: absolute;
-    left: 30px;
+    right: 30px;
     bottom: 30px;
 }
+
 
 
 .personal-account-main {
@@ -1103,7 +1109,8 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px 60px;
+    padding: 30px;
+    gap: 90px;
     border-radius: 15px;
     max-width: 700px;
 }
@@ -1117,7 +1124,6 @@ input[type=number]::-webkit-inner-spin-button {
     text-align: center;
     align-self: center;
     letter-spacing: 0.5px;
-    margin-bottom: 50px;
 }
 
 .account-data {
@@ -1126,24 +1132,23 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: flex-start;
     padding: 0px;
     gap: 30px;
-    margin-bottom: 50px;
 }
 
 .main-info-about-user {
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding: 0 30px;
 }
 
 .user-avatar {
-    width: 102px;
-    height: 102px;
+    width: 83px;
+    height: 83px;
     border-radius: 50%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 5px;
 }
 
 .user-avatar p {
@@ -1155,7 +1160,7 @@ input[type=number]::-webkit-inner-spin-button {
     letter-spacing: 0.5px;
 }
 
-.user-login-email-password {
+.user-login-role-gender {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -1163,7 +1168,7 @@ input[type=number]::-webkit-inner-spin-button {
     gap: 15px;
 }
 
-.user-login-email-password p {
+.user-login-role-gender p {
     font-weight: 700;
     font-size: 18px;
     line-height: 24px;
@@ -1179,14 +1184,15 @@ input[type=number]::-webkit-inner-spin-button {
     gap: 15px;
 }
 
-.user-password-data {
+.user-date-of-birthday, .user-password {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 15px;
+    padding: 10px 30px;
 }
 
-.user-date-of-birthday p, .user-password-data p, .admin-stats p, .user-role-and-gender p {
+.user-date-of-birthday p, .user-password p, .admin-stats p {
     font-weight: 700;
     font-size: 18px;
     line-height: 24px;
@@ -1214,6 +1220,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: column;
     justify-content: center;
     gap: 10px;
+    padding: 10px 30px;
 }
 
 .personal-account-theme-changer {
@@ -1222,7 +1229,7 @@ input[type=number]::-webkit-inner-spin-button {
     left: 30px;
 }
 
-.log-out-button, .edit-profile-button {
+.log-out-button {
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
@@ -1230,6 +1237,7 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
     padding: 12px 36px;
     margin: 0 auto;
+    border: 1px solid #ED7E98;
     border-radius: 15px;
     background: transparent;
     font-family: 'Roboto Slab';
@@ -1241,24 +1249,11 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
     text-align: center;
     letter-spacing: 0.5px;
+    color: #ED7E98;
     cursor: pointer;
 }
 
-.edit-profile-button {
-    margin-bottom: 20px;
-}
-
-.edit-profile-button:hover {
-    border: 1px solid #14c700;
-    color: #14c700;
-}
-
-.log-out-button {
-    border: 1px solid #ED7E98;
-    color: #ED7E98;
-}
-
-.log-out-button:active, .edit-profile-button:active {
+.log-out-button:active {
     opacity: 0.75;
 }
 

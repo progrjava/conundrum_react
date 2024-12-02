@@ -1,37 +1,57 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react';
+import axios from 'axios';
 
-export class SignInField extends Component {
-  render() {
+const SignInField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginProcess }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/auth/login', {
+                email,
+                password,
+            });
+            setMessage(response.data.message);
+        } catch (error) {
+            setMessage(error.response?.data?.error || 'Ошибка входа');
+        }
+    };
+
     return (
         <section className='login-account'>
             <div className='login-account-info'>
-                <svg className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" onClick={this.props.goToMainPage}>
+                <svg className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
                     <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" 
                         stroke-width="4" d="M25 30 15 20l10-10"/>
                 </svg>
                 <p className='login-title'>Здравствуйте!</p>
                 <div className='if-have-not-account'>
                     <p>У вас нет аккаунта?</p>
-                    <button className='sign-up-button' onClick={this.props.switchLoginProcess}>
+                    <button className='sign-up-button' onClick={switchLoginProcess}>
                         Зарегистрироваться!
                     </button>
                 </div>
-                <form id="login-form">
+                <form className='login-form' onSubmit={handleLogin}>
                     <div className='log-input-data'>
-                        <input className='log-login-input' id="login-email" type='email' placeholder='Электронная почта' required/>
+                        <input className='log-login-input' type='email' placeholder='Электронная почта' required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}/>
                         <div className='log-input-password-div'>
-                            <input className='log-password-input' type={this.props.isPasswordVisible ? 'text' : 'password'} 
-                            placeholder='Пароль' id="login-password" required/>
+                            <input className='log-password-input' type={isPasswordVisible ? 'text' : 'password'} 
+                            placeholder='Пароль' required value={password}
+                            onChange={(e) => setPassword(e.target.value)}/>
                             <svg 
-                                className={this.props.isPasswordVisible ? 'eye-open' : 'eye-closed'}
+                                className={isPasswordVisible ? 'eye-open' : 'eye-closed'}
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24" 
                                 height="24" 
                                 fill="none" 
                                 stroke-width="2" 
                                 color="#000"
-                                onClick={this.props.togglePasswordVisibility}>
-                                {this.props.isPasswordVisible ? (
+                                onClick={togglePasswordVisibility}>
+                                {isPasswordVisible ? (
                                     <>
                                         <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" d="M3 13c3.6-8 14.4-8 18 0"/>
                                         <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" d="M12 17a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
@@ -43,14 +63,14 @@ export class SignInField extends Component {
                             </svg>
                         </div>
                     </div>
-                    <button type="submit" className='login-account-button' onClick={this.props.logInAndLogOut}>
+                    {message && <p className='login-message'>{message}</p>}
+                    <button type='submit' className='login-account-button'>
                         Войти
                     </button>
                 </form>
             </div>
         </section>
     )
-  }
 }
 
-export default SignInField
+export default SignInField;

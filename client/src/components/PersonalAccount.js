@@ -9,47 +9,41 @@ export class PersonalAccount extends Component {
                 <Header/>
                 <main className='personal-account-main'>
                     <img className='personal-account-back' src='/src/personalAccount-background.jpg'/>
-                    <section className='about-account-info' id="profile-popup">
+                    <section className='about-account-info'>
                         <h1>Личный кабинет</h1>
-                        <form id="profile-form">
-                            <div className='account-data'>
-                                <div className='main-info-about-user'>
-                                    <div className='user-avatar'>
-                                        <p>P</p>
-                                        <p>R</p>
+                        <div className='account-data'>
+                            <div className='main-info-about-user'>
+                                <div className='user-avatar'>
+                                    <p>U<br/>V</p>
+                                </div>
+                                <div className='user-login-role-gender'>
+                                    <p>Логин: UvanUvanov</p>
+                                    <div className='user-role-and-gender'>
+                                        <p>Роль: Ученик</p> 
+                                        <p>Пол: Мужской</p>
                                     </div>
-                                    <div className='user-login-email-password'>
-                                        <p>Имя пользователя: <span id="profile-username"></span></p>
-                                        <p>Почта: <span id='profile-email'></span></p>
-                                        <div className='user-password-data'>
-                                            <p>Пароль: <span id='profile-password'></span></p>
-                                            <svg className='password-edit-icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-                                                <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" 
-                                                stroke-width="2" d="m14.363 5.652 1.48-1.48a2 2 0 0 1 2.829 0l1.414 1.414a2 
-                                                2 0 0 1 0 2.828l-1.48 1.48m-4.243-4.242-9.616 9.615a2 2 0 0 0-.578 1.238l-.242
-                                                2.74a1 1 0 0 0 1.084 1.085l2.74-.242a2 2 0 0 0 1.24-.578l9.615-9.616m-4.243-4.242 
-                                                4.243 4.242"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='user-date-of-birthday'>
-                                    <p>Дата рождения: <span id='user-birthday'></span></p>
-                                </div>
-                                <div className='user-role-and-gender'>
-                                    <p>Роль: <span id='user-role'></span></p> 
-                                    <p>Пол: <span id='user-gender'></span></p>
-                                </div>
-                                <div className='admin-stats'>
-                                    <p>Статистика для админов:</p>
-                                    <p>Сколько использований (хз что тут будет конкретно)</p>
                                 </div>
                             </div>
-                            <button type="submit" className='edit-profile-button'>
-                                Редактировать профиль
-                            </button>
-                        </form>
-                        <button className='log-out-button' onClick={this.props.logInAndLogOut}>
+                            <div className='user-date-of-birthday'>
+                                <p>Дата рождения: 01/01/2000</p>
+                                <p>(Возраст: 24)</p>
+                            </div>
+                            <div className='user-password'>
+                                <p>Пароль: ###########</p>
+                                <svg className='password-edit-icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+                                    <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" 
+                                    stroke-width="2" d="m14.363 5.652 1.48-1.48a2 2 0 0 1 2.829 0l1.414 1.414a2 
+                                    2 0 0 1 0 2.828l-1.48 1.48m-4.243-4.242-9.616 9.615a2 2 0 0 0-.578 1.238l-.242
+                                    2.74a1 1 0 0 0 1.084 1.085l2.74-.242a2 2 0 0 0 1.24-.578l9.615-9.616m-4.243-4.242 
+                                    4.243 4.242"/>
+                                </svg>
+                            </div>
+                            <div className='admin-stats'>
+                                <p>Статистика для админов:</p>
+                                <p>Сколько использований (хз что тут будет конкретно)</p>
+                            </div>
+                        </div>
+                        <button className='log-out-button'>
                             Выйти из аккаунта
                         </button>
                     </section>
