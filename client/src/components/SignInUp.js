@@ -3,7 +3,7 @@ import ThemeChanger from './ThemeChanger';
 import SignUpField from './SignUpField';
 import SignInField from './SignInField';
 
-const SignInUp = ({ isBlackTheme, toggleTheme }) => {
+const SignInUp = ({ isBlackTheme, toggleTheme, isAuth, setIsAuth }) => {
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
   const [isRegistrationProcess, setIsRegistrationProcess] = React.useState(true);
 
@@ -23,12 +23,14 @@ const SignInUp = ({ isBlackTheme, toggleTheme }) => {
           isPasswordVisible={isPasswordVisible}
           togglePasswordVisibility={togglePasswordVisibility}
           switchLoginProcess={switchLoginProcess}
+          setIsAuth={setIsAuth}
         />
       ) : (
         <SignInField
           isPasswordVisible={isPasswordVisible}
           togglePasswordVisibility={togglePasswordVisibility}
           switchLoginProcess={switchLoginProcess}
+          setIsAuth={setIsAuth}
         />
       )}
       <svg className='sign-up-logotype' xmlns="http://www.w3.org/2000/svg" width="500" height="60" fill="none">

@@ -1,23 +1,22 @@
 {
     "dependencies": {
-      "@supabase/supabase-js": "^2.46.2",
-      "body-parser": "^1.20.3",
-      "cors": "^2.8.5",
-      "dotenv": "^16.4.5",
-      "express": "^4.21.1",
-      "supabase": "^1.223.10"
+        "@supabase/supabase-js": "^2.46.2",
+        "body-parser": "^1.20.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.1",
+        "express-session": "^1.18.1",
+        "supabase": "^1.223.10"
     },
     "name": "server",
     "version": "1.0.0",
     "main": "server.js",
-    "devDependencies": {},
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "node server.js"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "description": ""
-  }
-  
+}

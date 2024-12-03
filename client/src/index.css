@@ -191,6 +191,12 @@ body {
         stroke: #FBFBFE;
         transition: stroke 0.5s ease;
     }
+
+    .update-account-button {
+        color:#FBFBFE;
+        border: 1px solid #FBFBFE;
+        transition: color 0.5s ease, border 0.5s ease;
+    }
 }
 
 .white-theme {
@@ -370,6 +376,12 @@ body {
     .password-edit-icon path {
         stroke: #2F2D38;
         transition: stroke 0.5s ease;
+    }
+
+    .update-account-button {
+        color:#2F2D38;
+        border: 1px solid #2F2D38;
+        transition: color 0.5s ease, border 0.5s ease;
     }
 }
 
@@ -1130,7 +1142,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0px;
+    padding: 0px 30px;
     gap: 30px;
 }
 
@@ -1138,37 +1150,32 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 30px;
 }
 
 .user-avatar {
-    width: 83px;
-    height: 83px;
+    width: 102px;
+    height: 102px;
     border-radius: 50%;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-}
-
-.user-avatar p {
     font-weight: 700;
-    font-size: 24px;
-    line-height: 24px;
-    display: flex;
-    align-items: center;
+    font-size: 32px;
+    line-height: 32px;
+    gap: 5px;
     letter-spacing: 0.5px;
 }
 
-.user-login-role-gender {
+
+.user-login-email-password {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 10px 30px;
+    padding: 0 0 0 30px;
     gap: 15px;
 }
 
-.user-login-role-gender p {
+.user-login-email-password p {
     font-weight: 700;
     font-size: 18px;
     line-height: 24px;
@@ -1189,10 +1196,14 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: row;
     align-items: center;
     gap: 15px;
-    padding: 10px 30px;
+    padding: 10px 0;
 }
 
-.user-date-of-birthday p, .user-password p, .admin-stats p {
+.user-password {
+    padding: 0;
+}
+
+.user-date-of-birthday p, .user-password p, .admin-stats p, .user-role-and-gender p {
     font-weight: 700;
     font-size: 18px;
     line-height: 24px;
@@ -1220,7 +1231,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: column;
     justify-content: center;
     gap: 10px;
-    padding: 10px 30px;
+    padding: 10px 0;
 }
 
 .personal-account-theme-changer {
@@ -1229,7 +1240,15 @@ input[type=number]::-webkit-inner-spin-button {
     left: 30px;
 }
 
-.log-out-button {
+.account-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-out-button, .update-account-button {
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
@@ -1253,7 +1272,13 @@ input[type=number]::-webkit-inner-spin-button {
     cursor: pointer;
 }
 
-.log-out-button:active {
+.update-account-button:hover {
+    color:#14c700;
+    border: 1px solid #14c700;
+    transition: color 0.5s ease, border 0.5s ease;
+}
+
+.log-out-button:active, .update-account-button:active {
     opacity: 0.75;
 }
 

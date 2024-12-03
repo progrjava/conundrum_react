@@ -10,7 +10,35 @@ if (!supabaseUrl || !supabaseKey) {
     process.exit(1); // Остановить выполнение сервера
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+/*const supabase = createClient(supabaseUrl, supabaseKey);*/
+
+let supabase;
+
+function initSupabase() {
+    try {
+
+        if (!supabaseUrl || !supabaseKey) {
+            throw new Error("Не получены URL или ключ Supabase от сервера");
+        }
+
+        // Создаем клиент Supabase
+        supabase = createClient(supabaseUrl, supabaseKey);
+
+        // Устанавливаем слушатель изменений состояния аутентификации
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session?.user) {
+                console.log('Пользователь авторизован');
+            } else if (event === 'SIGNED_OUT') {
+                console.log('Пользователь вышел из системы');
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка инициализации Supabase:', error);
+    }
+}
+
+// Запускаем инициализацию при загрузке модуля
+initSupabase();
 
 // Регистрация пользователя
 router.post('/register', async (req, res) => {
@@ -29,19 +57,16 @@ router.post('/register', async (req, res) => {
                 }
             }
         });
-
         if (error) {
             return res.status(400).json({ error: error.message });
         }
-
-        // Можно также сохранить username в базе данных отдельно, если это нужно
-        // const { error: profileError } = await supabase.from('profiles').insert({ id: data.user.id, username });
-
-        return res.status(200).json({ message: 'Пользователь зарегистрирован' });
+        
+        return res.status(200).json({ message: 'Пользователь зарегистрирован'});
     } catch (err) {
         return res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
+
 
 // Логин пользователя
 router.post('/login', async (req, res) => {
@@ -49,13 +74,43 @@ router.post('/login', async (req, res) => {
 
     try {
         const { user, error } = await supabase.auth.signInWithPassword({ email, password });
-
-        if (error) return res.status(400).json({ error: error.message });
-
-        res.status(200).json({ message: 'Вход успешен!', user });
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        } 
+        
+        res.status(200).json({ 
+            message: 'Вход успешен!',
+        });
+        
+ 
     } catch (error) {
         res.status(500).json({ error: 'Что-то пошло не так.' });
     }
 });
 
+
+router.get('/profile', async (req, res) => {
+    try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+        res.status(200).json({ user: data.user });
+    } catch (error) {
+        res.status(500).json({ error: 'Что-то пошло не так.' });
+    }
+});
+
+// Выход пользователя
+router.post('/logout', async (req, res) => {
+    try {
+        await supabase.auth.signOut();
+        res.status(200).json({ message: 'Выход успешен!' });
+    } catch (error) {
+        res.status(500).json({ error: 'Что-то пошло не так.' });
+    }
+});
+
+
 module.exports = router;
+

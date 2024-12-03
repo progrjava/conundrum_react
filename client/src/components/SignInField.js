@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const SignInField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginProcess }) => {
+const SignInField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginProcess, setIsAuth }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -14,15 +16,23 @@ const SignInField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                 password,
             });
             setMessage(response.data.message);
+            if (response.status === 200) {
+                /*navigate(`/account`);*/
+                setIsAuth(true);
+            }
         } catch (error) {
             setMessage(error.response?.data?.error || 'Ошибка входа');
         }
     };
 
+    const goToMainPage = () => {
+        navigate('/'); 
+    };
+
     return (
         <section className='login-account'>
             <div className='login-account-info'>
-                <svg className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
+                <svg onClick={goToMainPage} className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
                     <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" 
                         stroke-width="4" d="M25 30 15 20l10-10"/>
                 </svg>

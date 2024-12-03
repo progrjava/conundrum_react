@@ -3,7 +3,7 @@ import AboutPopup from './AboutPopup';
 import ManualPopup from './ManualPopup';
 import { useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ isAuth }) => {
   const [isAboutVisible, setIsAboutVisible] = React.useState(false);
   const [isManualVisible, setIsManualVisible] = React.useState(false);
   const navigate = useNavigate();
@@ -19,7 +19,11 @@ const Header = () => {
   };
 
   const handleStart = () => {
-    navigate('/register');
+    if (isAuth) {
+      navigate('/account');
+    } else {
+      navigate('/register');
+    }
   };
 
   return (
