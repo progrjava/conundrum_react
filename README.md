@@ -1,7 +1,3 @@
-Отображение информации о пользователе, переход по страницам, запрет перехода в случае, если пользователь не авторизован, реализованы.
-Дальнейшая работа над редактированием информации о пользователе в личном кабинете.
-
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
