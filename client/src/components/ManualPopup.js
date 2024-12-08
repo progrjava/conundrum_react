@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 
-export class ManualPopup extends Component {
-    render() {
+const ManualPopup = ({ isVisible, page}) => {
         return (
-            <div className={`manual-popup ${this.props.isVisible ? 'visible' : 'hidden'}`}>
-                <div className='manual-popup-div'>
+            <div id={`${page ? 'game-manual-popup' : ''}`} className={`manual-popup ${isVisible ? 'visible' : 'hidden'}`}>
+                <div id={`${page ? 'game-about-popup-div' : ''}`} className='manual-popup-div'>
                     <h2>Как пользоваться нашим сервисом?</h2>
                     <p className='manual-popup-subtitle'>Создание головоломки - кроссворд</p>
                     <div className='manual-list'>
@@ -12,7 +11,7 @@ export class ManualPopup extends Component {
                             <p>0. Перейдите в раздел создания головоломки, кликнув 
                                 на кнопку</p>
                             <div className='start-button-example'>
-                                Начать
+                                Создать
                             </div>
                         </div>
                         <div className='manual-item  manual-item1'>
@@ -76,7 +75,7 @@ export class ManualPopup extends Component {
                 </div>
             </div>
         )
-    }
 }
 
-export default ManualPopup
+
+export default ManualPopup;

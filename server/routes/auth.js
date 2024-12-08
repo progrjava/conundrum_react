@@ -25,13 +25,13 @@ function initSupabase() {
         supabase = createClient(supabaseUrl, supabaseKey);
 
         // Устанавливаем слушатель изменений состояния аутентификации
-        supabase.auth.onAuthStateChange((event, session) => {
+        /*supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN' && session?.user) {
                 console.log('Пользователь авторизован');
             } else if (event === 'SIGNED_OUT') {
                 console.log('Пользователь вышел из системы');
             }
-        });
+        });*/
     } catch (error) {
         console.error('Ошибка инициализации Supabase:', error);
     }
@@ -58,7 +58,7 @@ router.post('/register', async (req, res) => {
             }
         });
         if (error) {
-            return res.status(400).json({ error: error.message });
+            return res.status(400).json({ error: 'Пользователь уже зарегистрирован' });
         }
         
         return res.status(200).json({ message: 'Пользователь зарегистрирован'});
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
     try {
         const { user, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
-            return res.status(400).json({ error: error.message });
+            return res.status(400).json({ error: 'Неверные учетные данные' });
         } 
         
         res.status(200).json({ 
@@ -108,6 +108,31 @@ router.post('/logout', async (req, res) => {
         res.status(200).json({ message: 'Выход успешен!' });
     } catch (error) {
         res.status(500).json({ error: 'Что-то пошло не так.' });
+    }
+});
+
+
+// Обновление данных пользователя
+router.put('/update', async (req, res) => {
+    const { username, age, occupation, gender } = req.body;
+
+    try {
+        const { data, error } = await supabase.auth.updateUser({
+            data: { 
+                username: username,
+                age: age,
+                occupation: occupation,
+                gender: gender,
+            },
+        });
+
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        res.status(200).json({ message: 'Данные успешно обновлены', user: data });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка сервера при обновлении данных.' });
     }
 });
 

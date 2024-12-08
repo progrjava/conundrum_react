@@ -19,15 +19,19 @@ body {
         transition: background-color 0.5s ease;
     }
 
+
     .start-button {
         border: 1px solid #FBFBFE;
         transition: border 0.5s ease;
     }
 
+
     .main-page-header button {
         color: #FBFBFE;
         transition: color 0.5s ease;
     }
+
+
 
     .main-logo-title svg path {
         fill: #2F2D38;
@@ -61,6 +65,19 @@ body {
         transition: background-color 0.5s ease, color 0.5s ease;
     }
 
+    #game-about-popup-button.pressed, #game-manual-popup-button.pressed {
+        background: #2F2D38;
+        color: #FBFBFE;
+        border-radius: 15px;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    #game-about-popup-logo path:not(:nth-child(2)) {
+        fill: #FBFBFE;
+        transition: fill 0.5s ease;
+    }
+
+
     .about-popup, .manual-popup {
         background: #2F2D38;
         transition: background-color 0.5s ease;
@@ -70,6 +87,12 @@ body {
         background: #513888;
         transition: background-color 0.5s ease;
     }
+
+    #game-about-popup-div, #game-about-popup-div {
+        background: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
 
     .count-words-input-example {
         background: #2F2D38;
@@ -197,6 +220,19 @@ body {
         border: 1px solid #FBFBFE;
         transition: color 0.5s ease, border 0.5s ease;
     }
+
+    .userdata-input-changer {
+        color:#FBFBFE;
+        text-decoration-color: #FBFBFE;
+        transition: all 0.5s ease;
+    }
+
+    .userdata-input-changer::-webkit-input-placeholder {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    
 }
 
 .white-theme {
@@ -247,6 +283,19 @@ body {
         transition: background-color 0.5s ease, color 0.5s ease;
     }
 
+    #game-about-popup-button.pressed, #game-manual-popup-button.pressed {
+        background: #FBFBFE;
+        color: #2F2D38;
+        border-radius: 15px;
+        transition: background-color 0.5s ease, color 0.5s ease;
+        
+    }
+
+    #game-about-popup-logo path:not(:nth-child(2)) {
+        fill: #2F2D38;
+        transition: fill 0.5s ease;
+    }
+
     .about-popup, .manual-popup {
         background: #FBFBFE;
         transition: background-color 0.5s ease;
@@ -254,6 +303,11 @@ body {
 
     .about-popup-div, .manual-popup-div {
         background: rgba(81, 56, 136, 0.8);
+        transition: background-color 0.5s ease;
+    }
+
+    #game-about-popup-div, #game-about-popup-div {
+        background: #FBFBFE;
         transition: background-color 0.5s ease;
     }
 
@@ -383,6 +437,34 @@ body {
         border: 1px solid #2F2D38;
         transition: color 0.5s ease, border 0.5s ease;
     }
+
+    .userdata-input-changer {
+        color:#2F2D38;
+        text-decoration-color: #2F2D38;
+        transition: all 0.5s ease;
+    }
+
+    .userdata-input-changer::-webkit-input-placeholder {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+    
+}
+
+#game-about-popup, #game-manual-popup {
+    background: rgba(81, 56, 136, 0.8);
+}
+
+#game-header button {
+    color:#FBFBFE;
+}
+
+#game-header {
+    background-color: rgba(81, 56, 136, 0.8);
+}
+
+#game-header.main-page-header.hidden {
+    background-color: transparent;
 }
 
 .main-page-header {
@@ -414,8 +496,35 @@ body {
     margin-right: 20px;
 }
 
+#game-go-to-profile {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 20px;
+    background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    cursor: pointer;
+    border: 1px solid #FBFBFE;
+}
+
 .start-button:hover {
     border: 1px solid rgba(237, 126, 152, 0.8);
+    color: rgba(237, 126, 152, 0.8);
+    transition: all 0.2s ease;
+}
+
+#game-go-to-profile:hover {
+    border: 1px solid rgba(237, 126, 152, 0.8);
+    color: rgba(237, 126, 152, 0.8);
+    transition: all 0.2s ease;
 }
 
 .main-page-header button:hover {
@@ -424,6 +533,14 @@ body {
 
 .start-button:active {
     border: 1px solid rgba(237, 126, 152, 0.8);
+    color: rgba(237, 126, 152, 0.8);
+    transition: all 0.2s ease;
+}
+
+#game-go-to-profile:active {
+    border: 1px solid rgba(237, 126, 152, 0.8);
+    color: rgba(237, 126, 152, 0.8);
+    transition: all 0.2s ease;
 }
 
 .main-page-header button:active {
@@ -607,15 +724,20 @@ body {
 .manual-item {
     display: flex;
     flex-direction: row;
-    justify-content: baseline;
     align-items: center;
     gap: 16px;
     line-height: 24px;
 }
 
+.manual-item0 p {
+    max-width: 300px;
+}
+
 .start-button-example {
+    display: inline-block;
     justify-content: center;
     align-items: center;
+    text-align: center;
     padding: 12px 36px;
     border: 1px solid #FBFBFE;
     border-radius: 15px;
@@ -1124,7 +1246,7 @@ input[type=number]::-webkit-inner-spin-button {
     padding: 30px;
     gap: 90px;
     border-radius: 15px;
-    max-width: 700px;
+    max-width: 800px;
 }
 
 .about-account-info h1 {
@@ -1153,14 +1275,14 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .user-avatar {
-    width: 102px;
-    height: 102px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 32px;
+    font-size: 50px;
     line-height: 32px;
     gap: 5px;
     letter-spacing: 0.5px;
@@ -1178,35 +1300,76 @@ input[type=number]::-webkit-inner-spin-button {
 .user-login-email-password p {
     font-weight: 700;
     font-size: 18px;
-    line-height: 24px;
+    line-height: 30px;
     display: flex;
     align-items: center;
     letter-spacing: 0.5px;
 }
 
+.change-userdata {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.userdata-input-changer {
+    box-sizing: border-box;
+    display: flex;
+    background: transparent;
+    border: none;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    align-items: center;
+    letter-spacing: 0.5px;
+    padding: 0px;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+}
+
+.userdata-input-changer:focus {
+    outline: none;
+}
+
 .user-role-and-gender {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.user-role, .user-gender {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 15px;
 }
 
-.user-date-of-birthday, .user-password {
+.user-password {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 15px;
-    padding: 10px 0;
 }
 
 .user-password {
     padding: 0;
 }
 
-.user-date-of-birthday p, .user-password p, .admin-stats p, .user-role-and-gender p {
+.user-password p, .admin-stats p, .user-role-and-gender p {
     font-weight: 700;
     font-size: 18px;
-    line-height: 24px;
+    line-height: 30px;
     display: flex;
     align-items: center;
     letter-spacing: 0.5px;
@@ -1287,4 +1450,11 @@ input[type=number]::-webkit-inner-spin-button {
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+
+.game-generator {
+    width: 100%;
+    height: 100vh;
+    background-color: #14c700;
 }

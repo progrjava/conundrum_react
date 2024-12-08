@@ -4,6 +4,7 @@ import MainPage from './components/MainPage';
 import SignInUp from './components/SignInUp';
 import PersonalAccount from './components/PersonalAccount';
 import axios from 'axios';
+import GameGenerator from './components/GameGenerator';
 
 const App = () => {
   const [isBlackTheme, setIsBlackTheme] = useState(true);
@@ -46,6 +47,9 @@ const App = () => {
               isAuth={isAuth} 
               setIsAuth={setIsAuth} /> :
               <Navigate to="/register" replace />} />
+          <Route path='/gamegenerator' element={ isAuth ?
+            <GameGenerator /> :
+            <Navigate to="/register" replace />} />
         </Routes>
       </div>
     </Router>

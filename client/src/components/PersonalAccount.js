@@ -4,7 +4,7 @@ import ThemeChanger from './ThemeChanger';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth}) => {
+const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
         username: '',
@@ -13,11 +13,16 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth}) => {
         gender: '',
         occupation: ''
     });
-    
+
+    const [newUsername, setNewUsername] = useState('');
+    const [newAge, setNewAge] = useState(0);
+    const [newOccupation, setNewOccupation] = useState('');
+    const [newGender, setNewGender] = useState('');
+
+
     const getProfile = async () => {
         try {
             const response = await axios.get('http://localhost:5000/auth/profile');
-            /*setUserData(response.data.user);*/
             const dataAboutUser = response.data.user.user_metadata;
             setUserData({
                 username: dataAboutUser.username,
@@ -26,6 +31,10 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth}) => {
                 gender: dataAboutUser.gender,
                 occupation: dataAboutUser.occupation
             });
+            setNewUsername(dataAboutUser.username);
+            setNewAge(dataAboutUser.age);
+            setNewOccupation(dataAboutUser.occupation);
+            setNewGender(dataAboutUser.gender);
         } catch (error) {
             console.error('Ошибка при получении данных о пользователе:', error);
         }
@@ -34,6 +43,55 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth}) => {
     useEffect(() => {
         getProfile();
     }, []);
+
+    const updateProfile = async () => {
+        if (!newUsername.trim()) {
+            alert('Имя пользователя не может быть пустым');
+            return;
+        }
+
+        if (!String(newAge).trim()) {
+            alert('Возраст не может быть пустым');
+            return;
+        }
+
+        if (!newOccupation.trim()) {
+            alert('Роль не может быть пустой');
+            return;
+        }
+
+        if (!newGender.trim()) {
+            alert('Пол не может быть пустой');
+            return;
+        }
+
+        try {
+            const response = await axios.put('http://localhost:5000/auth/update', {
+                username: newUsername,
+                age: parseInt(newAge),
+                occupation: newOccupation,
+                gender: newGender,
+            });
+
+            alert(response.data.message);
+            setUserData((prevData) => ({ 
+                ...prevData, 
+                username: newUsername, 
+                age: newAge, 
+                occupation: newOccupation,
+                gender: newGender,
+            }));
+            setNewUsername(newUsername);
+            setNewAge(newAge);
+            setNewOccupation(newOccupation);
+            setNewGender(newGender);
+        } catch (error) {
+            console.error('Ошибка при обновлении данных:', error);
+            alert('Не удалось обновить данные');
+        }
+    };
+
+
 
     const logout = async () => {
         try {
@@ -47,7 +105,7 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth}) => {
 
     return (
         <>
-            <Header/>
+            <Header isAuth={isAuth}/>
             <main className='personal-account-main'>
                 <img className='personal-account-back' src='/src/personalAccount-background.jpg'/>
                 <section className='about-account-info'>
@@ -59,11 +117,25 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth}) => {
                                  <p>{userData.username.charAt(1).toUpperCase()}</p>
                             </div>
                             <div className='user-login-email-password'>
-                                <p>Логин: {userData.username}</p>
+                                <div className='change-userdata'>
+                                    <p>Имя пользователя: </p>
+                                    <input 
+                                        className='userdata-input-changer' 
+                                        type='text' 
+                                        placeholder={userData.username}
+                                        value={newUsername}
+                                        onChange={(e) => setNewUsername(e.target.value)}
+                                    />
+                                </div>
                                 <p>Почта: {userData.email}</p>
                                 <div className='user-password'>
                                     <p>Пароль: ###########</p>
-                                    <svg className='password-edit-icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+                                    <svg 
+                                        className='password-edit-icon' 
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24" 
+                                        height="24" 
+                                        fill="none">
                                         <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" 
                                         stroke-width="2" d="m14.363 5.652 1.48-1.48a2 2 0 0 1 2.829 0l1.414 1.414a2 
                                         2 0 0 1 0 2.828l-1.48 1.48m-4.243-4.242-9.616 9.615a2 2 0 0 0-.578 1.238l-.242
@@ -76,21 +148,73 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth}) => {
                         {/*<div className='user-date-of-birthday'>
                             <p>Дата рождения: 01/01/2000</p>
                         </div>*/}
-                        <div className='user-date-of-birthday'>
-                            <p>Возраст: {userData?.age}</p>
+                        <div className='change-userdata'>
+                            <p>Возраст: </p>
+                            <input 
+                                className='userdata-input-changer' 
+                                type='text' 
+                                placeholder={userData.age}
+                                value={newAge}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (/^\d*$/.test(value)) {
+                                        setNewAge(value);
+                                    }
+                                }}
+                            />
                         </div>                        
                         <div className='user-role-and-gender'>
-                            <p>Роль: {userData?.occupation}</p> 
-                            <p>Пол: {userData?.gender}</p>
+                            <div className='user-role'>
+                                <p>Роль: </p>
+                                <div className='reg-role'>
+                                    <select className='reg-role-select' required value={newOccupation}
+                                        onChange={(e) => setNewOccupation(e.target.value)}>
+                                        <option value={''} disabled selected hidden>Выберите роль</option>
+                                        {/*<option value={'student'}>Учащийся</option>
+                                        <option value={'professor'}>Преподаватель</option>
+                                        <option value={'linguist'}>Лингвист</option>
+                                        <option value={'writer'}>Писатель</option>
+                                        <option value={'journalist'}>Журналист</option>
+                                        <option value={'translator'}>Переводчик</option>
+                                        <option value={'crossword_creator'}>Кроссвордист</option>
+                                        <option value={'puzzle_enthusiast'}>Головолом</option>
+                                        <option value={'researcher'}>Исследователь</option>
+                                        <option value={'game_developer'}>Разработчик игр</option>
+                                        <option value={'other'}>Другое</option>*/}
+                                        <option value={'СТУДЕНТ'}>Учащийся</option>
+                                        <option value={'ПРОФЕССОР'}>Преподаватель</option>
+                                        <option value={'ЛИНГВИСТ'}>Лингвист</option>
+                                        <option value={'ПИСАТЕЛЬ'}>Писатель</option>
+                                        <option value={'ЖУРНАЛИСТ'}>Журналист</option>
+                                        <option value={'ПЕРЕВОДЧИК'}>Переводчик</option>
+                                        <option value={'КРОССВОРДИСТ'}>Кроссвордист</option>
+                                        <option value={'ГОЛОВОЛОМ'}>Головолом</option>
+                                        <option value={'ИССЛЕДОВАТЕЛЬ'}>Исследователь</option>
+                                        <option value={'РАЗРАБОТЧИК ИГР'}>Разработчик игр</option>
+                                        <option value={'НЕ УКАЗАНО'}>Другое</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className='user-gender'>
+                                <p>Пол: </p>
+                                <div className='reg-gender'>
+                                    <select className='reg-gender-select' required value={newGender}
+                                        onChange={(e) => setNewGender(e.target.value)}>
+                                        <option value={''} disabled selected hidden>Пол</option>
+                                        <option value={'МУЖСКОЙ'}>Муж.</option>
+                                        <option value={'ЖЕНСКИЙ'}>Жен.</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         
                         <div className='admin-stats'>
-                            <p>Статистика для админов:</p>
-                            <p>Сколько использований (хз что тут будет конкретно)</p>
+                            <p>Статистика для администраторов</p>
+                            <p>Сколько использований (что-то будет)</p>
                         </div>
                     </div>
                     <div className='account-buttons'>
-                        <button type='submit' className='update-account-button'>
+                        <button type='submit' onClick={updateProfile} className='update-account-button'>
                             Обновить данные
                         </button>
                         <button type='submit' onClick={logout} className='log-out-button'>
