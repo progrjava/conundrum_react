@@ -10,13 +10,13 @@ const ManualPopup = ({ isVisible, page}) => {
                         <div className='manual-item manual-item0'>
                             <p>0. Перейдите в раздел создания головоломки, кликнув 
                                 на кнопку</p>
-                            <div className='start-button-example'>
+                            <div id={`${page ? 'game-start-button-example' : ''}`} className='start-button-example'>
                                 Создать
                             </div>
                         </div>
                         <div className='manual-item  manual-item1'>
                             <p className='manual-item1-text'>1. Нажмите на кнопку</p>
-                            <div className='create-puzzle-button-example'>
+                            <div id={`${page ? 'game-create-puzzle-button-example' : ''}`} className='create-puzzle-button-example'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none">
                                     <path fill="#FBFBFE" fill-rule="evenodd" d="M15 .667C7.084.667.667 7.084.667 
                                     15S7.084 29.333 15 29.333 29.333 22.916 29.333 15 22.916.667 15 .667Zm1 9a1 
@@ -26,7 +26,7 @@ const ManualPopup = ({ isVisible, page}) => {
                                 <p>Создать головоломку</p>
                             </div>
                         </div>
-                        <div className='manual-item  manual-item2'>
+                        <div id={`${page ? 'game-manual-item2' : ''}`} className='manual-item  manual-item2'>
                             <p>2. Выберите вид головоломки</p>
                             <div>
                                 <input type="radio" id="scales" name="scales"/>
@@ -38,8 +38,8 @@ const ManualPopup = ({ isVisible, page}) => {
                         </div>
                         <div className='manual-item  manual-item4'>
                             <p>4. Укажите</p>
-                            <div className='count-words-input-example'>
-                                <p>КОЛИЧЕСТВО СЛОВ</p>
+                            <div id={`${page ? 'game-count-words-input-example' : ''}`} className='count-words-input-example'>
+                                <p className='count-words-input-example-p'>КОЛИЧЕСТВО СЛОВ</p>
                                 <input type="number" min="1" step="1"/>
                             </div>
                         </div>
@@ -54,7 +54,7 @@ const ManualPopup = ({ isVisible, page}) => {
                     <div className='theme-change-manual'>
                         <p>За смену темы отвечает кнопка, где “Луна” - тёмная тема, а “Солнце” 
                             - светлая тема</p>
-                        <div className='theme-changer-example'>
+                        <div id={`${page ? 'game-theme-changer-example' : ''}`} className='theme-changer-example'>
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none">
                                 <path stroke="#513888" stroke-linecap="round" stroke-linejoin="round" 
                                 stroke-width="4" d="M2 13.342C2 20.332 7.667 26 14.658 26c4.97

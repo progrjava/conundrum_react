@@ -48,7 +48,7 @@ const App = () => {
               setIsAuth={setIsAuth} /> :
               <Navigate to="/register" replace />} />
           <Route path='/gamegenerator' element={ isAuth ?
-            <GameGenerator /> :
+            <GameGenerator isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/> :
             <Navigate to="/register" replace />} />
         </Routes>
       </div>

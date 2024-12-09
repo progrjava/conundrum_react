@@ -9,13 +9,13 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
     const [userData, setUserData] = useState({
         username: '',
         email: '',
-        age: '',
+        birthdate: '',
         gender: '',
         occupation: ''
     });
 
     const [newUsername, setNewUsername] = useState('');
-    const [newAge, setNewAge] = useState(0);
+    const [newBirthdate, setNewBirthdate] = useState('');
     const [newOccupation, setNewOccupation] = useState('');
     const [newGender, setNewGender] = useState('');
 
@@ -27,12 +27,12 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
             setUserData({
                 username: dataAboutUser.username,
                 email: dataAboutUser.email,
-                age: dataAboutUser.age,
+                birthdate: dataAboutUser.birthdate,
                 gender: dataAboutUser.gender,
                 occupation: dataAboutUser.occupation
             });
             setNewUsername(dataAboutUser.username);
-            setNewAge(dataAboutUser.age);
+            setNewBirthdate(dataAboutUser.birthdate);
             setNewOccupation(dataAboutUser.occupation);
             setNewGender(dataAboutUser.gender);
         } catch (error) {
@@ -50,8 +50,8 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
             return;
         }
 
-        if (!String(newAge).trim()) {
-            alert('Возраст не может быть пустым');
+        if (!newBirthdate.trim()) {
+            alert('Дата рождения не может быть пустой');
             return;
         }
 
@@ -68,7 +68,7 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
         try {
             const response = await axios.put('http://localhost:5000/auth/update', {
                 username: newUsername,
-                age: parseInt(newAge),
+                birthdate: newBirthdate,
                 occupation: newOccupation,
                 gender: newGender,
             });
@@ -77,12 +77,12 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
             setUserData((prevData) => ({ 
                 ...prevData, 
                 username: newUsername, 
-                age: newAge, 
+                birthdate: newBirthdate, 
                 occupation: newOccupation,
                 gender: newGender,
             }));
             setNewUsername(newUsername);
-            setNewAge(newAge);
+            setNewBirthdate(newBirthdate);
             setNewOccupation(newOccupation);
             setNewGender(newGender);
         } catch (error) {
@@ -102,6 +102,26 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
             console.error('Ошибка при выходе из системы:', error);
         }
     };
+
+    const calculateAge = () => {
+        const birthdateParts = userData.birthdate.split('-');
+        const birthYear = parseInt(birthdateParts[0]);
+        const birthMonth = parseInt(birthdateParts[1]);
+        const birthDay = parseInt(birthdateParts[2]);
+        
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDay = today.getDate();
+        
+        let age = currentYear - birthYear;
+        
+        if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
+            age--;
+        }
+        
+        return age;
+    }
 
     return (
         <>
@@ -145,24 +165,23 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
                                 </div>
                             </div>
                         </div>
-                        {/*<div className='user-date-of-birthday'>
-                            <p>Дата рождения: 01/01/2000</p>
-                        </div>*/}
                         <div className='change-userdata'>
-                            <p>Возраст: </p>
-                            <input 
-                                className='userdata-input-changer' 
-                                type='text' 
-                                placeholder={userData.age}
-                                value={newAge}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    if (/^\d*$/.test(value)) {
-                                        setNewAge(value);
-                                    }
-                                }}
-                            />
-                        </div>                        
+                            <p>Дата рождения: </p>
+                            <div className='reg-birthday-input'>
+                                <input type="date" 
+                                placeholder={userData.birthdate} 
+                                required 
+                                value={newBirthdate} 
+                                onChange={
+                                    (e) => setNewBirthdate(e.target.value)}/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+                                    <g stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" opacity=".8">
+                                        <path d="M15 4V2m0 2v2m0-2h-4.5M3 10v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9H3ZM3 10V6a2 2 0 0 1 2-2h2M7 2v4M21 10V6a2 2 0 0 0-2-2h-.5"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <p>(Возраст: {calculateAge()})</p>
+                        </div>         
                         <div className='user-role-and-gender'>
                             <div className='user-role'>
                                 <p>Роль: </p>
@@ -170,17 +189,6 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
                                     <select className='reg-role-select' required value={newOccupation}
                                         onChange={(e) => setNewOccupation(e.target.value)}>
                                         <option value={''} disabled selected hidden>Выберите роль</option>
-                                        {/*<option value={'student'}>Учащийся</option>
-                                        <option value={'professor'}>Преподаватель</option>
-                                        <option value={'linguist'}>Лингвист</option>
-                                        <option value={'writer'}>Писатель</option>
-                                        <option value={'journalist'}>Журналист</option>
-                                        <option value={'translator'}>Переводчик</option>
-                                        <option value={'crossword_creator'}>Кроссвордист</option>
-                                        <option value={'puzzle_enthusiast'}>Головолом</option>
-                                        <option value={'researcher'}>Исследователь</option>
-                                        <option value={'game_developer'}>Разработчик игр</option>
-                                        <option value={'other'}>Другое</option>*/}
                                         <option value={'СТУДЕНТ'}>Учащийся</option>
                                         <option value={'ПРОФЕССОР'}>Преподаватель</option>
                                         <option value={'ЛИНГВИСТ'}>Лингвист</option>

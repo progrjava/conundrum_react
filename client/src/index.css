@@ -48,12 +48,27 @@ body {
         transition: background-color 0.5s ease;
     }
 
+    #game-theme-changer {
+        background: rgba(251, 251, 254, 0.8);
+        transition: background-color 0.5s ease;
+    }
+
     .white-theme-switch path{
         stroke: #FBFBFE;
         transition: stroke 0.5s ease;
     }
 
+    #game-white-theme-switch path{
+        stroke: #2F2D38;
+        transition: stroke 0.5s ease;
+    }
+
     .black-theme-switch path{
+        stroke: #62E953;
+        transition: stroke 0.5s ease;
+    }
+
+    #game-black-theme-switch path{
         stroke: #62E953;
         transition: stroke 0.5s ease;
     }
@@ -106,6 +121,21 @@ body {
 
     .count-words-input-example p {
         color:#FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    #game-count-words-input-example {
+        background: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    #game-count-words-input-example .count-words-input-example-p {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    #game-count-words-input-example input{
+        color: #2F2D38;
         transition: color 0.5s ease;
     }
 
@@ -232,7 +262,109 @@ body {
         transition: color 0.5s ease;
     }
 
+    #game-about-popup-paragraphs h3{
+        color:#FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    #game-about-popup-paragraphs p{
+        color:#FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    #game-about-popup-div h2 {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    #game-about-popup-div p {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    #game-start-button-example {
+        color:#FBFBFE;
+        border-color: #FBFBFE;
+        transition: color 0.5s ease, border-color 0.5s ease;
+    }
+
+    #game-create-puzzle-button-example svg path {
+        fill:#FBFBFE;
+        transition: fill 0.5s ease;
+    }
+
+    #game-manual-item2 label{
+        color:#FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    #game-theme-changer-example {
+        background-color: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    #game-theme-changer-example svg path {
+        stroke: #2F2D38;
+        transition: stroke 0.5s ease;
+    }
+
+    #game-main-page {
+        background-color: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
+    #game-logotype path {
+        fill: #FBFBFE;
+        transition: fill 0.5s ease;
+    }
+
+    .creating-puzzle-input-data {
+        background-color: #2F2D38;
+        color: #FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .input-puzzle-name {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    .input-puzzle-name::placeholder {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    input[type="radio"] + label {
+        color:#FBFBFE;
+        transition: color 0.5s ease;
+    }
     
+    input[type="radio"] + label::before {
+        background-color: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
+    .input-puzzle-size input {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    .generate-puzzle-button {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+
+    .topic-input input, .text-input-textarea {
+        background-color: #2F2D38;
+        color: #FBFBFE;
+        transition: color 0.5s ease, background-color 0.5s ease;
+    }
+
+    .topic-input input::placeholder, .text-input-textarea::placeholder {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
 }
 
 .white-theme {
@@ -266,13 +398,28 @@ body {
         transition: background-color 0.5s ease;
     }
 
+    #game-theme-changer {
+        background: rgba(47, 45, 56, 0.8);
+        transition: background-color 0.5s ease;
+    }
+
     .white-theme-switch path{
+        stroke: #62E953;
+        transition: stroke 0.5s ease;
+    }
+
+    #game-white-theme-switch path{
         stroke: #62E953;
         transition: stroke 0.5s ease;
     }
 
     .black-theme-switch path{
         stroke: #2F2D38;
+        transition: stroke 0.5s ease;
+    }
+
+    #game-black-theme-switch path{
+        stroke: #FBFBFE;
         transition: stroke 0.5s ease;
     }
 
@@ -324,6 +471,22 @@ body {
     .count-words-input-example p {
         color: #2F2D38;
         transition: color 0.5s ease;
+    }
+
+    #game-count-words-input-example {
+        background: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
+    #game-count-words-input-example .count-words-input-example-p {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    #game-count-words-input-example input{
+        border-color: #FBFBFE;
+        color: #FBFBFE;
+        transition: all 0.5s ease;
     }
 
     .generate-button-example {
@@ -449,6 +612,114 @@ body {
         transition: color 0.5s ease;
     }
     
+
+    #game-about-popup-paragraphs h3{
+        font-weight: 700;
+        color:#2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    #game-about-popup-paragraphs p{
+        font-weight: 700;
+        color:#2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    #game-about-popup-div h2 {
+        font-weight: 700;
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    #game-about-popup-div p {
+        font-weight: 700;
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    #game-start-button-example {
+        color:#2F2D38;
+        border-color: #2F2D38;
+        transition: color 0.5s ease, border-color 0.5s ease;
+    }
+
+    #game-create-puzzle-button-example svg path {
+        fill:#2F2D38;
+        transition: fill 0.5s ease;
+    }
+
+    #game-manual-item2 label{
+        font-weight: 700;
+        color:#2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    #game-theme-changer-example {
+        background-color: #2F2D38;
+        transition: background-color 0.5s ease;
+    }
+
+    #game-theme-changer-example svg path {
+        stroke: #FBFBFE;
+        transition: stroke 0.5s ease;
+    }
+
+    #game-main-page {
+        background-color: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    #game-logotype path {
+        fill: #2F2D38;
+        transition: fill 0.5s ease;
+    }
+
+    .creating-puzzle-input-data {
+        background-color: #FBFBFE;
+        color: #2F2D38;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .input-puzzle-name {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    .input-puzzle-name::placeholder {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    input[type="radio"] + label {
+        color:#2F2D38;
+        transition: color 0.5s ease;
+    }
+    
+    input[type="radio"] + label::before {
+        background-color: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    .input-puzzle-size input {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    .generate-puzzle-button {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    .topic-input input, .text-input-textarea {
+        background-color: rgba(251, 251, 254, 0.8);
+        color: #2F2D38;
+        transition: color 0.5s ease, background-color 0.5s ease;
+    }
+
+    .topic-input input::placeholder, .text-input-textarea::placeholder {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
 }
 
 #game-about-popup, #game-manual-popup {
@@ -506,13 +777,15 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 2px;
     font-family: 'Roboto Slab';
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
     cursor: pointer;
     border: 1px solid #FBFBFE;
+    svg path {
+        stroke: #FBFBFE;
+    }
 }
 
 .start-button:hover {
@@ -521,9 +794,9 @@ body {
     transition: all 0.2s ease;
 }
 
-#game-go-to-profile:hover {
+#game-go-to-profile:hover, #game-go-to-profile:hover > svg path {
     border: 1px solid rgba(237, 126, 152, 0.8);
-    color: rgba(237, 126, 152, 0.8);
+    stroke: rgba(237, 126, 152, 0.8);
     transition: all 0.2s ease;
 }
 
@@ -537,9 +810,9 @@ body {
     transition: all 0.2s ease;
 }
 
-#game-go-to-profile:active {
+#game-go-to-profile:active, #game-go-to-profile:active > svg path {
     border: 1px solid rgba(237, 126, 152, 0.8);
-    color: rgba(237, 126, 152, 0.8);
+    stroke: rgba(237, 126, 152, 0.8);
     transition: all 0.2s ease;
 }
 
@@ -749,13 +1022,13 @@ body {
     transition: transform 0.1s ease;
 }
 
-.start-button-example:hover {
+.start-button-example:hover, #game-start-button-example:hover {
     border: 1px solid #ED7E98;
     transform: translateX(-1px);
     color: #ED7E98;
 }
 
-.create-puzzle-button-example:hover {
+.create-puzzle-button-example:hover, #game-create-puzzle-button-example:hover {
     svg {
         path {
             fill: #ED7E98;
@@ -763,7 +1036,6 @@ body {
     }
     p {
         color: #ED7E98;
-        text-shadow: 0px 2px 4px black;
     }
 }
 
@@ -789,23 +1061,21 @@ body {
 }
 
 
-.manual-item2 input[type='radio'] {
+input[type='radio'] {
     display: none;
 }
 
-.manual-item2 input[type="radio"] + label {
+input[type="radio"] + label {
     position: relative;
     padding-left: 24px;
     cursor: pointer;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.5px;
-    color: #FBFBFE;
-
 }
 
-.manual-item2 input[type="radio"] + label::before {
+input[type="radio"] + label::before {
     box-sizing: border-box;
     content: "";
     position: absolute;
@@ -814,17 +1084,16 @@ body {
     transform: translateY(-50%);
     width: 16px;
     height: 16px;
-    background: #2F2D38;
     border: 2px solid rgba(237, 126, 152, 0.8);
     border-radius: 50%; 
 }
 
-.manual-item2 input[type="radio"]:checked + label::before {
+input[type="radio"]:checked + label::before {
     background: rgba(98, 233, 83, 0.8);
     border: none;
 }
 
-input[type="radio"]:checked + label {
+input[type="radio"]:checked + label, #game-manual-item2 input[type="radio"]:checked + label {
     color: #62E953;
 }
 
@@ -911,15 +1180,16 @@ input[type=number]::-webkit-inner-spin-button {
     border-radius: 15px;
 }
 
-.theme-changer-example svg {
+.theme-changer-example svg, #game-theme-changer-example svg {
     cursor: pointer;
 }
 
-.theme-changer-example svg:hover {
+.theme-changer-example svg:hover, #game-theme-changer-example svg:hover {
     path {
         stroke: #ED7E98;
     }
 }
+
 
 .sign-in-up-wrapper {
     position: fixed; 
@@ -1244,7 +1514,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: column;
     align-items: flex-start;
     padding: 30px;
-    gap: 90px;
+    gap: 50px;
     border-radius: 15px;
     max-width: 800px;
 }
@@ -1265,7 +1535,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: column;
     align-items: flex-start;
     padding: 0px 30px;
-    gap: 30px;
+    gap: 15px;
 }
 
 .main-info-about-user {
@@ -1457,4 +1727,397 @@ input[type=number]::-webkit-inner-spin-button {
     width: 100%;
     height: 100vh;
     background-color: #14c700;
+}
+
+
+#game-main-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+#game-logotype {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.game-theme-changer {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+}
+
+.game-generator-slidebar-hidden, .game-generator-slidebar-visible {
+    display: flex;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    
+    transform: translateY(-50%);
+    background: rgba(81, 56, 136, 0.8);
+    border-radius: 15px;
+    overflow: hidden;
+    padding: 0;
+    max-width: 0;
+    opacity: 0;
+    transition: max-width 0.7s ease, opacity 0.2s ease, padding 0.2s ease;
+    white-space: nowrap;
+}
+
+.game-generator-slidebar-hidden.visible, .game-generator-slidebar-visible.visible {
+    max-width: 100vw;
+    opacity: 1;
+    padding: 24px;
+}
+
+.generator-slidebar-visible, .generator-slidebar-hidden {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.game-menu-handler, .game-puzzle-creator, .game-my-puzzles {
+    display: flex;
+    cursor: pointer;
+}
+
+.game-menu-handler:hover, .game-my-puzzles:hover {
+    svg path {
+        stroke: #ED7E98;
+        transition: stroke 0.2s ease;
+    }
+}
+
+.game-puzzle-creator:hover {
+    svg path {
+        fill: #ED7E98;
+        transition: fill 0.2s ease;
+    }
+}
+
+.game-menu-handler-open, .game-puzzle-creator-open, .game-my-puzzles-open {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    p {
+        font-family: 'Roboto Slab';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        letter-spacing: 0.5px;
+        color: #FBFBFE;
+    }
+}
+
+.game-puzzle-creator-open:hover {
+    svg path {
+        fill: #ED7E98;
+        transition: fill 0.2s ease;
+    }
+    p {
+        color: #ED7E98;
+        transition: color 0.2s ease;
+    }
+}
+
+
+.game-menu-handler-open:hover {
+    rect {
+        fill: #ED7E98;
+        transition: fill 0.2s ease;
+    }
+    p {
+        color: #ED7E98;
+        transition: color 0.2s ease;
+    }
+}
+
+.game-my-puzzles-open:hover {
+    svg path {
+        stroke: #ED7E98;
+        transition: stroke 0.2s ease;
+    }
+    p {
+        color: #ED7E98;
+        transition: color 0.2s ease;
+    }
+}
+
+
+.creating-puzzle-input-data.hidden {
+    max-height: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0;
+    opacity: 0;
+    margin-top: -16px;
+    transition: 
+    padding 0.4s ease, 
+    max-height 0.4s ease, 
+    opacity 0.4s ease, 
+    margin-top 0.4s ease, 
+    background-color 0.5s ease, 
+    color 0.5s ease;
+}
+
+.creating-puzzle-input-data.visible {
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px;
+    border-radius: 15px;
+    opacity: 1;
+    transition: 
+    padding 0.4s ease, 
+    max-height 0.4s ease, 
+    opacity 0.4s ease, 
+    margin-top 0.4s ease, 
+    background-color 0.5s ease, 
+    color 0.5s ease;
+}
+
+#creating-puzzle-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#creating-puzzle-form h2 {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    align-self: center;
+}
+
+.input-puzzle-name {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    text-align: center;
+    background-color: transparent;
+    border-radius: 50px;
+    border: 3px solid #513888;
+    margin-bottom: 20px;
+}
+
+.input-puzzle-name:focus {
+    outline: none;
+}
+
+.input-type-of-puzzle, .input-interaction-format {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.input-puzzle-size {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.input-puzzle-size input {
+    box-sizing: border-box;
+    display: flex;
+    width: 68px;
+    text-align: center;
+    background-color: transparent;
+    border-radius: 50px;
+    border: 2px solid #513888;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    align-items: center;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.input-puzzle-size input:focus {
+    outline: none;
+}
+
+.generate-puzzle-button {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 34px;
+    background: #62E953;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+}
+
+.generate-puzzle-button:hover {
+    color: #ED7E98;  
+    border: 2px solid #ED7E98;  
+    transition: all 0.2s ease;
+}
+
+.generate-puzzle-button:active {
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+    transition: all 0s;
+}
+
+.open-full-settings-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    background: #ED7E98;
+    border-radius: 15px;
+    border: none;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 12px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+    margin-bottom: 40px;
+}
+
+.topic-input, .text-input {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: rgba(81, 56, 136, 0.8);
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+.topic-input input {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(47, 45, 56, 0.8);
+    border: 2px solid #FBFBFE;
+    border-radius: 25px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    text-align: center;
+    padding: 0 10px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 42px;
+    letter-spacing: 0.5px;
+}
+
+.text-input-textarea {
+    box-sizing: border-box;
+    resize: none; 
+    border: 2px solid #FBFBFE;
+    border-radius: 25px; 
+    padding: 10px; 
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    text-align: left;
+    font-weight: 400;
+    font-size: 16px; 
+    line-height: 1.2;
+    overflow-y: auto;
+    min-width: 100%;
+    width: 100%;
+    min-height: 100px;
+    height: 100px;
+}
+
+.topic-input input:focus, .text-input-textarea:focus {
+    outline: none;
+}
+
+.text-input-textarea::-webkit-scrollbar {
+    width: 8px;
+    display: none;
+}
+
+.text-input-textarea::-webkit-scrollbar-track {
+    background: rgba(81, 56, 136, 0.5); 
+    border-radius: 5px; 
+}
+
+.text-input-textarea::-webkit-scrollbar-thumb {
+    background: #8663d4; 
+    border-radius: 5px; 
+}
+
+.text-input-textarea::-webkit-scrollbar-thumb:hover {
+    background: #a081e6; 
+}
+
+.file-input {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(81, 56, 136, 0.8); 
+    border-radius: 15px; 
+    width: 100%; 
+    height: 48px; 
+    cursor: pointer;
+    position: relative;
+}
+
+.file-input input[type="file"] {
+    opacity: 0; 
+    position: absolute; 
+    width: 100%;
+    height: 100%;
+    cursor: pointer; 
+}
+
+.file-input-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #624599; 
+    border-radius: 12px; 
+    cursor: pointer;
+}
+
+.file-input-label svg {
+    width: 32px;
+    height: 32px;
 }
