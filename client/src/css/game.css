@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+#crossword-and-clues {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 50px;
+    width: 95%;
+    flex-wrap: wrap;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#crossword-container, #clues-container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    background: rgba(81, 56, 136, 0.8);
+    backdrop-filter: blur(12.5px);
+    border-radius: 15px;
+}
+
+#clues-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.crossword-table {
+    margin: 50px;
+}
+
+.clues-section:first-child {
+    margin: 50px 50px 0 50px;
+}
+
+.clues-section:nth-child(2){
+    margin: 0 50px 50px 50px;
+}
+
+.crossword-table td {
+    box-sizing: border-box;
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+}
+
+td.crossword-cell {
+    box-sizing: border-box;
+    background: #FBFBFE;
+    position: relative;
+}
+
+td.crossword-cell span {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    transform: translate(-5%, -5%);
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 15px;
+    text-transform: uppercase;
+    color:#2F2D38;
+}
+
+td.black-cell  {
+    border: transparent;
+}
+
+span.word-number {
+    color:#2F2D38;
+}
+
+input.crossword-input {
+    border: none;
+    width: 48px;
+    height: 48px;
+    background-color: transparent;
+    text-align: center;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 26px;
+    text-transform: uppercase;
+    color:#FBFBFE;
+    text-shadow: -2px 2px 5px rgba(47, 45, 56, 1);
+}
+
+input.crossword-input:focus {
+    outline: none;
+    
+}
+
+.clues-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.clues-section h3 {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+}
+
+.word-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.word-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.word-item span {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: #FBFBFE;
+}
+
+.show-answer-button {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.show-answer-button:hover {
+    transform: scale(1.1);
+}

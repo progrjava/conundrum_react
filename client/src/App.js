@@ -5,11 +5,12 @@ import SignInUp from './components/SignInUp';
 import PersonalAccount from './components/PersonalAccount';
 import axios from 'axios';
 import GameGenerator from './components/GameGenerator';
+import { useNavigate } from 'react-router-dom';
 
 const App = () => {
   const [isBlackTheme, setIsBlackTheme] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
-
   const toggleTheme = () => {
     setIsBlackTheme(!isBlackTheme);
   };
@@ -21,6 +22,8 @@ const App = () => {
         setIsAuth(true);
       } catch (error) {
         setIsAuth(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     checkAuthStatus();
@@ -47,9 +50,12 @@ const App = () => {
               isAuth={isAuth} 
               setIsAuth={setIsAuth} /> :
               <Navigate to="/register" replace />} />
-          <Route path='/gamegenerator' element={ isAuth ?
+          <Route path='/gamegenerator' element={ 
+            isLoading ? 
+              <div className='loading'>Загрузка...</div>
+              : (isAuth ?
             <GameGenerator isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/> :
-            <Navigate to="/register" replace />} />
+            <Navigate to="/register" replace />)} />
         </Routes>
       </div>
     </Router>
