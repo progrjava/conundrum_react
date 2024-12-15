@@ -1,0 +1,347 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+.personal-account-main {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.personal-account-back {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; 
+    z-index: -1; 
+}
+
+.about-account-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px;
+    gap: 50px;
+    border-radius: 15px;
+    max-width: 800px;
+}
+
+.about-account-info h1 {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    align-self: center;
+    letter-spacing: 0.5px;
+}
+
+.account-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px 30px;
+    gap: 15px;
+}
+
+.main-info-about-user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 50px;
+    line-height: 32px;
+    gap: 5px;
+    letter-spacing: 0.5px;
+}
+
+.user-login-email-password {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 0 0 30px;
+    gap: 15px;
+}
+
+.user-login-email-password p {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+}
+
+.change-userdata {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.userdata-input-changer {
+    box-sizing: border-box;
+    display: flex;
+    background: transparent;
+    border: none;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    align-items: center;
+    letter-spacing: 0.5px;
+    padding: 0px;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+}
+
+.userdata-input-changer:focus {
+    outline: none;
+}
+
+.user-password {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-password {
+    padding: 0;
+}
+
+.user-password p, .admin-stats p, .user-role-and-gender p {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+}
+
+.password-edit-icon {
+    cursor: pointer;
+}
+
+.password-edit-icon:hover path{
+    stroke: #ED7E98;
+    transition: stroke 0.2s ease;
+}
+
+.password-edit-icon:active path{
+    stroke: #ED7E98;
+    opacity: 0.75;
+}
+
+.reg-birthday-input {
+    width: 130px;
+    max-height: 30px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 24px;
+    position: relative;
+}
+
+.reg-birthday-input input {
+    outline: none;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    border: none;
+    appearance: none;
+}
+
+
+.reg-birthday-input input::-webkit-calendar-picker-indicator {
+    margin-left: -11px;
+    opacity: 0;
+}
+
+.reg-birthday-input svg {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 24px;
+    pointer-events: none;
+}
+
+.user-role-and-gender {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.user-role, .user-gender {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+}
+
+.reg-role {
+    display: flex;
+    align-items: center;
+    border-radius: 15px;
+    position: relative;
+    width: auto;
+}
+
+.reg-role {
+    padding: 10px 24px;
+}
+
+.reg-role-select {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    border: none;
+    background: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none; 
+    outline: none;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: right 0px center; 
+    background-size: 24px 24px; 
+}
+
+.reg-role-select {
+    width: 170px;
+}
+
+.reg-gender {
+    display: flex;
+    align-items: center;
+    border-radius: 15px;
+    position: relative;
+    width: auto;
+}
+
+.reg-gender {
+    padding: 10px 13px;
+}
+
+.reg-gender-select {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    border: none;
+    background: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none; 
+    outline: none;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: right 0px center; 
+    background-size: 24px 24px; 
+}
+
+.reg-gender-select{
+    width: 70px;
+}
+
+.reg-gender-select option:checked {
+    background: #62E953; 
+}
+
+.admin-stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.account-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-out-button, .update-account-button {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 36px;
+    margin: 0 auto;
+    border: 1px solid #ED7E98;
+    border-radius: 15px;
+    background: transparent;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #ED7E98;
+    cursor: pointer;
+}
+
+.update-account-button:hover {
+    color:#14c700;
+    border: 1px solid #14c700;
+    transition: color 0.5s ease, border 0.5s ease;
+}
+
+.log-out-button:active, .update-account-button:active {
+    opacity: 0.75;
+}
+
+.personal-account-theme-changer {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+}
+
+.personal-account-logotype {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}

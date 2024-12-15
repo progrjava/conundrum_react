@@ -2,6 +2,7 @@ import React from 'react';
 import ThemeChanger from './ThemeChanger';
 import SignUpField from './SignUpField';
 import SignInField from './SignInField';
+import '../css/signInUp.css';
 
 const SignInUp = ({ isBlackTheme, toggleTheme, isAuth, setIsAuth }) => {
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);

@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+#game-about-popup {
+    background: rgba(81, 56, 136, 0.8);
+}
+
+.about-popup {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    padding: 80px 32px 16px 32px;
+    border-radius: 15px;
+    z-index: -1;
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0.3s ease;
+}
+
+.about-popup.visible {
+    opacity: 1;
+    visibility: visible;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.about-popup.hidden {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+}
+
+.about-popup-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 15px;
+    width: 560px;
+}
+
+.about-popup-div .logotype {
+    display: block;
+    margin-top: 32px;
+}
+
+.about-popup-paragraphs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+    line-height: 24px;
+}
+
+.about-popup-text h3 {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+}
+
+.about-popup-text span {
+    color: #ED7E98;
+}
+
+.about-popup-text .paragraph {
+    margin-top: 16px;
+}
+

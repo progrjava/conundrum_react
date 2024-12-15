@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+#game-manual-popup {
+    background: rgba(81, 56, 136, 0.8);
+}
+
+#game-start-button-example:hover {
+    border: 1px solid #ED7E98;
+    transform: translateX(-1px);
+    color: #ED7E98;
+}
+
+#game-create-puzzle-button-example:hover {
+    svg {
+        path {
+            fill: #ED7E98;
+        }
+    }
+    p {
+        color: #ED7E98;
+    }
+}
+
+#game-manual-item2 input[type="radio"]:checked + label {
+    color: #62E953;
+}
+
+#game-theme-changer-example svg {
+    cursor: pointer;
+}
+
+#game-theme-changer-example svg:hover {
+    path {
+        stroke: #ED7E98;
+    }
+}
+
+.manual-popup {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    padding: 80px 32px 16px 32px;
+    border-radius: 15px;
+    z-index: -1;
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0.3s ease;
+}
+
+.manual-popup.visible{
+    opacity: 1;
+    visibility: visible;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.manual-popup.hidden {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+}
+
+.manual-popup-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 15px;
+    width: 560px;
+}
+
+.manual-popup-div h2 {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 24px;
+}
+
+.manual-popup-subtitle {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.manual-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.manual-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    line-height: 24px;
+}
+
+.manual-item0 p {
+    max-width: 300px;
+}
+
+.start-button-example {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 12px 36px;
+    border: 1px solid #FBFBFE;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    color: #FBFBFE;
+    transition: transform 0.1s ease;
+}
+
+.start-button-example:hover {
+    border: 1px solid #ED7E98;
+    transform: translateX(-1px);
+    color: #ED7E98;
+}
+
+.create-puzzle-button-example:hover {
+    svg {
+        path {
+            fill: #ED7E98;
+        }
+    }
+    p {
+        color: #ED7E98;
+    }
+}
+
+.create-puzzle-button-example {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.create-puzzle-button-example p {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.manual-item2 div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.count-words-input-example {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px;
+    gap: 16px;
+    border-radius: 15px;
+}
+
+.count-words-input-example p {
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.count-words-input-example input {
+    box-sizing: border-box;
+    width: 58px;
+    height: 24px;
+    border: 2px solid #513888;
+    background: transparent;
+    border-radius: 50px;
+    font-weight: 400;
+    font-size: 18px;
+    text-align: center;
+}
+
+.count-words-input-example input:focus{
+    outline: none;
+}
+
+.generate-button-example {
+    box-sizing: border-box;
+    padding: 12px 36px;
+    background: #62E953;
+    border: 1px solid #62E953;
+    border-radius: 15px;
+    font-weight: 500;
+    font-size: 16px;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+}
+
+.generate-button-example:hover {
+    border: 1px solid #ED7E98;
+    color: #ED7E98;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    
+}
+
+.theme-change-manual {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.theme-change-manual p {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+}
+
+.theme-changer-example {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    gap: 16px;
+    background: #FBFBFE;
+    border-radius: 15px;
+}
+
+.theme-changer-example svg {
+    cursor: pointer;
+}
+
+.theme-changer-example svg:hover {
+    path {
+        stroke: #ED7E98;
+    }
+}
+

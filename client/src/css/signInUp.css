@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+.sign-in-up-wrapper {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+}
+
+.signInUp-back{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; 
+    z-index: -1; 
+}
+
+
+.sign-up-logotype {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
+
+.sign-up-theme-changer {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+}

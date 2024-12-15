@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AboutPopup from './AboutPopup';
 import ManualPopup from './ManualPopup';
 import { useNavigate } from 'react-router-dom';
+import '../css/header.css';
 
 const Header = ({ isAuth }) => {
   const [isAboutVisible, setIsAboutVisible] = useState(false);

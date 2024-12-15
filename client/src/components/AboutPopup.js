@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import '../css/aboutPopup.css'
 
 const AboutPopup = ({isVisible, page}) => {
     return (

@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+.main-page-header {
+    position: relative;
+    display: flex;
+    padding: 16px 32px;
+    border-radius: 15px;
+    max-width: 100%;
+    width: fit-content; 
+    z-index: 1000;
+    margin: 20px auto 0 auto;
+}
+
+.main-page-header button{
+    padding: 11px 35px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+}
+
+.main-page-header button:hover {
+    color: rgba(237, 126, 152, 0.8);
+}
+
+.main-page-header button:active {
+    color: rgba(237, 126, 152, 0.8);
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+}
+
+.start-button {
+    border-radius: 15px;
+    margin-right: 20px;
+}
+
+.start-button:hover {
+    border: 1px solid rgba(237, 126, 152, 0.8);
+    color: rgba(237, 126, 152, 0.8);
+    transition: all 0.2s ease;
+}
+
+.start-button:active {
+    border: 1px solid rgba(237, 126, 152, 0.8);
+    color: rgba(237, 126, 152, 0.8);
+    transition: all 0.2s ease;
+}
+

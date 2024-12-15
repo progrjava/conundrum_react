@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../css/signInField.css';
 
 const SignInField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginProcess, setIsAuth }) => {
     const [email, setEmail] = useState('');

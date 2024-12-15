@@ -3,6 +3,7 @@ import Header from './Header';
 import ThemeChanger from './ThemeChanger';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../css/profile.css';
 
 const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
     const navigate = useNavigate();
@@ -97,7 +98,6 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
         try {
             await axios.post('http://localhost:5000/auth/logout');
             setIsAuth(false);
-            /*navigate('/login');*/
         } catch (error) {
             console.error('Ошибка при выходе из системы:', error);
         }

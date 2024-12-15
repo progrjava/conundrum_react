@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
-import ThemeChanger from './ThemeChanger'
+import React, { Component } from 'react';
+import ThemeChanger from './ThemeChanger';
+import '../css/main.css';
 
 export class Main extends Component {
     render() {
         const { isBlackTheme, toggleTheme } = this.props;
-
-
         return (
             <main>
                 <video autoPlay muted loop className="background-video-main"

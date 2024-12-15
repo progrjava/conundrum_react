@@ -5,7 +5,6 @@ import SignInUp from './components/SignInUp';
 import PersonalAccount from './components/PersonalAccount';
 import axios from 'axios';
 import GameGenerator from './components/GameGenerator';
-import { useNavigate } from 'react-router-dom';
 
 const App = () => {
   const [isBlackTheme, setIsBlackTheme] = useState(true);

@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+.login-account {
+    display: inline-block;
+    padding: 55px;
+    background: #2F2D38;
+    border-radius: 15px;
+    margin-left: 30px;
+    width: 530px;
+}
+
+.login-account-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.back-to-main-page {
+    cursor: pointer;
+    display: block;
+}
+
+.back-to-main-page:hover path{
+    stroke:#ED7E98;
+    transition: stroke 0.2s ease;
+}
+
+.login-title {
+    display: block;
+    line-height: 1;
+    margin: 15px 0 55px 0;
+    font-weight: 700;
+    font-size: 56px;
+    letter-spacing: 0.5px;
+    align-self: center;
+}
+
+.if-have-not-account {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 55px;
+}
+
+.if-have-not-account p {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+}
+
+.sign-up-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    background-color: transparent;
+    border: none;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    cursor: pointer;
+}
+
+.sign-up-button:hover {
+    color:#ED7E98;
+    transition: color 0.2s ease;
+}
+
+.login-form {
+    position: relative;
+}
+
+.log-input-data {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.log-login-input {
+    flex: 1;
+    border-radius: 15px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    padding: 10px 24px;
+    border: none;
+}
+
+.log-login-input:focus {
+    outline: none;
+}
+
+.log-input-password-div {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    border-radius: 15px;
+    padding: 10px 24px;
+}
+
+.log-password-input {
+    flex: 1;
+    border-radius: 15px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    padding: 10px 24px;
+    border: none;
+}
+
+.log-password-input {
+    padding: 0;
+    border-radius: 0;
+}
+
+.log-password-input:focus {
+    outline: none;
+}
+
+.eye-open, .eye-closed {
+    display: block;
+    cursor: pointer;
+    flex-shrink: 0; 
+}
+
+.login-message {
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    margin-top: 25px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color:#14c700;
+}
+
+.login-account-button {
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 36px;
+    border-radius: 15px;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.login-account-button {
+    margin-top: 110px;
+}
+
+.login-account-button:hover {
+    border-color: #ED7E98;
+    color: #ED7E98;
+}
+
+
+

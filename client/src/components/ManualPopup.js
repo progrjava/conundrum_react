@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import '../css/manualPopup.css';
 
 const ManualPopup = ({ isVisible, page}) => {
         return (

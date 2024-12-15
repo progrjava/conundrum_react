@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import '../css/themeChanger.css';
 
 const ThemeChanger = ({isBlackTheme, toggleTheme, page}) => {
     return (
