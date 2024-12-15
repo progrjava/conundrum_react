@@ -381,10 +381,13 @@ class GameGenerator extends Component {
                             </div>
                         </div>
                     </section>
-                    <section id='crossword-and-clues'>
-                        <div id="crossword-container" ref={this.crosswordContainerRef}></div>
-                        <div id="clues-container" ref={this.cluesContainerRef} style={{ padding: '0px' }}></div> 
+                    <section id='dispay-game-on-screen'>
+                        <section id='crossword-and-clues'>
+                            <div id="crossword-container" ref={this.crosswordContainerRef}></div>
+                            <div id="clues-container" ref={this.cluesContainerRef} style={{ padding: '0px' }}></div> 
+                        </section>
                     </section>
+                    
                     
                     <div className='game-theme-changer'>
                         <ThemeChanger 
