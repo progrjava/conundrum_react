@@ -23,16 +23,19 @@ class CrosswordGenerator {
      * @param {string} text - Входной текст или тема
      * @param {string} inputType - Тип входных данных ('text', 'topic' или 'file')
      * @param {number} totalWords - Желаемое количество слов в кроссворде
+     * @param {string} [difficulty='normal'] - Уровень сложности слов
      * @returns {Object} Объект с данными кроссворда и словами
      */
-    async generateCrossword(text, inputType, totalWords) {
+    async generateCrossword(text, inputType, totalWords, difficulty = 'normal') {
         try {
             // Очищаем текст, удаляя лишние пробелы и переносы строк
             text = text.trim().replace(/\s+/g, ' ');
-
+            const difficultyLevel = difficulty === 'easy' ? 'simple and commonly used' :
+                                  difficulty === 'hard' ? 'complex and sophisticated' :
+                                  'moderately difficult';
             let prompt = '';
             if (inputType === 'topic') {
-                prompt = `Generate real ${totalWords} words related to the topic "${text}". For each word, provide a concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Ensure the clue directly relates to the word and is in the same language as the input topic.If you are in doubt about the choice of language, then take Russian.
+                prompt = `Generate real ${totalWords} ${difficultyLevel} words related to the topic "${text}". For each word, provide a concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Ensure the clue directly relates to the word and is in the same language as the input topic.If you are in doubt about the choice of language, then take Russian.
                 Format the response as JSON:
                 [
                     {"word": "word1", "clue": "clue1"},
@@ -41,7 +44,7 @@ class CrosswordGenerator {
                 ]
                 Do not add anything outside the JSON structure. Ensure valid JSON.`;
             } else { // inputType === 'text' or 'file'
-                prompt = `Extract ${totalWords} keywords from the given text: "${text}". For each word, create a concise, accurate, and unambiguous definition, question, or short description. The clue must clearly relate to the meaning of the word within the provided text and be in the same language as the input text.If you are in doubt about the choice of language, then take Russian
+                prompt = `Extract ${totalWords} ${difficultyLevel} keywords from the given text: "${text}". For each word, create a concise, accurate, and unambiguous definition, question, or short description. The clue must clearly relate to the meaning of the word within the provided text and be in the same language as the input text.If you are in doubt about the choice of language, then take Russian.                
                 Format the response as JSON:
                 [
                     {"word": "word1", "clue": "clue1"},

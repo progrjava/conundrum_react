@@ -7,7 +7,6 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [birthdate, setBirthdate] = useState('');
     const [gender, setGender] = useState('');
     const [occupation, setOccupation] = useState('');    
     const [message, setMessage] = useState('');
@@ -20,7 +19,6 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                 username,
                 email,
                 password,
-                birthdate: birthdate,
                 occupation,
                 gender
             });
@@ -86,17 +84,6 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                         </div>
                     </div>
                     <div className='birthday-role-gender-input'>
-                        <div className='reg-birthday-input'>
-                            <input type="date" required value={birthdate} 
-                            onChange={(e) => setBirthdate(e.target.value)}/>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-                                <g stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" opacity=".8">
-                                    <path d="M15 4V2m0 2v2m0-2h-4.5M3 10v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9H3ZM3 10V6a2 2 0 0 1 2-2h2M7 2v4M21 10V6a2 2 0 0 0-2-2h-.5"/>
-                                </g>
-                            </svg>
-                            {/*<input type='number' placeholder='Возраст' required value={age}
-                    onChange={(e) => setAge(e.target.value)}/>*/}
-                        </div>
                         <div className='reg-role'>
                             <select className='reg-role-select' required value={occupation}
                     onChange={(e) => setOccupation(e.target.value)}>

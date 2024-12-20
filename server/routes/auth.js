@@ -42,7 +42,7 @@ initSupabase();
 
 // Регистрация пользователя
 router.post('/register', async (req, res) => {
-    const { username, email, password, birthdate, occupation, gender } = req.body;
+    const { username, email, password, occupation, gender } = req.body;
 
     try {
         const { data, error } = await supabase.auth.signUp({
@@ -51,7 +51,6 @@ router.post('/register', async (req, res) => {
             options: {
                 data: {
                     username,
-                    birthdate: birthdate || null,
                     gender: gender || null,
                     occupation: occupation || null
                 }
@@ -114,13 +113,12 @@ router.post('/logout', async (req, res) => {
 
 // Обновление данных пользователя
 router.put('/update', async (req, res) => {
-    const { username, birthdate, occupation, gender } = req.body;
+    const { username, occupation, gender } = req.body;
 
     try {
         const { data, error } = await supabase.auth.updateUser({
             data: { 
                 username: username,
-                birthdate: birthdate,
                 occupation: occupation,
                 gender: gender,
             },

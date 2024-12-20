@@ -10,13 +10,11 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
     const [userData, setUserData] = useState({
         username: '',
         email: '',
-        birthdate: '',
         gender: '',
         occupation: ''
     });
 
     const [newUsername, setNewUsername] = useState('');
-    const [newBirthdate, setNewBirthdate] = useState('');
     const [newOccupation, setNewOccupation] = useState('');
     const [newGender, setNewGender] = useState('');
 
@@ -28,19 +26,17 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
             setUserData({
                 username: dataAboutUser.username,
                 email: dataAboutUser.email,
-                birthdate: dataAboutUser.birthdate,
                 gender: dataAboutUser.gender,
                 occupation: dataAboutUser.occupation
             });
             setNewUsername(dataAboutUser.username);
-            setNewBirthdate(dataAboutUser.birthdate);
             setNewOccupation(dataAboutUser.occupation);
             setNewGender(dataAboutUser.gender);
         } catch (error) {
             console.error('Ошибка при получении данных о пользователе:', error);
         }
     };
-    
+
     useEffect(() => {
         getProfile();
     }, []);
@@ -48,11 +44,6 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
     const updateProfile = async () => {
         if (!newUsername.trim()) {
             alert('Имя пользователя не может быть пустым');
-            return;
-        }
-
-        if (!newBirthdate.trim()) {
-            alert('Дата рождения не может быть пустой');
             return;
         }
 
@@ -69,7 +60,6 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
         try {
             const response = await axios.put('http://localhost:5000/auth/update', {
                 username: newUsername,
-                birthdate: newBirthdate,
                 occupation: newOccupation,
                 gender: newGender,
             });
@@ -78,12 +68,10 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
             setUserData((prevData) => ({ 
                 ...prevData, 
                 username: newUsername, 
-                birthdate: newBirthdate, 
                 occupation: newOccupation,
                 gender: newGender,
             }));
             setNewUsername(newUsername);
-            setNewBirthdate(newBirthdate);
             setNewOccupation(newOccupation);
             setNewGender(newGender);
         } catch (error) {
@@ -103,26 +91,6 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
         }
     };
 
-    const calculateAge = () => {
-        const birthdateParts = userData.birthdate.split('-');
-        const birthYear = parseInt(birthdateParts[0]);
-        const birthMonth = parseInt(birthdateParts[1]);
-        const birthDay = parseInt(birthdateParts[2]);
-        
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth();
-        const currentDay = today.getDate();
-        
-        let age = currentYear - birthYear;
-        
-        if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
-            age--;
-        }
-        
-        return age;
-    }
-
     return (
         <>
             <Header isAuth={isAuth}/>
@@ -133,8 +101,8 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
                     <div className='account-data'>
                         <div className='main-info-about-user'>
                             <div className='user-avatar'>
-                                 <p>{userData.username.charAt(0).toUpperCase()}</p>
-                                 <p>{userData.username.charAt(1).toUpperCase()}</p>
+                                <p>{userData.username.charAt(0).toUpperCase()}</p>
+                                <p>{userData.username.charAt(1).toUpperCase()}</p>
                             </div>
                             <div className='user-login-email-password'>
                                 <div className='change-userdata'>
@@ -165,23 +133,6 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='change-userdata'>
-                            <p>Дата рождения: </p>
-                            <div className='reg-birthday-input'>
-                                <input type="date" 
-                                placeholder={userData.birthdate} 
-                                required 
-                                value={newBirthdate} 
-                                onChange={
-                                    (e) => setNewBirthdate(e.target.value)}/>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-                                    <g stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" opacity=".8">
-                                        <path d="M15 4V2m0 2v2m0-2h-4.5M3 10v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9H3ZM3 10V6a2 2 0 0 1 2-2h2M7 2v4M21 10V6a2 2 0 0 0-2-2h-.5"/>
-                                    </g>
-                                </svg>
-                            </div>
-                            <p>(Возраст: {calculateAge()})</p>
-                        </div>         
                         <div className='user-role-and-gender'>
                             <div className='user-role'>
                                 <p>Роль: </p>
