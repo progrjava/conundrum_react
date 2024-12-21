@@ -366,6 +366,21 @@ class GameGenerator extends Component {
                                     <button className='open-full-settings-button'>
                                         Продвинутые настройки
                                     </button>
+                                    <div className='input-difficulty'>
+                                        <h2>СЛОЖНОСТЬ</h2>
+                                        <div>
+                                            <input type="radio" id="easy" value='easy' name="difficulty" defaultChecked={false}/>
+                                            <label htmlFor="easy">Легко</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="normal" value='normal' name="difficulty" defaultChecked={true}/>
+                                            <label htmlFor="normal">Нормально</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="hard" value='hard' name="difficulty" defaultChecked={false}/>
+                                            <label htmlFor="hard">Сложно</label>
+                                        </div>
+                                    </div>
                                     <button type='submit' className='generate-puzzle-button'>
                                         Генерировать
                                     </button>

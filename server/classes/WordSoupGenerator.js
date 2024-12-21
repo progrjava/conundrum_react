@@ -13,10 +13,10 @@ class WordSoupGenerator extends CrosswordGenerator {
      * Генерирует суп из слов
      * @override
      */
-    async generateWordSoup(text, inputType, totalWords) {
+    async generateWordSoup(text, inputType, totalWords, difficulty = 'normal') {
         try {
             // Используем метод родительского класса для получения слов через AI
-            const wordsData = await this.extractWordsFromAI(text, inputType, totalWords);
+            const wordsData = await this.extractWordsFromAI(text, inputType, totalWords, difficulty);
 
             // Определяем размер сетки на основе самого длинного слова (без пробелов)
             const longestWordLength = Math.max(...wordsData.map(w => w.word.replace(/\s+/g, '').length));
@@ -186,9 +186,9 @@ class WordSoupGenerator extends CrosswordGenerator {
      * Извлекает слова из текста через AI
      * @private
      */
-    async extractWordsFromAI(text, inputType, totalWords) {
+    async extractWordsFromAI(text, inputType, totalWords, difficulty = 'normal') {
         // Используем родительский метод для работы с AI
-        const response = await super.generateCrossword(text, inputType, totalWords);
+        const response = await super.generateCrossword(text, inputType, totalWords, difficulty);
         return response.words;
     }
 }
