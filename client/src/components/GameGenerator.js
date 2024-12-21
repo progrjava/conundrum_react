@@ -24,7 +24,8 @@ class GameGenerator extends Component {
             isManualVisible: false,
             isSlidebarVisible: true,
             isFormCreatingPuzzle: false,
-            redirectToProfile: false
+            redirectToProfile: false,
+            isSettingsOpen: false
         };
 
         this.crosswordFormRef = createRef();
@@ -81,6 +82,12 @@ class GameGenerator extends Component {
         isFormCreatingPuzzle: !prevState.isFormCreatingPuzzle,
         }));
     };
+
+    toggleSettings = () => {
+        this.setState((prevState) => ({
+        isSettingsOpen: !prevState.isSettingsOpen,
+        }));
+    }
 
     handleSubmit = async (event) => {
         event.preventDefault();
@@ -363,22 +370,24 @@ class GameGenerator extends Component {
                                         <h2>КОЛИЧЕСТВО СЛОВ</h2>
                                         <input type="number" ref={this.totalWordsRef} id='total-words' name="totalWords" min="5" max="20" step="1" required/>
                                     </div>
-                                    <button className='open-full-settings-button'>
-                                        Продвинутые настройки
-                                    </button>
-                                    <div className='input-difficulty'>
-                                        <h2>СЛОЖНОСТЬ</h2>
-                                        <div>
-                                            <input type="radio" id="easy" value='easy' name="difficulty" defaultChecked={false}/>
-                                            <label htmlFor="easy">Легко</label>
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="normal" value='normal' name="difficulty" defaultChecked={true}/>
-                                            <label htmlFor="normal">Нормально</label>
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="hard" value='hard' name="difficulty" defaultChecked={false}/>
-                                            <label htmlFor="hard">Сложно</label>
+                                    <div className='open-full-settings-button'>
+                                        <h3 onClick={this.toggleSettings}>Продвинутые настройки</h3>
+                                        <div className={`input-difficulty ${this.state.isSettingsOpen ? 'open' : ''}`}>
+                                            <h2 className='difficulty-choice'>СЛОЖНОСТЬ</h2>
+                                            <div className='difficulty-levels'>
+                                                <div>
+                                                    <input type="radio" id="easy" value='easy' name="difficulty" defaultChecked={false}/>
+                                                    <label htmlFor="easy">Легко</label>
+                                                </div>
+                                                <div>
+                                                    <input type="radio" id="normal" value='normal' name="difficulty" defaultChecked={true}/>
+                                                    <label htmlFor="normal">Нормально</label>
+                                                </div>
+                                                <div>
+                                                    <input type="radio" id="hard" value='hard' name="difficulty" defaultChecked={false}/>
+                                                    <label htmlFor="hard">Сложно</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <button type='submit' className='generate-puzzle-button'>

@@ -88,25 +88,14 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                             <select className='reg-role-select' required value={occupation}
                     onChange={(e) => setOccupation(e.target.value)}>
                                 <option value={''} disabled selected hidden>Выберите роль</option>
-                                {/*<option value={'student'}>Учащийся</option>
-                                <option value={'professor'}>Преподаватель</option>
-                                <option value={'linguist'}>Лингвист</option>
-                                <option value={'writer'}>Писатель</option>
-                                <option value={'journalist'}>Журналист</option>
-                                <option value={'translator'}>Переводчик</option>
-                                <option value={'crossword_creator'}>Кроссвордист</option>
-                                <option value={'puzzle_enthusiast'}>Головолом</option>
-                                <option value={'researcher'}>Исследователь</option>
-                                <option value={'game_developer'}>Разработчик игр</option>
-                                <option value={'other'}>Другое</option>*/}
                                 <option value={'СТУДЕНТ'}>Учащийся</option>
                                 <option value={'ПРОФЕССОР'}>Преподаватель</option>
                                 <option value={'ЛИНГВИСТ'}>Лингвист</option>
                                 <option value={'ПИСАТЕЛЬ'}>Писатель</option>
                                 <option value={'ЖУРНАЛИСТ'}>Журналист</option>
                                 <option value={'ПЕРЕВОДЧИК'}>Переводчик</option>
-                                <option value={'КРОССВОРДИСТ'}>Кроссвордист</option>
-                                <option value={'ГОЛОВОЛОМ'}>Головолом</option>
+                                <option value={'КРОССВОРДИСТ'}>Составитель кроссвордов</option>
+                                <option value={'ГОЛОВОЛОМ'}>Любитель головоломок</option>
                                 <option value={'ИССЛЕДОВАТЕЛЬ'}>Исследователь</option>
                                 <option value={'РАЗРАБОТЧИК ИГР'}>Разработчик игр</option>
                                 <option value={'НЕ УКАЗАНО'}>Другое</option>
@@ -116,8 +105,8 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                             <select className='reg-gender-select' required value={gender}
                     onChange={(e) => setGender(e.target.value)}>
                                 <option value={''} disabled selected hidden>Пол</option>
-                                <option value={'МУЖСКОЙ'}>Муж.</option>
-                                <option value={'ЖЕНСКИЙ'}>Жен.</option>
+                                <option value={'МУЖСКОЙ'}>Мужской</option>
+                                <option value={'ЖЕНСКИЙ'}>Женский</option>
                             </select>
                         </div>
                     </div>
@@ -126,7 +115,6 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                         Создать аккаунт
                     </button>
                 </form>
-                
             </div>
         </section>
     )

@@ -47,7 +47,7 @@
     flex-direction: column;
     align-items: flex-start;
     padding: 0px 30px;
-    gap: 15px;
+    gap: 30px;
 }
 
 .main-info-about-user {
@@ -196,15 +196,11 @@
 
 .user-role-and-gender {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.user-role, .user-gender {
-    display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 15px;
+    justify-content: space-evenly;
+    gap: 20px;
+    width: 100%;
 }
 
 .reg-role {
@@ -213,6 +209,7 @@
     border-radius: 15px;
     position: relative;
     width: auto;
+    flex: 5;
 }
 
 .reg-role {
@@ -237,6 +234,7 @@
     background-repeat: no-repeat;
     background-position: right 0px center; 
     background-size: 24px 24px; 
+    flex: 1;
 }
 
 .reg-role-select {
@@ -249,10 +247,11 @@
     border-radius: 15px;
     position: relative;
     width: auto;
+    flex: 2;
 }
 
 .reg-gender {
-    padding: 10px 13px;
+    padding: 10px 24px;
 }
 
 .reg-gender-select {
@@ -273,6 +272,7 @@
     background-repeat: no-repeat;
     background-position: right 0px center; 
     background-size: 24px 24px; 
+    flex: 1;
 }
 
 .reg-gender-select{
