@@ -52,8 +52,6 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 #game-logotype {
@@ -67,6 +65,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-height: 648px;
+    overflow-y: auto;
+    padding-right: 25px;
 }
 
 #crossword-form h2 {
@@ -231,28 +232,32 @@
     transition: 
     padding 0.4s ease, 
     max-height 0.4s ease, 
-    opacity 0.4s ease, 
+    opacity 1s ease, 
     margin-top 0.4s ease, 
     background-color 0.5s ease, 
     color 0.5s ease;
 }
+
 
 .creating-puzzle-input-data.visible {
     max-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 25px;
+    padding: 25px 0 25px 25px;
     border-radius: 15px;
     opacity: 1;
     transition: 
     padding 0.4s ease, 
     max-height 0.4s ease, 
-    opacity 0.4s ease, 
+    opacity 1s ease, 
     margin-top 0.4s ease, 
     background-color 0.5s ease, 
     color 0.5s ease;
+    
 }
+
+
 
 .input-puzzle-name {
     font-family: 'Roboto Slab';
@@ -416,23 +421,35 @@
 
 .open-full-settings-button {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 8px;
-    background: #ED7E98;
     border-radius: 15px;
     border: none;
     font-family: 'Roboto Slab';
     font-style: normal;
     font-weight: 400;
-    font-size: 14px;
-    line-height: 12px;
+    font-size: 18px;
+    line-height: 20px;
     display: flex;
     align-items: center;
     text-align: center;
     letter-spacing: 0.5px;
-    color: #FBFBFE;
     margin-bottom: 40px;
+}
+
+.open-full-settings-button h3 {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    cursor: pointer;
 }
 
 .generate-puzzle-button {
@@ -472,4 +489,38 @@
     position: absolute;
     right: 30px;
     bottom: 30px;
+}
+
+.input-difficulty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.input-difficulty.open {
+    max-height: 100vh;
+    transition: max-height 0.4s ease;
+}
+
+.difficulty-choice {
+    margin-top: 10px;
+}
+
+.difficulty-levels {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+
+
+
+input[name="difficulty"]:not(:checked) + label::before {
+    background: none; 
 }

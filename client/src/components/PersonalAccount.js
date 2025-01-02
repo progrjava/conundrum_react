@@ -156,36 +156,30 @@ const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
                             </div>
                         </div>
                         <div className='user-role-and-gender'>
-                            <div className='user-role'>
-                                <p>Роль: </p>
-                                <div className='reg-role'>
-                                    <select className='reg-role-select' required value={newOccupation}
-                                        onChange={(e) => setNewOccupation(e.target.value)}>
-                                        <option value={''} disabled selected hidden>Выберите роль</option>
-                                        <option value={'СТУДЕНТ'}>Учащийся</option>
-                                        <option value={'ПРОФЕССОР'}>Преподаватель</option>
-                                        <option value={'ЛИНГВИСТ'}>Лингвист</option>
-                                        <option value={'ПИСАТЕЛЬ'}>Писатель</option>
-                                        <option value={'ЖУРНАЛИСТ'}>Журналист</option>
-                                        <option value={'ПЕРЕВОДЧИК'}>Переводчик</option>
-                                        <option value={'КРОССВОРДИСТ'}>Кроссвордист</option>
-                                        <option value={'ГОЛОВОЛОМ'}>Головолом</option>
-                                        <option value={'ИССЛЕДОВАТЕЛЬ'}>Исследователь</option>
-                                        <option value={'РАЗРАБОТЧИК ИГР'}>Разработчик игр</option>
-                                        <option value={'НЕ УКАЗАНО'}>Другое</option>
-                                    </select>
-                                </div>
+                            <div className='reg-role'>
+                                <select className='reg-role-select' required value={newOccupation}
+                                    onChange={(e) => setNewOccupation(e.target.value)}>
+                                    <option value={''} disabled selected hidden>Выберите роль</option>
+                                    <option value={'СТУДЕНТ'}>Учащийся</option>
+                                    <option value={'ПРОФЕССОР'}>Преподаватель</option>
+                                    <option value={'ЛИНГВИСТ'}>Лингвист</option>
+                                    <option value={'ПИСАТЕЛЬ'}>Писатель</option>
+                                    <option value={'ЖУРНАЛИСТ'}>Журналист</option>
+                                    <option value={'ПЕРЕВОДЧИК'}>Переводчик</option>
+                                    <option value={'КРОССВОРДИСТ'}>Составитель кроссвордов</option>
+                                    <option value={'ГОЛОВОЛОМ'}>Любитель головоломок</option>
+                                    <option value={'ИССЛЕДОВАТЕЛЬ'}>Исследователь</option>
+                                    <option value={'РАЗРАБОТЧИК ИГР'}>Разработчик игр</option>
+                                    <option value={'НЕ УКАЗАНО'}>Другое</option>
+                                </select>
                             </div>
-                            <div className='user-gender'>
-                                <p>Пол: </p>
-                                <div className='reg-gender'>
-                                    <select className='reg-gender-select' required value={newGender}
-                                        onChange={(e) => setNewGender(e.target.value)}>
-                                        <option value={''} disabled selected hidden>Пол</option>
-                                        <option value={'МУЖСКОЙ'}>Муж.</option>
-                                        <option value={'ЖЕНСКИЙ'}>Жен.</option>
-                                    </select>
-                                </div>
+                            <div className='reg-gender'>
+                                <select className='reg-gender-select' required value={newGender}
+                                    onChange={(e) => setNewGender(e.target.value)}>
+                                    <option value={''} disabled selected hidden>Пол</option>
+                                    <option value={'МУЖСКОЙ'}>Мужской</option>
+                                    <option value={'ЖЕНСКИЙ'}>Женский</option>
+                                </select>
                             </div>
                         </div>
                         

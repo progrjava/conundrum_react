@@ -365,6 +365,21 @@ body {
         color: #FBFBFE;
         transition: color 0.5s ease;
     }
+
+    .open-full-settings-button h3 {
+        color: #FBFBFE;
+        transition: color 0.5s ease;
+    }
+
+    .open-full-settings-button  {
+        background-color: #ED7E98;
+        transition: background-color 0.5s ease;
+    }
+
+    input[name='difficulty'] + label::before {
+        border: 2px solid rgba(47, 45, 56, 0.8);
+        transition: border 0.5s ease;
+    }
 }
 
 .white-theme {
@@ -720,6 +735,21 @@ body {
         color: #2F2D38;
         transition: color 0.5s ease;
     }
+
+    .open-full-settings-button h3 {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    .open-full-settings-button  {
+        background-color: #ED7E98;
+        transition: background-color 0.5s ease;
+    }
+
+    input[name='difficulty'] + label::before {
+        border: 2px solid rgba(251, 251, 254, 0.8);
+        transition: border 0.5s ease;
+    }
 }
 
 input[type='radio'] {
@@ -762,4 +792,34 @@ input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* Плавный скроллинг */
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(81, 56, 136, 0.8);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(81, 56, 136, 0.8);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(81, 56, 136, 0.8) transparent;
 }

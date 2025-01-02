@@ -129,7 +129,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content:space-between;
+    justify-content: space-evenly;
+    gap: 20px;
 }
 
 .reg-birthday-input {
@@ -175,6 +176,7 @@
     border-radius: 15px;
     position: relative;
     width: auto;
+    flex: 5;
 }
 
 .reg-role {
@@ -199,6 +201,7 @@
     background-repeat: no-repeat;
     background-position: right 0px center; 
     background-size: 24px 24px; 
+    flex: 1;
 }
 
 .reg-role-select {
@@ -215,10 +218,11 @@
     border-radius: 15px;
     position: relative;
     width: auto;
+    flex: 2;
 }
 
 .reg-gender {
-    padding: 10px 13px;
+    padding: 10px 24px;
 }
 
 .reg-gender-select {
@@ -239,6 +243,7 @@
     background-repeat: no-repeat;
     background-position: right 0px center; 
     background-size: 24px 24px; 
+    flex: 1;
 }
 
 .reg-gender-select{
