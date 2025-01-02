@@ -13,8 +13,14 @@ const FileManager = require('./classes/FileManager');
 const app = express();
 const publicPath = path.join(__dirname, 'public');
 
-const openrouterApiKey = "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";
-const openrouterApiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+// Environment variables
+const openrouterApiKey = process.env.OPENROUTER_API_KEY;
+const openrouterApiUrl = process.env.OPENROUTER_API_URL;
+
+if (!openrouterApiKey || !openrouterApiUrl) {
+    console.error('Error: OpenRouter environment variables are not defined');
+    process.exit(1);
+}
 
 // Initialize our classes
 const crosswordGenerator = new CrosswordGenerator(openrouterApiKey, openrouterApiUrl);
@@ -106,7 +112,6 @@ app.post('/generate-game', upload.single('file-upload'), async (req, res) => {
         });
     }
 });
-
 
 app.use(express.static(path.join(__dirname, '../client/public')));
 

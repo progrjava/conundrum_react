@@ -4,7 +4,7 @@ import SignUpField from './SignUpField';
 import SignInField from './SignInField';
 import '../css/signInUp.css';
 
-const SignInUp = ({ isBlackTheme, toggleTheme, isAuth, setIsAuth }) => {
+const SignInUp = ({ isBlackTheme, toggleTheme, supabase }) => {
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
   const [isRegistrationProcess, setIsRegistrationProcess] = React.useState(true);
 
@@ -18,20 +18,20 @@ const SignInUp = ({ isBlackTheme, toggleTheme, isAuth, setIsAuth }) => {
 
   return (
     <main className='sign-in-up-wrapper'>
-      <img className='signInUp-back' src='/src/signInUp-background.jpg'/>
+      <img className='signInUp-back' src='/src/signInUp-background.jpg' alt="background"/>
       {isRegistrationProcess ? (
         <SignUpField 
           isPasswordVisible={isPasswordVisible}
           togglePasswordVisibility={togglePasswordVisibility}
           switchLoginProcess={switchLoginProcess}
-          setIsAuth={setIsAuth}
+          supabase={supabase}
         />
       ) : (
         <SignInField
           isPasswordVisible={isPasswordVisible}
           togglePasswordVisibility={togglePasswordVisibility}
           switchLoginProcess={switchLoginProcess}
-          setIsAuth={setIsAuth}
+          supabase={supabase}
         />
       )}
       <svg className='sign-up-logotype' xmlns="http://www.w3.org/2000/svg" width="500" height="60" fill="none">
