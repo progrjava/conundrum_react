@@ -56,12 +56,10 @@ class CrosswordGenerator {
             const headers = {
                 'Authorization': `Bearer ${this.openrouterApiKey}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': 'http://localhost:3000',
+                'HTTP-Referer': '*',
                 'X-Title': 'Conundrum Game Generator',
-                'OpenAI-Organization': 'org-123',
                 'User-Agent': 'Conundrum/1.0.0'
             };
-
 
             const response = await fetch(this.openrouterApiUrl, {
                 method: 'POST',

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -11,17 +13,19 @@ const FileManager = require('./classes/FileManager');
 const app = express();
 const publicPath = path.join(__dirname, 'public');
 
-// Hardcoded configuration
-const config = {
-    supabaseUrl: process.env.REACT_APP_SUPABASE_URL,
-    supabaseKey: process.env.REACT_APP_SUPABASE_ANON_KEY,
-    openrouterApiKey: process.env.OPENROUTER_API_KEY,
-    openrouterApiUrl: process.env.OPENROUTER_API_URL
-};
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL;
 
-// Initialize our classes
-const crosswordGenerator = new CrosswordGenerator(config.openrouterApiKey, config.openrouterApiUrl);
-const wordSoupGenerator = new WordSoupGenerator(config.openrouterApiKey, config.openrouterApiUrl);
+if (!OPENROUTER_API_KEY || !OPENROUTER_API_URL) {
+    console.error('Missing required environment variables:');
+    console.error('OPENROUTER_API_KEY:', OPENROUTER_API_KEY ? 'Set' : 'Missing');
+    console.error('OPENROUTER_API_URL:', OPENROUTER_API_URL ? 'Set' : 'Missing');
+    process.exit(1);
+}
+
+// Initialize our classes with validated environment variables
+const crosswordGenerator = new CrosswordGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
+const wordSoupGenerator = new WordSoupGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
 const fileManager = new FileManager();
 
 const storage = multer.memoryStorage();
@@ -31,7 +35,6 @@ const upload = multer({ storage: storage });
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',') 
     : ['http://localhost:3000', 'http://localhost:3001'];
-
 app.use(cors({
     origin: function(origin, callback) {
         // Allow requests with no origin (like mobile apps or curl requests)
