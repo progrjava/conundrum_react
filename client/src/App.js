@@ -5,6 +5,7 @@ import SignInUp from './components/SignInUp';
 import PersonalAccount from './components/PersonalAccount';
 import GameGenerator from './components/GameGenerator';
 import { initializeSupabase, getSupabaseClient } from './config/supabaseClient';
+import { UIUtils } from './js/UIUtils';
 
 const App = () => {
   const [isBlackTheme, setIsBlackTheme] = useState(true);
@@ -17,10 +18,11 @@ const App = () => {
     setIsBlackTheme(!isBlackTheme);
   };
 
-  // Initialize Supabase client
+  // Initialize Supabase
   useEffect(() => {
-    const initSupabase = async () => {
+    const init = async () => {
       try {
+        // Initialize Supabase
         const supabase = await initializeSupabase();
         setSupabaseInstance(supabase);
         setIsLoading(false);
@@ -29,7 +31,7 @@ const App = () => {
         setIsLoading(false);
       }
     };
-    initSupabase();
+    init();
   }, []);
 
   // Handle auth state

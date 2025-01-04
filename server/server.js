@@ -52,19 +52,6 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Add Supabase config endpoint
-app.get('/api/config', (req, res) => {
-    try {
-        res.json({
-            supabaseUrl: config.supabaseUrl,
-            supabaseKey: config.supabaseKey
-        });
-    } catch (error) {
-        console.error('Error serving Supabase config:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
 // Game generation endpoint
 app.post('/api/generate-game', upload.single('file-upload'), async (req, res) => {
     try {

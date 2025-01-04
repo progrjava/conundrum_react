@@ -41,43 +41,14 @@ class GameGenerator extends Component {
         this.cluesContainerRef = createRef();
     }
 
-    async componentDidMount() {
+    componentDidMount = async () => {
         try {
-            // Инициализируем UIUtils
+            // Инициализируем UI после монтирования компонента
             UIUtils.initialize();
             
-            // Инициализируем elements
-            elements.inputTypeSelect = document.querySelector('input[name="inputType"]:checked');
-            elements.documentTextarea = this.documentTextRef.current;
-            elements.totalWordsInput = this.totalWordsRef.current;
-            elements.topicInput = this.topicRef.current;
-            elements.fileUploadInput = this.fileInputRef.current;
-            elements.crosswordForm = this.crosswordFormRef.current;
-            elements.gameTypeSelect = document.querySelector('input[name="gameType"]:checked');
-            elements.crosswordContainer = this.crosswordContainerRef.current;
-            elements.cluesContainer = this.cluesContainerRef.current;
-            // fetch Supabase config
-              const response = await fetch('/api/config');
-              if (!response.ok) {
-                throw new Error(`Failed to fetch Supabase config: ${response.status}`);
-              }
-              const config = await response.json();
-              this.setState({
-                supabaseUrl: config.supabaseUrl,
-                supabaseKey: config.supabaseKey,
-              }, async () => {
             // Инициализируем Supabase
-                 try{
-                   await initializeSupabase(this.state);
-                   this.setState({ isLoading: false });
-                   }
-                   catch (error) {
-                     console.error('Failed to initialize Supabase:', error);
-                     UIUtils.showError('Failed to initialize authentication. Please try again later.');
-                     this.setState({ isLoading: false });
-                   }
-              });
-
+            await initializeSupabase();
+            this.setState({ isLoading: false });
         } catch (error) {
             console.error('Failed to initialize:', error);
             UIUtils.showError('Failed to initialize. Please try again later.');
@@ -88,39 +59,39 @@ class GameGenerator extends Component {
     handleSubmit = async (event) => {
         event.preventDefault();
         
-        // Получение значений из формы
-        const gameType = document.querySelector('input[name="gameType"]:checked')?.value;
-        const inputType = document.querySelector('input[name="inputType"]:checked')?.value;
-        const documentText = this.documentTextRef.current?.value;
-        const totalWords = parseInt(this.totalWordsRef.current?.value);
-        const topic = this.topicRef.current?.value;
-        const fileInput = this.fileInputRef.current;
-
-        // Валидация введенных данных
-        if (!inputType) {
-            return UIUtils.showError('Выберите тип ввода.');
-        }
-
-        if (inputType === 'text' && (!documentText || documentText.trim() === '')) {
-            return UIUtils.showError('Введите текст.');
-        }
-    
-        if (inputType === 'topic' && (!topic || topic.trim() === '')) {
-            return UIUtils.showError('Введите тему.');
-        }
-    
-        if (inputType === 'file' && (!fileInput || !fileInput.files.length)) {
-            return UIUtils.showError('Выберите файл.');
-        }
-    
-        if (isNaN(totalWords) || totalWords < 1) {
-            return UIUtils.showError('Введите корректное количество слов (больше 0).');
-        }
-    
-        // Показываем индикатор загрузки
-        DisplayBase.displayLoadingIndicator();
-    
         try {
+            // Получение значений из формы
+            const gameType = document.querySelector('input[name="gameType"]:checked')?.value;
+            const inputType = document.querySelector('input[name="inputType"]:checked')?.value;
+            const documentText = this.documentTextRef.current?.value;
+            const totalWords = parseInt(this.totalWordsRef.current?.value);
+            const topic = this.topicRef.current?.value;
+            const fileInput = this.fileInputRef.current;
+
+            // Валидация введенных данных
+            if (!inputType) {
+                return UIUtils.showError('Выберите тип ввода.');
+            }
+
+            if (inputType === 'text' && (!documentText || documentText.trim() === '')) {
+                return UIUtils.showError('Введите текст.');
+            }
+        
+            if (inputType === 'topic' && (!topic || topic.trim() === '')) {
+                return UIUtils.showError('Введите тему.');
+            }
+        
+            if (inputType === 'file' && (!fileInput || !fileInput.files.length)) {
+                return UIUtils.showError('Выберите файл.');
+            }
+        
+            if (isNaN(totalWords) || totalWords < 1) {
+                return UIUtils.showError('Введите корректное количество слов (больше 0).');
+            }
+        
+            // Показываем индикатор загрузки
+            DisplayBase.displayLoadingIndicator();
+        
             // Создаем FormData и добавляем все необходимые поля
             const formData = new FormData();
             formData.append('gameType', gameType);
@@ -136,12 +107,12 @@ class GameGenerator extends Component {
             }
 
             // Отправка данных на сервер
-          const response = await fetch('/api/generate-game', {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/generate-game`, {
                 method: 'POST',
-                body: formData,
+                body: formData
             });
             
-           if (!response.ok) {
+            if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(`Failed to generate games: ${errorData.error || response.status}`);
             }
@@ -173,6 +144,25 @@ class GameGenerator extends Component {
             }
         } finally {
             DisplayBase.hideLoadingIndicator();
+        }
+    }
+
+    handleInteractionFormatChange = (event) => {
+        const selectedFormat = event.target.value;
+        const textInput = document.querySelector('.text-input textarea');
+        const topicInput = document.querySelector('.topic-input input');
+        const fileInput = document.querySelector('.file-input');
+
+        if (textInput) textInput.style.display = selectedFormat === 'text' ? 'block' : 'none';
+        if (topicInput) topicInput.style.display = selectedFormat === 'topic' ? 'block' : 'none';
+        if (fileInput) fileInput.style.display = selectedFormat === 'file' ? 'flex' : 'none';
+
+        // Очищаем значения неактивных полей
+        if (selectedFormat !== 'text' && textInput) textInput.value = '';
+        if (selectedFormat !== 'topic' && topicInput) topicInput.value = '';
+        if (selectedFormat !== 'file' && fileInput) {
+            const fileUpload = fileInput.querySelector('input[type="file"]');
+            if (fileUpload) fileUpload.value = '';
         }
     }
 

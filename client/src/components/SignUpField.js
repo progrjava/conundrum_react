@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/signUpField.css';
+import { UIUtils } from '../js/UIUtils';
 
 const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginProcess, supabase }) => {
     const [username, setUsername] = useState('');
@@ -11,6 +12,10 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const goToMainPage = () => {
+        navigate('/');
+    };
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -38,31 +43,23 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                 }
             });
 
-            if (error) throw error;
+            if (error) {
+                setMessage(error.message);
+                throw error;
+            }
 
             if (data?.user) {
                 setMessage('Регистрация успешна! Проверьте вашу почту для подтверждения.');
-                // Подождем немного и перенаправим на страницу входа
                 setTimeout(() => {
                     switchLoginProcess();
                 }, 3000);
             }
         } catch (error) {
             console.error('Registration error:', error);
-            if (error.message.includes('email')) {
-                setMessage('Этот email уже используется');
-            } else if (error.message.includes('password')) {
-                setMessage('Пароль должен быть не менее 6 символов');
-            } else {
-                setMessage('Ошибка при регистрации. Попробуйте позже.');
-            }
+            setMessage(error.message);
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const goToMainPage = () => {
-        navigate('/');
     };
 
     return (
