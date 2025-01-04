@@ -1,10 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const authRoutes = require('./routes/auth');
 const path = require('path');
 const multer = require('multer');
-require('dotenv').config();
 
 const CrosswordGenerator = require('./classes/CrosswordGenerator');
 const WordSoupGenerator = require('./classes/WordSoupGenerator');
@@ -13,32 +11,62 @@ const FileManager = require('./classes/FileManager');
 const app = express();
 const publicPath = path.join(__dirname, 'public');
 
-// Environment variables
-const openrouterApiKey = process.env.OPENROUTER_API_KEY;
-const openrouterApiUrl = process.env.OPENROUTER_API_URL;
-
-if (!openrouterApiKey || !openrouterApiUrl) {
-    console.error('Error: OpenRouter environment variables are not defined');
-    process.exit(1);
-}
+// Hardcoded configuration
+const config = {
+    supabaseUrl: process.env.REACT_APP_SUPABASE_URL,
+    supabaseKey: process.env.REACT_APP_SUPABASE_ANON_KEY,
+    openrouterApiKey: process.env.OPENROUTER_API_KEY,
+    openrouterApiUrl: process.env.OPENROUTER_API_URL
+};
 
 // Initialize our classes
-const crosswordGenerator = new CrosswordGenerator(openrouterApiKey, openrouterApiUrl);
-const wordSoupGenerator = new WordSoupGenerator(openrouterApiKey, openrouterApiUrl);
+const crosswordGenerator = new CrosswordGenerator(config.openrouterApiKey, config.openrouterApiUrl);
+const wordSoupGenerator = new WordSoupGenerator(config.openrouterApiKey, config.openrouterApiUrl);
 const fileManager = new FileManager();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',') 
+    : ['http://localhost:3000', 'http://localhost:3001'];
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            return callback(new Error('CORS policy violation'), false);
+        }
+        return callback(null, true);
+    },
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+
+// Configure middleware
 app.use(express.static(publicPath));
-app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/auth', authRoutes);
+// Add Supabase config endpoint
+app.get('/api/config', (req, res) => {
+    try {
+        res.json({
+            supabaseUrl: config.supabaseUrl,
+            supabaseKey: config.supabaseKey
+        });
+    } catch (error) {
+        console.error('Error serving Supabase config:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
-app.post('/generate-game', upload.single('file-upload'), async (req, res) => {
+// Game generation endpoint
+app.post('/api/generate-game', upload.single('file-upload'), async (req, res) => {
     try {
         const inputType = req.body.inputType;
         const gameType = req.body.gameType;
@@ -113,9 +141,16 @@ app.post('/generate-game', upload.single('file-upload'), async (req, res) => {
     }
 });
 
-app.use(express.static(path.join(__dirname, '../client/public')));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/build')));
 
-const PORT = 5000;
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

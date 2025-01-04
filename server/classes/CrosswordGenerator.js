@@ -1,5 +1,4 @@
-// Импорт необходимых модулей
-const axios = require('axios');
+  // Импорт необходимых модулей
 const clg = require('crossword-layout-generator');
 
 /**
@@ -54,23 +53,43 @@ class CrosswordGenerator {
                 Do not add anything outside the JSON structure. Ensure valid JSON.`;
             }
 
-            const response = await axios.post(this.openrouterApiUrl, {
-                model: "google/gemma-2-9b-it:free",
-                messages: [{ role: "user", content: prompt }],
-                top_p: 1,
-                temperature: 0.2,
-                frequency_penalty: 0.8,
-                presence_penalty: 0.8,
-                repetition_penalty: 1,
-                top_k: 50
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${this.openrouterApiKey}`,
-                    'Content-Type': 'application/json'
-                }
+            const headers = {
+                'Authorization': `Bearer ${this.openrouterApiKey}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'http://localhost:3000',
+                'X-Title': 'Conundrum Game Generator',
+                'OpenAI-Organization': 'org-123',
+                'User-Agent': 'Conundrum/1.0.0'
+            };
+
+
+            const response = await fetch(this.openrouterApiUrl, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    model: "google/gemma-2-9b-it:free",
+                    messages: [{ role: "user", content: prompt }],
+                    top_p: 1,
+                    temperature: 0.2,
+                    frequency_penalty: 0.8,
+                    presence_penalty: 0.8,
+                    repetition_penalty: 1,
+                    top_k: 50
+                })
             });
 
-            let messageContent = response.data.choices?.[0]?.message?.content;
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('OpenRouter API error:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    error: errorText
+                });
+                throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            let messageContent = data.choices?.[0]?.message?.content;
 
             if (!messageContent || messageContent.trim().length === 0) {
                 throw new Error("Нейросеть не сгенерировала текст. Попробуйте изменить запрос или повторите попытку позже.");
@@ -167,7 +186,7 @@ class CrosswordGenerator {
             return {
                 crossword: crosswordGrid,
                 words: displayWords,
-                rawResponse: response.data,
+                rawResponse: data,
                 parsedWords: wordsData,
                 layout: layout
             };

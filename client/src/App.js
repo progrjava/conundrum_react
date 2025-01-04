@@ -4,7 +4,7 @@ import MainPage from './components/MainPage';
 import SignInUp from './components/SignInUp';
 import PersonalAccount from './components/PersonalAccount';
 import GameGenerator from './components/GameGenerator';
-import { getSupabaseClient } from './config/supabaseClient';
+import { initializeSupabase, getSupabaseClient } from './config/supabaseClient';
 
 const App = () => {
   const [isBlackTheme, setIsBlackTheme] = useState(true);
@@ -21,10 +21,12 @@ const App = () => {
   useEffect(() => {
     const initSupabase = async () => {
       try {
-        const supabase = await getSupabaseClient();
+        const supabase = await initializeSupabase();
         setSupabaseInstance(supabase);
+        setIsLoading(false);
       } catch (error) {
         console.error('Failed to initialize Supabase:', error);
+        setIsLoading(false);
       }
     };
     initSupabase();

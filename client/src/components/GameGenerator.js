@@ -3,7 +3,6 @@ import AboutPopup from './AboutPopup';
 import ManualPopup from './ManualPopup';
 import { Navigate } from 'react-router-dom';
 import ThemeChanger from './ThemeChanger';
-import axios from 'axios';
 import '../css/gameGenerator.css';
 import '../css/crossword.css';
 import { CluesDisplay } from '../js/CluesDisplay';
@@ -13,7 +12,7 @@ import { elements } from '../js/elements';
 import { GameStateManager } from '../js/GameStateManager';
 import { UIUtils } from '../js/UIUtils';
 import { WordSoupDisplay } from '../js/WordSoupDisplay';
-
+import { getSupabaseClient, initializeSupabase } from '../config/supabaseClient';
 
 class GameGenerator extends Component {
     constructor(props) {
@@ -25,7 +24,10 @@ class GameGenerator extends Component {
             isSlidebarVisible: true,
             isFormCreatingPuzzle: false,
             redirectToProfile: false,
-            isSettingsOpen: false
+            isSettingsOpen: false,
+            isLoading: true,
+          supabaseUrl: '',
+          supabaseKey: ''
         };
 
         this.crosswordFormRef = createRef();
@@ -39,18 +41,139 @@ class GameGenerator extends Component {
         this.cluesContainerRef = createRef();
     }
 
-    componentDidMount() {
-        UIUtils.initialize();
-        // Инициализация объекта elements
-        elements.inputTypeSelect = document.querySelector('input[name="inputType"]:checked');
-        elements.documentTextarea = this.documentTextRef.current;
-        elements.totalWordsInput = this.totalWordsRef.current;
-        elements.topicInput = this.topicRef.current;
-        elements.fileUploadInput = this.fileInputRef.current;
-        elements.crosswordForm = this.crosswordFormRef.current;
-        elements.gameTypeSelect = document.querySelector('input[name="gameType"]:checked');
-        elements.crosswordContainer = this.crosswordContainerRef.current;
-        elements.cluesContainer = this.cluesContainerRef.current;
+    async componentDidMount() {
+        try {
+            // Инициализируем UIUtils
+            UIUtils.initialize();
+            
+            // Инициализируем elements
+            elements.inputTypeSelect = document.querySelector('input[name="inputType"]:checked');
+            elements.documentTextarea = this.documentTextRef.current;
+            elements.totalWordsInput = this.totalWordsRef.current;
+            elements.topicInput = this.topicRef.current;
+            elements.fileUploadInput = this.fileInputRef.current;
+            elements.crosswordForm = this.crosswordFormRef.current;
+            elements.gameTypeSelect = document.querySelector('input[name="gameType"]:checked');
+            elements.crosswordContainer = this.crosswordContainerRef.current;
+            elements.cluesContainer = this.cluesContainerRef.current;
+            // fetch Supabase config
+              const response = await fetch('/api/config');
+              if (!response.ok) {
+                throw new Error(`Failed to fetch Supabase config: ${response.status}`);
+              }
+              const config = await response.json();
+              this.setState({
+                supabaseUrl: config.supabaseUrl,
+                supabaseKey: config.supabaseKey,
+              }, async () => {
+            // Инициализируем Supabase
+                 try{
+                   await initializeSupabase(this.state);
+                   this.setState({ isLoading: false });
+                   }
+                   catch (error) {
+                     console.error('Failed to initialize Supabase:', error);
+                     UIUtils.showError('Failed to initialize authentication. Please try again later.');
+                     this.setState({ isLoading: false });
+                   }
+              });
+
+        } catch (error) {
+            console.error('Failed to initialize:', error);
+            UIUtils.showError('Failed to initialize. Please try again later.');
+            this.setState({ isLoading: false });
+        }
+    }
+
+    handleSubmit = async (event) => {
+        event.preventDefault();
+        
+        // Получение значений из формы
+        const gameType = document.querySelector('input[name="gameType"]:checked')?.value;
+        const inputType = document.querySelector('input[name="inputType"]:checked')?.value;
+        const documentText = this.documentTextRef.current?.value;
+        const totalWords = parseInt(this.totalWordsRef.current?.value);
+        const topic = this.topicRef.current?.value;
+        const fileInput = this.fileInputRef.current;
+
+        // Валидация введенных данных
+        if (!inputType) {
+            return UIUtils.showError('Выберите тип ввода.');
+        }
+
+        if (inputType === 'text' && (!documentText || documentText.trim() === '')) {
+            return UIUtils.showError('Введите текст.');
+        }
+    
+        if (inputType === 'topic' && (!topic || topic.trim() === '')) {
+            return UIUtils.showError('Введите тему.');
+        }
+    
+        if (inputType === 'file' && (!fileInput || !fileInput.files.length)) {
+            return UIUtils.showError('Выберите файл.');
+        }
+    
+        if (isNaN(totalWords) || totalWords < 1) {
+            return UIUtils.showError('Введите корректное количество слов (больше 0).');
+        }
+    
+        // Показываем индикатор загрузки
+        DisplayBase.displayLoadingIndicator();
+    
+        try {
+            // Создаем FormData и добавляем все необходимые поля
+            const formData = new FormData();
+            formData.append('gameType', gameType);
+            formData.append('inputType', inputType);
+            formData.append('totalWords', totalWords);
+
+            if (inputType === 'text') {
+                formData.append('text', documentText);
+            } else if (inputType === 'topic') {
+                formData.append('topic', topic);
+            } else if (inputType === 'file' && fileInput.files[0]) {
+                formData.append('file-upload', fileInput.files[0]);
+            }
+
+            // Отправка данных на сервер
+          const response = await fetch('/api/generate-game', {
+                method: 'POST',
+                body: formData,
+            });
+            
+           if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Failed to generate games: ${errorData.error || response.status}`);
+            }
+
+            const data = await response.json();
+    
+            // Отображение игры в зависимости от выбранного типа
+            if (gameType === 'wordsoup') {
+                if (data.grid && data.words) {
+                    const display = new WordSoupDisplay(data);
+                    display.display();
+                } else {
+                    UIUtils.showError('Не удалось получить данные для игры');
+                }
+            } else {
+                if (data.crossword && data.layout.result) {
+                    CrosswordDisplay.displayCrossword(data.crossword, data.layout.result);
+                } else {
+                    UIUtils.showError('Не удалось получить данные кроссворда');
+                }
+            }
+        } catch (error) {
+            console.error('Error generating game:', error);
+            if (error.message) {
+                 UIUtils.showError(error.message);
+            }
+            else{
+               UIUtils.showError("Произошла ошибка при генерации игры. Пожалуйста, попробуйте снова.");
+            }
+        } finally {
+            DisplayBase.hideLoadingIndicator();
+        }
     }
 
     toggleAboutPopup = () => {
@@ -87,74 +210,6 @@ class GameGenerator extends Component {
         this.setState((prevState) => ({
         isSettingsOpen: !prevState.isSettingsOpen,
         }));
-    }
-
-    handleSubmit = async (event) => {
-        event.preventDefault();
-        // Получение значений из формы
-        const gameType = document.querySelector('input[name="gameType"]:checked').value;
-        const inputType = document.querySelector('input[name="inputType"]:checked');
-        const documentText = this.documentTextRef.current.value;
-        const totalWords = parseInt(this.totalWordsRef.current.value);
-        const topic = this.topicRef.current.value;
-        const fileInput = this.fileInputRef.current;
-        // Валидация введенных данных
-        if (inputType === '') {
-            return UIUtils.showError('Выберите тип ввода.');
-        }
-        if (inputType === 'text' && documentText.trim() === '') {
-            return UIUtils.showError('Введите текст.');
-        }
-    
-        if (inputType === 'topic' && topic.trim() === '') {
-            return UIUtils.showError('Введите тему.');
-        }
-    
-        if (inputType === 'file' && !fileInput.files.length) {
-            return UIUtils.showError('Выберите файл.');
-        }
-    
-        if (isNaN(totalWords) || totalWords < 1) {
-            return UIUtils.showError('Введите корректное количество слов (больше 0).');
-        }
-    
-        // Показываем индикатор загрузки
-        DisplayBase.displayLoadingIndicator();
-    
-        try {
-            // Отправка данных на сервер
-            const formData = new FormData(event.target);
-            const response = await axios.post('http://localhost:5000/generate-game', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-    
-            // Отображение игры в зависимости от выбранного типа
-            if (gameType === 'wordsoup') {
-                if (response.data.grid && response.data.words) {
-                    const display = new WordSoupDisplay(response.data);
-                    display.display();
-                } else {
-                    UIUtils.showError('Не удалось получить данные для игры');
-                }
-            } else {
-                if (response.data.crossword && response.data.layout.result) {
-                    CrosswordDisplay.displayCrossword(response.data.crossword, response.data.layout.result);
-                } else {
-                    UIUtils.showError('Не удалось получить данные кроссворда');
-                }
-            }
-        } catch (error) {
-            console.error(error);
-            if (error.response?.data?.error) {
-                UIUtils.showError(error.response.data.error);
-            } else {
-                UIUtils.showError("Произошла ошибка при генерации игры. Пожалуйста, попробуйте снова.");
-            }
-        } finally {
-            DisplayBase.hideLoadingIndicator();
-        }
     }
     render() {
         const { isBlackTheme, toggleTheme } = this.props;
@@ -305,8 +360,10 @@ class GameGenerator extends Component {
                                             onChange={this.handleInteractionFormatChange}
                                             required
                                             ref={this.inputTypeRef}/>
+
                                             <label for="set-topic">Задать тему</label>
                                             
+
                                                 <div className='topic-input'>
                                                     <input
                                                         ref={this.topicRef}
@@ -327,8 +384,10 @@ class GameGenerator extends Component {
                                             onChange={this.handleInteractionFormatChange}
                                             required
                                             ref={this.inputTypeRef}/>
+
                                             <label for="set-text">Задать текст</label>
                                             
+
                                                 <div className='text-input'>
                                                     <textarea
                                                         ref={this.documentTextRef}
@@ -350,7 +409,7 @@ class GameGenerator extends Component {
                                             required
                                             ref={this.inputTypeRef}/>
                                             <label for="upload-file">Загрузить файл</label>
-                                            
+
                                                 <div className='file-input' id='file-input-div' style={{ display: 'none' }}>
                                                     <input type='file' 
                                                     className='file-input-area' 
@@ -358,6 +417,7 @@ class GameGenerator extends Component {
                                                     
                                                     ref={this.fileInputRef}
                                                     name='file-upload'/>
+
                                                     <label for="file-upload" className="file-input-label">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
                                                             <path fill="#FBFBFE" fill-rule="evenodd" d="M4.8 3A1.8 1.8 0 0 0 3 4.8v22.4A1.8 1.8 0 0 0 4.8 29h22.4a1.8 1.8 0 0 0 1.8-1.8V4.8A1.8 1.8 0 0 0 27.2 3H4.8ZM17 12a1 1 0 1 0-2 0v3h-3a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 1 0 0-2h-3v-3Z" clip-rule="evenodd"/>
@@ -421,10 +481,10 @@ class GameGenerator extends Component {
                     </div>
                 </main>
             </>
+
         );
     }
     
 }
 
 export default GameGenerator;
-
