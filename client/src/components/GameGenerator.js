@@ -336,7 +336,7 @@ class GameGenerator extends Component {
                                         </div>
                                         <div>
                                             <input type="radio" id="fillword" value='wordsoup' name="gameType" ref={this.gameTypeRef} required/>
-                                            <label for="fillword">Суп из слов</label>
+                                            <label for="fillword">Филворд</label>
                                         </div>
                                     </div>
                                     <div className='input-interaction-format'>

@@ -183,10 +183,10 @@ const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
                             </div>
                         </div>
                         
-                        <div className='admin-stats'>
+                        {/*<div className='admin-stats'>
                             <p>Статистика для администраторов</p>
                             <p>Сколько использований (что-то будет)</p>
-                        </div>
+                        </div>*/}
                     </div>
                     <div className='account-buttons'>
                         <button type='submit' onClick={updateProfile} className='update-account-button'>
