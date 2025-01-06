@@ -34,7 +34,7 @@ class CrosswordGenerator {
                                   'moderately difficult';
             let prompt = '';
             if (inputType === 'topic') {
-                prompt = `Generate real ${totalWords} ${difficultyLevel} words related to the topic "${text}". For each word, provide a concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Ensure the clue directly relates to the word and is in the same language as the input topic.If you are in doubt about the choice of language, then take Russian.
+                prompt = `Generate real ${totalWords} ${difficultyLevel} words related to the topic "${text}" . The keywords must be in their base form (lemma). For each word, provide a concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Ensure the clue directly relates to the word and is in the same language as the input topic.Avoid direct clues, use paraphrases/analogies, but not direct answers.If you are in doubt about the choice of language, then take Russian.
                 Format the response as JSON:
                 [
                     {"word": "word1", "clue": "clue1"},
@@ -43,7 +43,7 @@ class CrosswordGenerator {
                 ]
                 Do not add anything outside the JSON structure. Ensure valid JSON.`;
             } else { // inputType === 'text' or 'file'
-                prompt = `Extract ${totalWords} ${difficultyLevel} keywords from the given text: "${text}". For each word, create a concise, accurate, and unambiguous definition, question, or short description. The clue must clearly relate to the meaning of the word within the provided text and be in the same language as the input text.If you are in doubt about the choice of language, then take Russian.                
+                prompt = `Extract ${totalWords} ${difficultyLevel} keywords from the given text: "${text}" . The keywords must be in their base form (lemma).For each word, create a concise, accurate, and unambiguous definition, question, or short description. The clue must clearly relate to the meaning of the word within the provided text and be in the same language as the input text. Avoid direct clues, use paraphrases/analogies, but not direct answers.If you are in doubt about the choice of language, then take Russian.                
                 Format the response as JSON:
                 [
                     {"word": "word1", "clue": "clue1"},
