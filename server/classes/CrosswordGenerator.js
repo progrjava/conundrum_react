@@ -1,5 +1,4 @@
-// Импорт необходимых модулей
-const axios = require('axios');
+  // Импорт необходимых модулей
 const clg = require('crossword-layout-generator');
 
 /**
@@ -35,7 +34,7 @@ class CrosswordGenerator {
                                   'moderately difficult';
             let prompt = '';
             if (inputType === 'topic') {
-                prompt = `Generate real ${totalWords} ${difficultyLevel} words related to the topic "${text}". For each word, provide a concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Ensure the clue directly relates to the word and is in the same language as the input topic.If you are in doubt about the choice of language, then take Russian.
+                prompt = `Generate real ${totalWords} ${difficultyLevel} words related to the topic "${text}" . The keywords must be in their base form (lemma). For each word, provide a concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Ensure the clue directly relates to the word and is in the same language as the input topic.Avoid direct clues, use paraphrases/analogies, but not direct answers.If you are in doubt about the choice of language, then take Russian.
                 Format the response as JSON:
                 [
                     {"word": "word1", "clue": "clue1"},
@@ -44,7 +43,7 @@ class CrosswordGenerator {
                 ]
                 Do not add anything outside the JSON structure. Ensure valid JSON.`;
             } else { // inputType === 'text' or 'file'
-                prompt = `Extract ${totalWords} ${difficultyLevel} keywords from the given text: "${text}". For each word, create a concise, accurate, and unambiguous definition, question, or short description. The clue must clearly relate to the meaning of the word within the provided text and be in the same language as the input text.If you are in doubt about the choice of language, then take Russian.                
+                prompt = `Extract ${totalWords} ${difficultyLevel} keywords from the given text: "${text}" . The keywords must be in their base form (lemma).For each word, create a concise, accurate, and unambiguous definition, question, or short description. The clue must clearly relate to the meaning of the word within the provided text and be in the same language as the input text. Avoid direct clues, use paraphrases/analogies, but not direct answers.If you are in doubt about the choice of language, then take Russian.                
                 Format the response as JSON:
                 [
                     {"word": "word1", "clue": "clue1"},
@@ -54,23 +53,41 @@ class CrosswordGenerator {
                 Do not add anything outside the JSON structure. Ensure valid JSON.`;
             }
 
-            const response = await axios.post(this.openrouterApiUrl, {
-                model: "google/gemma-2-9b-it:free",
-                messages: [{ role: "user", content: prompt }],
-                top_p: 1,
-                temperature: 0.2,
-                frequency_penalty: 0.8,
-                presence_penalty: 0.8,
-                repetition_penalty: 1,
-                top_k: 50
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${this.openrouterApiKey}`,
-                    'Content-Type': 'application/json'
-                }
+            const headers = {
+                'Authorization': `Bearer ${this.openrouterApiKey}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': '*',
+                'X-Title': 'Conundrum Game Generator',
+                'User-Agent': 'Conundrum/1.0.0'
+            };
+
+            const response = await fetch(this.openrouterApiUrl, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    model: "google/gemma-2-9b-it:free",
+                    messages: [{ role: "user", content: prompt }],
+                    top_p: 1,
+                    temperature: 0.2,
+                    frequency_penalty: 0.8,
+                    presence_penalty: 0.8,
+                    repetition_penalty: 1,
+                    top_k: 50
+                })
             });
 
-            let messageContent = response.data.choices?.[0]?.message?.content;
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('OpenRouter API error:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    error: errorText
+                });
+                throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            let messageContent = data.choices?.[0]?.message?.content;
 
             if (!messageContent || messageContent.trim().length === 0) {
                 throw new Error("Нейросеть не сгенерировала текст. Попробуйте изменить запрос или повторите попытку позже.");
@@ -167,7 +184,7 @@ class CrosswordGenerator {
             return {
                 crossword: crosswordGrid,
                 words: displayWords,
-                rawResponse: response.data,
+                rawResponse: data,
                 parsedWords: wordsData,
                 layout: layout
             };

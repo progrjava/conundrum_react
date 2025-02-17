@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import ThemeChanger from './ThemeChanger';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import '../css/profile.css';
+import { getSupabaseClient } from '../config/supabaseClient';
 
-const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
+const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
         username: '',
@@ -13,70 +13,80 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
         gender: '',
         occupation: ''
     });
-
+     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [newUsername, setNewUsername] = useState('');
     const [newOccupation, setNewOccupation] = useState('');
     const [newGender, setNewGender] = useState('');
 
 
     const getProfile = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/auth/profile');
-            const dataAboutUser = response.data.user.user_metadata;
-            setUserData({
-                username: dataAboutUser.username,
-                email: dataAboutUser.email,
-                gender: dataAboutUser.gender,
-                occupation: dataAboutUser.occupation
-            });
-            setNewUsername(dataAboutUser.username);
-            setNewOccupation(dataAboutUser.occupation);
-            setNewGender(dataAboutUser.gender);
+         try {
+                if (!user) {
+                    setError('Пользователь не авторизован');
+                    return;
+                }
+            const supabase = await getSupabaseClient();
+                 // Получаем актуальные данные пользователя из Supabase
+                const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
+
+            if (userError) throw userError;
+           if (currentUser) {
+                    const username = currentUser.user_metadata?.username || 'Не указано';
+           
+                    setUserData({
+                        email: currentUser.email,
+                        username: username,
+                        gender: currentUser.user_metadata?.gender || 'Не указано',
+                        occupation: currentUser.user_metadata?.occupation || 'Не указано'
+                    });
+                    setNewUsername(username);
+                    setNewOccupation(currentUser.user_metadata?.occupation || 'НЕ УКАЗАНО');
+                    setNewGender(currentUser.user_metadata?.gender || 'НЕ УКАЗАНО');
+                }
+
         } catch (error) {
-            console.error('Ошибка при получении данных о пользователе:', error);
+             console.error('Error loading user data:', error);
+                setError('Ошибка при загрузке данных пользователя');
         }
+          finally {
+                setIsLoading(false);
+            }
     };
 
     useEffect(() => {
         getProfile();
-    }, []);
+    }, [user]);
 
     const updateProfile = async () => {
-        if (!newUsername.trim()) {
-            alert('Имя пользователя не может быть пустым');
-            return;
-        }
+       try {
+                const supabase = await getSupabaseClient();
 
-        if (!newOccupation.trim()) {
-            alert('Роль не может быть пустой');
-            return;
-        }
+                // Обновляем данные в Supabase
+                const { error } = await supabase.auth.updateUser({
+                    data: {
+                        username: newUsername,
+                        gender: newGender,
+                        occupation: newOccupation
+                    }
+                });
 
-        if (!newGender.trim()) {
-            alert('Пол не может быть пустой');
-            return;
-        }
+                if (error) throw error;
 
-        try {
-            const response = await axios.put('http://localhost:5000/auth/update', {
-                username: newUsername,
-                occupation: newOccupation,
-                gender: newGender,
-            });
+                // Обновляем локальное состояние
+                setUserData(prevData => ({
+                    ...prevData,
+                    username: newUsername,
+                    gender: newGender,
+                    occupation: newOccupation
+                }));
 
-            alert(response.data.message);
-            setUserData((prevData) => ({ 
-                ...prevData, 
-                username: newUsername, 
-                occupation: newOccupation,
-                gender: newGender,
-            }));
-            setNewUsername(newUsername);
-            setNewOccupation(newOccupation);
-            setNewGender(newGender);
+                alert('Профиль успешно обновлен!');
+                
         } catch (error) {
-            console.error('Ошибка при обновлении данных:', error);
-            alert('Не удалось обновить данные');
+            console.error('Error updating profile:', error);
+            setError('Ошибка при обновлении данных');
+            alert('Произошла ошибка при обновлении профиля');
         }
     };
 
@@ -84,16 +94,28 @@ const PersonalAccount = ({isBlackTheme, toggleTheme, setIsAuth, isAuth}) => {
 
     const logout = async () => {
         try {
-            await axios.post('http://localhost:5000/auth/logout');
-            setIsAuth(false);
+                const supabase = await getSupabaseClient();
+            const { error } = await supabase.auth.signOut();
+           if (error) throw error;
+            navigate('/');
         } catch (error) {
-            console.error('Ошибка при выходе из системы:', error);
+           console.error('Ошибка при выходе из системы:', error);
+            setError('Ошибка при выходе из системы');
+            // Если произошла ошибка с сессией, все равно перенаправляем
+            setTimeout(() => navigate('/'), 2000);
         }
     };
+   if (isLoading) {
+        return <div className="loading">Загрузка...</div>;
+    }
+
+    if (error) {
+        return <div className="error">{error}</div>;
+    }
 
     return (
         <>
-            <Header isAuth={isAuth}/>
+            <Header isAuth={true}/>
             <main className='personal-account-main'>
                 <img className='personal-account-back' src='/src/personalAccount-background.jpg'/>
                 <section className='about-account-info'>

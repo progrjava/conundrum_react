@@ -1,10 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const authRoutes = require('./routes/auth');
 const path = require('path');
 const multer = require('multer');
-require('dotenv').config();
 
 const CrosswordGenerator = require('./classes/CrosswordGenerator');
 const WordSoupGenerator = require('./classes/WordSoupGenerator');
@@ -13,26 +13,50 @@ const FileManager = require('./classes/FileManager');
 const app = express();
 const publicPath = path.join(__dirname, 'public');
 
-const openrouterApiKey = "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";
-const openrouterApiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL;
 
-// Initialize our classes
-const crosswordGenerator = new CrosswordGenerator(openrouterApiKey, openrouterApiUrl);
-const wordSoupGenerator = new WordSoupGenerator(openrouterApiKey, openrouterApiUrl);
+if (!OPENROUTER_API_KEY || !OPENROUTER_API_URL) {
+    console.error('Missing required environment variables:');
+    console.error('OPENROUTER_API_KEY:', OPENROUTER_API_KEY ? 'Set' : 'Missing');
+    console.error('OPENROUTER_API_URL:', OPENROUTER_API_URL ? 'Set' : 'Missing');
+    process.exit(1);
+}
+
+// Initialize our classes with validated environment variables
+const crosswordGenerator = new CrosswordGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
+const wordSoupGenerator = new WordSoupGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
 const fileManager = new FileManager();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',') 
+    : ['http://localhost:3000', 'http://localhost:3001'];
+app.use(cors({
+    origin: function(origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            return callback(new Error('CORS policy violation'), false);
+        }
+        return callback(null, true);
+    },
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+
+// Configure middleware
 app.use(express.static(publicPath));
-app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/auth', authRoutes);
-
-app.post('/generate-game', upload.single('file-upload'), async (req, res) => {
+// Game generation endpoint
+app.post('/api/generate-game', upload.single('file-upload'), async (req, res) => {
     try {
         const inputType = req.body.inputType;
         const gameType = req.body.gameType;
@@ -107,10 +131,16 @@ app.post('/generate-game', upload.single('file-upload'), async (req, res) => {
     }
 });
 
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/build')));
 
-app.use(express.static(path.join(__dirname, '../client/public')));
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

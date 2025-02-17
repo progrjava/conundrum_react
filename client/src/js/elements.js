@@ -4,16 +4,16 @@
  */
 
 export const elements = {
-    // Элементы формы кроссворда
-    crosswordForm: document.getElementById('crossword-form'),
-    gameTypeSelect: document.getElementById('game-type'),
-    inputTypeSelect: document.getElementById('input-type'),
-    documentTextarea: document.getElementById('document'),
-    fileUploadInput: document.getElementById('file-upload'),
-    topicInput: document.getElementById('topic'),
-    totalWordsInput: document.getElementById('total-words'),
-    
-    // Элементы игрового поля
-    crosswordContainer: document.getElementById('crossword-container'),
-    cluesContainer: document.getElementById('clues-container')
-    };
+    // Функция для инициализации элементов
+    initialize() {
+        this.crosswordForm = document.getElementById('crossword-form');
+        this.gameTypeSelect = document.getElementById('game-type');
+        this.inputTypeSelect = document.getElementById('input-type');
+        this.documentTextarea = document.getElementById('document');
+        this.fileUploadInput = document.getElementById('file-upload');
+        this.topicInput = document.getElementById('topic');
+        this.totalWordsInput = document.getElementById('total-words');
+        this.crosswordContainer = document.getElementById('crossword-container');
+        this.cluesContainer = document.getElementById('clues-container');
+    }
+};

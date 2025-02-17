@@ -7,6 +7,7 @@ export class UIUtils {
      * Инициализация всех обработчиков событий
      */
     static initialize() {
+        elements.initialize();
         this.initializeInputTypeHandlers();
     }
 
@@ -17,10 +18,17 @@ export class UIUtils {
      */
     static initializeInputTypeHandlers() {
         const inputTypeRadios = document.querySelectorAll('input[name="inputType"]');
+        if (!inputTypeRadios.length) {
+            console.warn('Input type radio buttons not found');
+            return;
+        }
         inputTypeRadios.forEach(radio => {
             radio.addEventListener('change', () => this.toggleInputs());
         });
-        this.toggleInputs();
+        const selectedRadio = document.querySelector('input[name="inputType"]:checked');
+          if (selectedRadio) {
+            this.toggleInputs();
+        }
     }
 
     /**
@@ -95,6 +103,7 @@ export class UIUtils {
      * @param {string} message - Текст сообщения
      */
     static showError(message) {
+        console.error(message);
         alert(message);
     }
 
