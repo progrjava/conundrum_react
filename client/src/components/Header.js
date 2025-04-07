@@ -9,6 +9,13 @@ const Header = ({ isAuth }) => {
   const [isManualVisible, setIsManualVisible] = useState(false);
   const navigate = useNavigate();
 
+  // Проверяем, является ли пользователь LTI пользователем
+  const isLTIMode = localStorage.getItem('lti') === 'true';
+
+  if (isLTIMode) {
+    return null;
+  }
+
   const toggleAboutPopup = () => {
     setIsAboutVisible(!isAboutVisible);
     setIsManualVisible(false);
