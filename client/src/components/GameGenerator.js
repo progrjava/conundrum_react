@@ -13,6 +13,7 @@ import { GameStateManager } from '../js/GameStateManager';
 import { UIUtils } from '../js/UIUtils';
 import { WordSoupDisplay } from '../js/WordSoupDisplay';
 import { getSupabaseClient, initializeSupabase } from '../config/supabaseClient';
+import ActivityTracker from '../modules/ActivityTracker';
 
 class GameGenerator extends Component {
     constructor(props) {
@@ -26,8 +27,8 @@ class GameGenerator extends Component {
             redirectToProfile: false,
             isSettingsOpen: false,
             isLoading: true,
-          supabaseUrl: '',
-          supabaseKey: ''
+            supabaseUrl: '',
+            supabaseKey: '',
         };
 
         this.crosswordFormRef = createRef();
@@ -39,6 +40,7 @@ class GameGenerator extends Component {
         this.fileInputRef = createRef();
         this.crosswordContainerRef = createRef();
         this.cluesContainerRef = createRef();
+        this.activityTracker = new ActivityTracker();
     }
 
     componentDidMount = async () => {
@@ -49,11 +51,16 @@ class GameGenerator extends Component {
             // Инициализируем Supabase
             await initializeSupabase();
             this.setState({ isLoading: false });
+            this.activityTracker.startTracking();
         } catch (error) {
             console.error('Failed to initialize:', error);
             UIUtils.showError('Failed to initialize. Please try again later.');
             this.setState({ isLoading: false });
         }
+    }
+
+    componentWillUnmount() {
+        this.activityTracker.stopTracking();
     }
 
     handleSubmit = async (event) => {
@@ -134,6 +141,18 @@ class GameGenerator extends Component {
                     UIUtils.showError('Не удалось получить данные кроссворда');
                 }
             }
+
+           // После успешной генерации игры, отправляем данные и оценку в Moodle (если это LTI режим)
+            if (this.props.ltiUserId) {
+                const calculatedScore = this.calculateScore();
+                await this.submitLTIScore(calculatedScore);
+                this.activityTracker.trackPuzzleCompletion({
+                    gameType,
+                    inputType,
+                    totalWords
+                });
+            }
+
         } catch (error) {
             console.error('Error generating game:', error);
             if (error.message) {
@@ -201,6 +220,37 @@ class GameGenerator extends Component {
         isSettingsOpen: !prevState.isSettingsOpen,
         }));
     }
+
+    calculateScore() {
+        // Implement logic to calculate the game score
+        return 75; // Example score
+    }
+
+    submitLTIScore = async (score) => {
+       // if (!this.props.isLTIMode) return; // Use props instead
+
+        try {
+            const response = await fetch('/api/lti/submit-score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    score,
+                    totalScore: 100 // или другое максимальное значение
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to submit score');
+            }
+
+            //this.setState({ ltiScore: score }); // set state is not needed
+        } catch (error) {
+            console.error('Error submitting LTI score:', error);
+            // Показать пользователю сообщение об ошибке
+        }
+    };
     render() {
         const { isBlackTheme, toggleTheme } = this.props;
         const {

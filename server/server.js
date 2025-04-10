@@ -5,6 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const multer = require('multer');
+const session = require('express-session');
+const { initializeLTI } = require('./middleware/ltiMiddleware');
 
 const CrosswordGenerator = require('./classes/CrosswordGenerator');
 const WordSoupGenerator = require('./classes/WordSoupGenerator');
@@ -16,14 +18,9 @@ const publicPath = path.join(__dirname, 'public');
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL;
 
-if (!OPENROUTER_API_KEY || !OPENROUTER_API_URL) {
-    console.error('Missing required environment variables:');
-    console.error('OPENROUTER_API_KEY:', OPENROUTER_API_KEY ? 'Set' : 'Missing');
-    console.error('OPENROUTER_API_URL:', OPENROUTER_API_URL ? 'Set' : 'Missing');
-    process.exit(1);
-}
+// Инициализация LTI
+const { validateLTIRequest } = initializeLTI();
 
-// Initialize our classes with validated environment variables
 const crosswordGenerator = new CrosswordGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
 const wordSoupGenerator = new WordSoupGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
 const fileManager = new FileManager();
@@ -37,7 +34,6 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
     : ['http://localhost:3000', 'http://localhost:3001'];
 app.use(cors({
     origin: function(origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         
         if (allowedOrigins.indexOf(origin) === -1) {
@@ -55,7 +51,13 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Game generation endpoint
+app.use(session({
+    secret: process.env.SESSION_SECRET, // Используем переменную окружения
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
+
 app.post('/api/generate-game', upload.single('file-upload'), async (req, res) => {
     try {
         const inputType = req.body.inputType;
@@ -134,12 +136,22 @@ app.post('/api/generate-game', upload.single('file-upload'), async (req, res) =>
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
 
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
+// Маршруты
+app.post('/lti/launch', validateLTIRequest, (req, res) => {
+    // После успешной проверки перенаправляем пользователя на страницу игры
+    res.redirect('/game-generator');
+});
+
+// Остальные маршруты для генерации игр и статических файлов
+app.get('/game-generator', (req, res) => {
+    res.sendFile(path.join(publicPath, 'game-generator.html'));
+});
+
+// Запуск сервера
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

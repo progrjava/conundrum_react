@@ -9,6 +9,7 @@
         "express": "^4.21.1",
         "express-session": "^1.18.1",
         "multer": "^1.4.5-lts.1",
+        "oauth": "^0.10.2",
         "path": "^0.12.7",
         "pdf-parse": "^1.1.1",
         "supabase": "^1.223.10"
@@ -23,5 +24,6 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "description": ""
+    "description": "",
+    "type": "commonjs"
 }
