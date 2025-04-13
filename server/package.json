@@ -5,7 +5,7 @@
         "cors": "^2.8.5",
         "crossword-layout-generator": "^0.1.1",
         "docx-parser": "^0.2.1",
-        "dotenv": "^16.4.5",
+        "dotenv": "^16.5.0",
         "express": "^4.21.1",
         "express-session": "^1.18.1",
         "multer": "^1.4.5-lts.1",

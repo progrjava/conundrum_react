@@ -18,11 +18,11 @@ export class DisplayBase {
             elements.crosswordContainer.style.borderRadius = '50%';
             elements.crosswordContainer.innerHTML = `
                 <div class="loading-indicator" id='loading-indicator'>
-                    <div style="
-                        width: 100px;
-                        height: 100px;
+                    <div class="loading-spinner" style="
+                        width: 80px;
+                        height: 80px;
                         background: url('data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 200 200&quot;><path fill=&quot;%23FBFBFE&quot; stroke=&quot;%23FBFBFE&quot; stroke-width=&quot;15&quot; transform-origin=&quot;center&quot; d=&quot;m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z&quot;><animateTransform type=&quot;rotate&quot; attributeName=&quot;transform&quot; calcMode=&quot;spline&quot; dur=&quot;2&quot; values=&quot;0;300&quot; keyTimes=&quot;0;1&quot; keySplines=&quot;0 0 1 1&quot; repeatCount=&quot;indefinite&quot;></animateTransform></path></svg>') no-repeat center center;
-                        background-size: contain;
+                        background-size: 90% 90%;
                         ">
                     </div>
                 </div>

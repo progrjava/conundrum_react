@@ -10,7 +10,7 @@ export const Main = ({ isBlackTheme, toggleTheme }) => {
         <video autoPlay muted loop className="background-video-main"
         src="/src/main_background.mp4"/>
         <div className='main-logo-title'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="124" fill="none">
+            <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 1000 124" fill="none">
                 <path fill="#2F2D38" fill-opacity="0.8" d="M64.104 121.404c-11.586 
                 0-22.316-2.717-32.159-8.151-9.859-5.434-17.639-12.811-23.355-22.131C2.858 
                 81.817 0 71.677 0 60.702c0-10.974 2.858-21.114 8.59-30.42 5.716-9.32 

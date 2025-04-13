@@ -65,7 +65,7 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
     return (
         <section className='register-account'>
             <div className='register-account-info'>
-                <svg onClick={goToMainPage} className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
+                <svg onClick={goToMainPage} className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
                     <path stroke="#FBFBFE" strokeLinecap="round" strokeLinejoin="round" 
                         strokeWidth="4" d="M25 30 15 20l10-10"/>
                 </svg>
@@ -112,8 +112,7 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                             <svg 
                                 className={isPasswordVisible ? 'eye-open' : 'eye-closed'}
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="24" 
-                                height="24" 
+                                viewBox="0 0 24 24"
                                 fill="none" 
                                 strokeWidth="2" 
                                 color="#000"
@@ -131,8 +130,8 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                         </div>
                     </div>
                     <div className='birthday-role-gender-input'>
-                        <div className='reg-role'>
-                            <select className='reg-role-select' required value={occupation}
+                        <div className='reg-role' id='reg-role'>
+                            <select className='reg-role-select' id='reg-role-select' required value={occupation}
                     onChange={(e) => setOccupation(e.target.value)}>
                     disabled={isLoading}
                                 <option value={''} disabled selected hidden>Выберите роль</option>
@@ -142,20 +141,20 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                                 <option value={'ПИСАТЕЛЬ'}>Писатель</option>
                                 <option value={'ЖУРНАЛИСТ'}>Журналист</option>
                                 <option value={'ПЕРЕВОДЧИК'}>Переводчик</option>
-                                <option value={'КРОССВОРДИСТ'}>Составитель кроссвордов</option>
-                                <option value={'ГОЛОВОЛОМ'}>Любитель головоломок</option>
+                                <option value={'КРОССВОРДИСТ'}>Составитель игр</option>
+                                <option value={'ГОЛОВОЛОМ'}>Эрудит</option>
                                 <option value={'ИССЛЕДОВАТЕЛЬ'}>Исследователь</option>
                                 <option value={'РАЗРАБОТЧИК ИГР'}>Разработчик игр</option>
                                 <option value={'НЕ УКАЗАНО'}>Другое</option>
                             </select>
                         </div>
-                        <div className='reg-gender'>
-                            <select className='reg-gender-select' required value={gender}
+                        <div className='reg-gender' id='reg-gender'>
+                            <select className='reg-gender-select' id='reg-gender-select' required value={gender}
                     onChange={(e) => setGender(e.target.value)}>
                     disabled={isLoading}
                                 <option value={''} disabled selected hidden>Пол</option>
-                                <option value={'МУЖСКОЙ'}>Мужской</option>
-                                <option value={'ЖЕНСКИЙ'}>Женский</option>
+                                <option value={'МУЖСКОЙ'}>Муж.</option>
+                                <option value={'ЖЕНСКИЙ'}>Жен.</option>
                             </select>
                         </div>
                     </div>

@@ -128,7 +128,7 @@ const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
                             </div>
                             <div className='user-login-email-password'>
                                 <div className='change-userdata'>
-                                    <p>Имя пользователя: </p>
+                                    <p>Логин: </p>
                                     <input 
                                         className='userdata-input-changer' 
                                         type='text' 
@@ -143,8 +143,7 @@ const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
                                     <svg 
                                         className='password-edit-icon' 
                                         xmlns="http://www.w3.org/2000/svg"
-                                        width="24" 
-                                        height="24" 
+                                        viewBox="0 0 24 24"
                                         fill="none">
                                         <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" 
                                         stroke-width="2" d="m14.363 5.652 1.48-1.48a2 2 0 0 1 2.829 0l1.414 1.414a2 
@@ -156,8 +155,8 @@ const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
                             </div>
                         </div>
                         <div className='user-role-and-gender'>
-                            <div className='reg-role'>
-                                <select className='reg-role-select' required value={newOccupation}
+                            <div className='reg-role' id='reg-role'>
+                                <select className='reg-role-select' id='reg-role-select' required value={newOccupation}
                                     onChange={(e) => setNewOccupation(e.target.value)}>
                                     <option value={''} disabled selected hidden>Выберите роль</option>
                                     <option value={'СТУДЕНТ'}>Учащийся</option>
@@ -166,19 +165,19 @@ const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
                                     <option value={'ПИСАТЕЛЬ'}>Писатель</option>
                                     <option value={'ЖУРНАЛИСТ'}>Журналист</option>
                                     <option value={'ПЕРЕВОДЧИК'}>Переводчик</option>
-                                    <option value={'КРОССВОРДИСТ'}>Составитель кроссвордов</option>
-                                    <option value={'ГОЛОВОЛОМ'}>Любитель головоломок</option>
+                                    <option value={'КРОССВОРДИСТ'}>Составитель игр</option>
+                                    <option value={'ГОЛОВОЛОМ'}>Эрудит</option>
                                     <option value={'ИССЛЕДОВАТЕЛЬ'}>Исследователь</option>
                                     <option value={'РАЗРАБОТЧИК ИГР'}>Разработчик игр</option>
                                     <option value={'НЕ УКАЗАНО'}>Другое</option>
                                 </select>
                             </div>
-                            <div className='reg-gender'>
-                                <select className='reg-gender-select' required value={newGender}
+                            <div className='reg-gender' id='reg-gender'>
+                                <select className='reg-gender-select' id='reg-gender-select' required value={newGender}
                                     onChange={(e) => setNewGender(e.target.value)}>
                                     <option value={''} disabled selected hidden>Пол</option>
-                                    <option value={'МУЖСКОЙ'}>Мужской</option>
-                                    <option value={'ЖЕНСКИЙ'}>Женский</option>
+                                    <option value={'МУЖСКОЙ'}>Муж.</option>
+                                    <option value={'ЖЕНСКИЙ'}>Жен.</option>
                                 </select>
                             </div>
                         </div>
@@ -193,14 +192,14 @@ const PersonalAccount = ({ isBlackTheme, toggleTheme, user }) => {
                             Обновить данные
                         </button>
                         <button type='submit' onClick={logout} className='log-out-button'>
-                            Выйти из аккаунта
+                            Выйти
                         </button>
                     </div>
                 </section>
                 <div className='personal-account-theme-changer'>
                     <ThemeChanger isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/>
                 </div>
-                <svg className='personal-account-logotype' xmlns="http://www.w3.org/2000/svg" width="500" height="60" fill="none">
+                <svg className='personal-account-logotype' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 60" fill="none">
                     <path fill="#513888" d="M32.052 58.744c-5.793 0-11.158-1.315-16.08-3.944-4.929-2.63-8.819-6.2-11.677-10.709C1.429 
                         39.59 0 34.682 0 29.372c0-5.31 1.43-10.217 4.295-14.719 2.858-4.51 6.756-8.072 11.678-10.709C20.893 
                         1.314 26.258 0 32.052 0h28.582v27.83H41.827c-.276-1.91-1.238-3.548-2.89-4.9-1.658-1.35-3.553-2.027-5.693-2.027-2.415 

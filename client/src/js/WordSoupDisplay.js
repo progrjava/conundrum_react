@@ -52,8 +52,32 @@ export class WordSoupDisplay extends DisplayBase {
                 }, cell, tr);
 
                 td.addEventListener('mousedown', () => this.startSelection(td));
+
+
+
+                td.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.startSelection(td);
+                });
+
+
+
                 td.addEventListener('mouseover', () => this.continueSelection(td));
+
+
+                td.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if(element && element.classList.contains('word-soup-cell')) {
+                        this.continueSelection(element);
+                    }
+                });
+
+
                 td.addEventListener('mouseup', () => this.endSelection());
+
+                td.addEventListener('touchend', () => this.endSelection());
             });
         });
 
@@ -71,6 +95,10 @@ export class WordSoupDisplay extends DisplayBase {
         this.selectedCells = [cell];
         this.currentDirection = null; // Сбрасываем направление
         cell.classList.add('selected');
+
+
+        // Блокируем скролл при начале выделения
+        document.body.style.overflow = 'hidden';
     }
 
     /**
@@ -148,6 +176,14 @@ export class WordSoupDisplay extends DisplayBase {
                 }
             });
         }
+
+
+
+        // Восстанавливаем скролл после завершения выделения
+        document.body.style.overflow = '';
+
+
+
 
         this.selectedCells = [];
         this.isSelecting = false;
@@ -277,6 +313,21 @@ export class WordSoupDisplay extends DisplayBase {
      * Настраивает обработчики событий
      */
     setupEventListeners() {
+        // Обработка перемещения за пределы сетки
+        document.addEventListener('touchmove', (e) => {
+            if(this.isSelecting) {
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                if(element && element.classList.contains('word-soup-cell')) {
+                    this.continueSelection(element);
+                }
+            }
+        }, { passive: false });
+
+
+
+
+
         // Отключаем выделение при выходе за пределы сетки
         document.addEventListener('mouseup', () => {
             if (this.isSelecting) {

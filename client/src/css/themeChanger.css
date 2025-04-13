@@ -11,6 +11,8 @@
 .theme-changer svg {
     display: block;
     cursor: pointer;
+    width: 32px;
+    height: 32px;
 }
 
 .theme-changer svg:hover {
@@ -27,3 +29,29 @@
     }
 }
 
+@media (max-width: 500px) {
+    .theme-changer {
+        gap: 10px;
+        padding: 5px 5px;
+        border-radius: 7px;
+    }
+
+    .theme-changer svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+
+@media (max-width: 820px) and (min-width: 501px) {
+    .theme-changer {
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 10px;
+    }
+
+    .theme-changer svg {
+        width: 30px;
+        height: 30px;
+    }
+}

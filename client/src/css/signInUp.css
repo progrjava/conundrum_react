@@ -33,3 +33,15 @@
     right: 30px;
     bottom: 30px;
 }
+
+
+@media (max-width: 820px) {
+    .sign-up-logotype {
+        display: none;
+    }
+
+    .sign-up-theme-changer {
+        right: 15px;
+        bottom: 15px;
+    }
+}

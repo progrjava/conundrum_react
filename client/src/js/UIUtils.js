@@ -45,7 +45,7 @@ export class UIUtils {
             elements.fileUploadInput.parentElement.style.display = selectedType === 'file' ? 'flex' : 'none';
 
             if (selectedType === 'text') {
-                elements.documentTextarea.parentElement.style.padding = '8px';
+                elements.documentTextarea.parentElement.style.padding = '3%';
                 elements.documentTextarea.parentElement.style.marginTop = '15px';
                 elements.topicInput.parentElement.style.padding = '0px';
                 elements.topicInput.parentElement.style.marginTop = '0px';
@@ -53,7 +53,7 @@ export class UIUtils {
             else if (selectedType === 'topic') {
                 elements.documentTextarea.parentElement.style.padding = '0px';
                 elements.documentTextarea.parentElement.style.marginTop = '0px';
-                elements.topicInput.parentElement.style.padding = '8px';
+                elements.topicInput.parentElement.style.padding = '3%';
                 elements.topicInput.parentElement.style.marginTop = '15px';
             }
             else if (selectedType === 'file') {

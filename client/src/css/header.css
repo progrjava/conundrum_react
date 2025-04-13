@@ -51,3 +51,24 @@
     transition: all 0.2s ease;
 }
 
+@media (max-width: 820px) {
+    .main-page-header {
+        padding: 10px 20px;
+        border-radius: 10px;
+        max-width: 85%;
+        margin: 10px auto 0 auto;
+    }
+
+    .main-page-header button{
+        padding: 5px 10px;
+        font-size: 16px;
+        line-height: 1.5;
+        border-radius: 10px;
+        font-weight: 400;
+    }
+
+    .start-button {
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+}
