@@ -133,22 +133,41 @@ app.post('/api/generate-game', upload.single('file-upload'), async (req, res) =>
     }
 });
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
-
 // Маршруты
 app.post('/lti/launch', validateLTIRequest, (req, res) => {
-    // После успешной проверки перенаправляем пользователя на страницу игры
-    res.redirect('/game-generator');
-});
+    // Получаем userId из сессии (установлен middleware)
+    const ltiUserId = req.session.userId;
+    // Получаем contextId из тела запроса (стандартное поле LTI)
+    const ltiContextId = req.body.context_id;
+    const clientUrl = process.env.CLIENT_URL;
 
-// Остальные маршруты для генерации игр и статических файлов
-app.get('/game-generator', (req, res) => {
-    res.sendFile(path.join(publicPath, 'game-generator.html'));
+    // Проверяем наличие необходимых данных
+    if (!ltiUserId || !ltiContextId || !clientUrl) {
+        console.error('LTI Launch Error: Missing userId (from session), contextId (from body), or CLIENT_URL');
+        // Убедись, что Moodle точно отправляет context_id
+        console.log('LTI Request Body:', req.body);
+        return res.status(400).send('LTI launch configuration error: Missing required parameters.');
+    }
+
+    // Формируем URL для редиректа на клиент с ПРАВИЛЬНЫМИ именами параметров
+    try {
+        const redirectUrl = new URL(clientUrl);
+        redirectUrl.pathname = '/game-generator'; 
+
+        redirectUrl.searchParams.append('lti', 'true');
+        redirectUrl.searchParams.append('user_id', ltiUserId); 
+        redirectUrl.searchParams.append('context_id', ltiContextId);
+
+        console.log(`LTI Launch (after validation): Redirecting user ${ltiUserId} from context ${ltiContextId} to ${redirectUrl.toString()}`);
+
+        // Выполняем редирект
+        res.redirect(redirectUrl.toString());
+
+    } catch (error) {
+        console.error("Error creating redirect URL:", error);
+        console.error("Client URL from .env:", clientUrl);
+        return res.status(500).send('Internal Server Error: Failed to create redirect URL.');
+    }
 });
 
 // Запуск сервера

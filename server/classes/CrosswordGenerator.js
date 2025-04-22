@@ -1,4 +1,4 @@
-  // Импорт необходимых модулей
+// Импорт необходимых модулей
 const clg = require('crossword-layout-generator');
 
 /**
@@ -60,13 +60,35 @@ class CrosswordGenerator {
                 'X-Title': 'Conundrum Game Generator',
                 'User-Agent': 'Conundrum/1.0.0'
             };
-
+            const responseFormat = {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "word_clue_pair",
+                    "strict": true, 
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "word": {
+                                "type": "string",
+                                "description": "A keyword related to the prompt topic. The keyword must be in their base form (lemma)."
+                            },
+                            "clue": {
+                                "type": "string",
+                                "description": "A concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Avoid direct clues, use paraphrases/analogies."
+                            }
+                        },
+                        "required": ["word", "clue"], // These properties MUST be present
+                        "additionalProperties": false // IMPORTANT: No extra properties allowed
+                    }
+                }
+            };
             const response = await fetch(this.openrouterApiUrl, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({
-                    model: "google/gemma-2-9b-it:free",
+                    model: "google/gemma-3-27b-it:free", 
                     messages: [{ role: "user", content: prompt }],
+                    response_format: responseFormat, 
                     top_p: 1,
                     temperature: 0.2,
                     frequency_penalty: 0.8,
@@ -141,18 +163,53 @@ class CrosswordGenerator {
 
             console.log("Текст перед парсингом:", cleanedMessageContent);
 
-            let wordsData;
+            let parsedData;
 
             try {
-                wordsData = JSON.parse(cleanedMessageContent);
+                parsedData = JSON.parse(cleanedMessageContent);
             } catch (jsonError) {
                 throw new Error("Нейросеть вернула невалидный JSON. Попробуйте повторить запрос.");
             }
 
-            // Проверка структуры данных после парсинга
-            if (!Array.isArray(wordsData) || !wordsData.every(item => typeof item === 'object' && item.hasOwnProperty('word') && item.hasOwnProperty('clue'))) {
-                throw new Error('Неверная структура данных от нейросети');
+            const wordsData = parsedData.map(item => {
+                if (typeof item !== 'object' || item === null) {
+                    console.warn("Найден не объектный элемент в массиве от нейросети:", item);
+                    // Возвращаем null, чтобы потом отфильтровать невалидные элементы
+                    return null;
+                }
+                const normalizedItem = {};
+                let hasWord = false;
+                let hasClue = false;
+                for (const key in item) {
+                    // Проверяем, что это собственное свойство объекта
+                    if (Object.hasOwnProperty.call(item, key)) {
+                        const trimmedKey = key.trim(); // Обрезаем пробелы с ключа
+                        normalizedItem[trimmedKey] = item[key]; // Присваиваем значение новому объекту
+                        // Запоминаем, что нужные ключи встретились (даже если были с пробелами)
+                        if (trimmedKey === 'word') hasWord = true;
+                        if (trimmedKey === 'clue') hasClue = true;
+                    }
+                }
+                 // Убеждаемся, что оба ключа ('word', 'clue') теперь есть в нормализованном объекте
+                if (!hasWord || !hasClue) {
+                    console.warn('Элемент не содержит "word" или "clue" после нормализации ключей:', item, '->', normalizedItem);
+                    return null; // Помечаем элемент как невалидный для фильтрации
+                }
+                return normalizedItem;
+            }).filter(item => item !== null); // Убираем невалидные (null) элементы из массива
+
+            if (!Array.isArray(wordsData)) {
+                // Эта ошибка маловероятна после .map().filter(), но оставим как защиту
+                console.error("Результат после нормализации не является массивом:", wordsData);
+                throw new Error('Неверная структура данных от нейросети (ошибка после нормализации)');
             }
+
+            // Дополнительная проверка: убедимся, что массив не пустой после фильтрации
+            if (wordsData.length === 0) {
+                 console.error("После очистки и нормализации не осталось валидных слов.", "Исходные данные после парсинга:", parsedData);
+                 throw new Error('Нейросеть не вернула валидных слов или все они были отфильтрованы.');
+            }
+
 
             // Генерация кроссворда
             const layout = clg.generateLayout(wordsData.map(item => ({
@@ -162,10 +219,11 @@ class CrosswordGenerator {
 
             // Обновляем ответы в layout без пробелов, но сохраняем оригинальные слова
             layout.result.forEach(wordData => {
-                const originalWord = wordsData.find(item => 
+                const originalWordData = wordsData.find(item =>
                     item.word.replace(/\s+/g, '').toUpperCase() === wordData.answer.toUpperCase()
-                )?.word;
-                
+                );
+                const originalWord = originalWordData ? originalWordData.word : wordData.answer; // Запасной вариант
+
                 wordData.originalWord = originalWord; // Сохраняем оригинальное слово с пробелами
                 wordData.word = originalWord; // Добавляем также в поле word для совместимости
                 wordData.answer = wordData.answer.replace(/\s+/g, ''); // Версия без пробелов для сетки
@@ -191,9 +249,9 @@ class CrosswordGenerator {
 
         } catch (error) {
             // Проверяем, является ли ошибка ошибкой API
-            if (error.response) {
+             if (error.response) { 
                 throw new Error(`Ошибка API запроса: ${error.response.data.error || error.response.statusText}`);
-            }
+             }
             // Если это наша собственная ошибка, пробрасываем её дальше
             throw error;
         }
@@ -210,11 +268,11 @@ class CrosswordGenerator {
         layout.result.forEach((wordData, index) => {
             // Используем версию слова без пробелов для сетки
             const wordForGrid = wordData.answer.toUpperCase();
-            
+
             if (wordForGrid && wordData.orientation !== 'none') {
                 let x = wordData.startx - 1;
                 let y = wordData.starty - 1;
-                
+
                 // Базовая проверка координат
                 if (x < 0 || y < 0 || x >= layout.cols || y >= layout.rows) {
                     console.warn(`Пропуск слова ${wordForGrid}: некорректные начальные координаты`);
@@ -224,13 +282,15 @@ class CrosswordGenerator {
                 for (let i = 0; i < wordForGrid.length; i++) {
                     let currentX = wordData.orientation === 'across' ? x + i : x;
                     let currentY = wordData.orientation === 'across' ? y : y + i;
-                    
+
                     // Проверка выхода за границы
                     if (currentX >= layout.cols || currentY >= layout.rows) {
                         console.warn(`Пропуск слова ${wordForGrid}: выход за границы сетки`);
                         return;
                     }
-
+                    if (grid[currentY][currentX] !== '' && grid[currentY][currentX] !== wordForGrid[i]) {
+                         console.warn(`Конфликт букв в ячейке (${currentX}, ${currentY}) для слова ${wordForGrid}. Существующая: ${grid[currentY][currentX]}, Новая: ${wordForGrid[i]}`);
+                    }
                     grid[currentY][currentX] = wordForGrid[i];
                 }
             }
