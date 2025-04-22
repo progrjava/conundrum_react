@@ -29,18 +29,9 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-    ? process.env.ALLOWED_ORIGINS.split(',') 
-    : ['http://localhost:3000', 'http://localhost:3001'];
+const allowedOrigin = process.env.ALLOWED_ORIGINS 
 app.use(cors({
-    origin: function(origin, callback) {
-        if (!origin) return callback(null, true);
-        
-        if (allowedOrigins.indexOf(origin) === -1) {
-            return callback(new Error('CORS policy violation'), false);
-        }
-        return callback(null, true);
-    },
+    origin: allowedOrigin,
     methods: ['GET', 'POST'],
     credentials: true
 }));
