@@ -60,35 +60,12 @@ class CrosswordGenerator {
                 'X-Title': 'Conundrum Game Generator',
                 'User-Agent': 'Conundrum/1.0.0'
             };
-            const responseFormat = {
-                "type": "json_schema",
-                "json_schema": {
-                    "name": "word_clue_pair",
-                    "strict": true, 
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "word": {
-                                "type": "string",
-                                "description": "A keyword related to the prompt topic. The keyword must be in their base form (lemma)."
-                            },
-                            "clue": {
-                                "type": "string",
-                                "description": "A concise, accurate, and unambiguous definition, question, or short description suitable for a word puzzle. Avoid direct clues, use paraphrases/analogies."
-                            }
-                        },
-                        "required": ["word", "clue"], // These properties MUST be present
-                        "additionalProperties": false // IMPORTANT: No extra properties allowed
-                    }
-                }
-            };
             const response = await fetch(this.openrouterApiUrl, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({
                     model: "google/gemma-3-27b-it:free", 
                     messages: [{ role: "user", content: prompt }],
-                    response_format: responseFormat, 
                     top_p: 1,
                     temperature: 0.2,
                     frequency_penalty: 0.8,
@@ -108,14 +85,14 @@ class CrosswordGenerator {
                 throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
             }
 
-            const data = await response.json();
-            let messageContent = data.choices?.[0]?.message?.content;
-
-            if (!messageContent || messageContent.trim().length === 0) {
-                throw new Error("Нейросеть не сгенерировала текст. Попробуйте изменить запрос или повторите попытку позже.");
+            const responseData = await response.json();
+            const generatedText = responseData?.choices?.[0]?.message?.content;
+            
+            if (!generatedText) {
+                throw new Error('Нейросеть не сгенерировала текст...');
             }
 
-            let originalContent = messageContent.replace(/```json/g, '').trim();
+            let originalContent = generatedText.replace(/```json/g, '').trim();
             let cleanedMessageContent = originalContent;
             
             // 1. Удаление одинарных кавычек по краям
@@ -242,7 +219,7 @@ class CrosswordGenerator {
             return {
                 crossword: crosswordGrid,
                 words: displayWords,
-                rawResponse: data,
+                rawResponse: responseData,
                 parsedWords: wordsData,
                 layout: layout
             };

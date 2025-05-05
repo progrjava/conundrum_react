@@ -7,6 +7,7 @@ const path = require('path');
 const multer = require('multer');
 const session = require('express-session');
 const { initializeLTI } = require('./middleware/ltiMiddleware');
+const { sendGradeToMoodle } = require('./services/ltiService');
 
 const CrosswordGenerator = require('./classes/CrosswordGenerator');
 const WordSoupGenerator = require('./classes/WordSoupGenerator');
@@ -122,6 +123,62 @@ app.post('/api/generate-game', upload.single('file-upload'), async (req, res) =>
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
+});
+
+app.post('/api/lti/submit-score', express.json(), async (req, res) => {
+    console.log('Received request to submit score:', req.body);
+
+    if (!req.session || !req.session.lti) {
+        console.warn('Submit score attempt without active LTI session.');
+        return res.status(403).json({ error: 'Forbidden: No active LTI session.' });
+    }
+    const { lis_outcome_service_url, lis_result_sourcedid } = req.session;
+    if (!lis_outcome_service_url || !lis_result_sourcedid) {
+        console.error('Missing LTI outcome URL or sourcedId in session.');
+        return res.status(400).json({ error: 'Bad Request: Missing necessary LTI parameters in session for grade submission.' });
+    }
+
+    const { score, totalScore } = req.body;
+    if (score === undefined || score === null || totalScore === undefined || totalScore === null || isNaN(score) || isNaN(totalScore)) {
+        console.error('Invalid score or totalScore received:', req.body);
+        return res.status(400).json({ error: 'Bad Request: Invalid or missing score/totalScore.' });
+    }
+
+    const consumerKey = process.env.LTI_KEY;
+    const consumerSecret = process.env.LTI_SECRET;
+    if (!consumerKey || !consumerSecret) {
+        console.error('LTI_KEY or LTI_SECRET is not configured on the server.');
+        return res.status(500).json({ error: 'Internal Server Error: LTI credentials not configured.' });
+    }
+
+    try {
+        const success = await sendGradeToMoodle(
+            lis_outcome_service_url,
+            lis_result_sourcedid,
+            parseFloat(score),
+            parseFloat(totalScore),
+            consumerKey,
+            consumerSecret
+        );
+
+        if (success) {
+            res.status(200).json({ message: 'Score submitted successfully to Moodle.' });
+        } else {
+            res.status(500).json({ error: 'Failed to submit score to Moodle for an unknown reason.' });
+        }
+    } catch (error) {
+        console.error('Error occurred during grade submission process:', error);
+        res.status(500).json({
+            error: 'Failed to submit score to Moodle.',
+            details: error.message || 'Unknown error'
+        });
+    }
+});
+
+app.post('/api/track-activity', express.json(), async (req, res) => {
+    console.log('Received tracking data:', req.body);
+    console.log('Tracking data successfully processed (simulated save).');
+    res.status(200).json({ message: 'Activity tracked successfully' });
 });
 
 // Маршруты

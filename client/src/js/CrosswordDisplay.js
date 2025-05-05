@@ -11,8 +11,10 @@ export class CrosswordDisplay extends DisplayBase {
      * Отображает сетку кроссворда и слова
      * @param {Array<Array<string>>} grid - Двумерный массив, представляющий сетку кроссворда
      * @param {Array<Object>} words - Массив объектов слов, содержащих позицию и ориентацию
+     * @param {function} handleAttemptCallback - Колбэк для записи попытки
+     * @param {function} handleGameCompleteCallback - Колбэк завершения игры
      */
-    static displayCrossword(grid, words) {
+    static displayCrossword(grid, words, handleAttemptCallback, handleGameCompleteCallback) {
         console.log("Сетка в displayCrossword:", grid);
         console.log("Слова в displayCrossword:", words);
 
@@ -84,7 +86,9 @@ export class CrosswordDisplay extends DisplayBase {
                 }
 
                 const validateInput = (input) => {
-                    return input === event.target.parentNode.dataset.correctLetter;
+                    const isCorrect = input === event.target.parentNode.dataset.correctLetter;
+                    handleAttemptCallback(isCorrect); // Вызываем колбэк для записи попытки
+                    return isCorrect;
                 };
 
                 const onValidInput = (input) => {
@@ -93,7 +97,10 @@ export class CrosswordDisplay extends DisplayBase {
                     if (nextInput) {
                         nextInput.focus();
                     }
-                    GameStateManager.checkCrosswordSolved();
+                    // Проверяем, решен ли кроссворд
+                    if (GameStateManager.checkCrosswordSolved()) {
+                        handleGameCompleteCallback(); // Вызываем колбэк завершения
+                    }
                 };
 
                 const onInvalidInput = (input) => {

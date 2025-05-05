@@ -3,13 +3,15 @@ import { elements } from './elements.js';
 import { CluesDisplay } from './CluesDisplay.js';
 
 export class WordSoupDisplay extends DisplayBase {
-    constructor(gameData) {
+    constructor(gameData, handleAttemptCallback, handleGameCompleteCallback) {
         super();
         this.gameData = gameData;
         this.selectedCells = [];
         this.isSelecting = false;
         this.foundWords = new Set();
-        this.currentDirection = null; // Добавляем свойство для хранения текущего направления
+        this.currentDirection = null;
+        this.handleAttemptCallback = handleAttemptCallback;
+        this.handleGameCompleteCallback = handleGameCompleteCallback;
         this.setupEventListeners();
     }
 
@@ -110,7 +112,10 @@ export class WordSoupDisplay extends DisplayBase {
      * Заканчивает выделение и проверяет слово
      */
     endSelection() {
-        if (!this.isSelecting || this.selectedCells.length === 0) return;
+        if (!this.isSelecting || this.selectedCells.length === 0) {
+            this.isSelecting = false;
+            return;
+        }
 
         const selectedWord = this.getSelectedWord();
         const reversedWord = selectedWord.split('').reverse().join('');
@@ -120,7 +125,10 @@ export class WordSoupDisplay extends DisplayBase {
             return cleanWord === selectedWord || cleanWord === reversedWord;
         });
 
+        let isCorrectAttempt = false;
+
         if (foundWord && !this.foundWords.has(foundWord.word)) {
+            isCorrectAttempt = true;
             this.foundWords.add(foundWord.word);
             
             this.selectedCells.forEach(cell => {
@@ -134,9 +142,11 @@ export class WordSoupDisplay extends DisplayBase {
             }
 
             if (this.foundWords.size === this.gameData.words.length) {
-                setTimeout(() => this.showVictoryMessage(), 500);
+                this.handleGameCompleteCallback();
+                setTimeout(() => this.showVictoryMessage(), 100);
             }
         } else {
+            isCorrectAttempt = false;
             this.selectedCells.forEach(cell => {
                 if (!cell.classList.contains('found')) {
                     cell.classList.remove('selected');
@@ -149,9 +159,11 @@ export class WordSoupDisplay extends DisplayBase {
             });
         }
 
+        this.handleAttemptCallback(isCorrectAttempt);
+
         this.selectedCells = [];
         this.isSelecting = false;
-        this.currentDirection = null; // Сбрасываем направление
+        this.currentDirection = null;
     }
 
     /**

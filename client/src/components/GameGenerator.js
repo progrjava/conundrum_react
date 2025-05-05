@@ -67,9 +67,21 @@ class GameGenerator extends Component {
         this.activityTracker.stopTracking();
     }
 
+    calculateScore() {
+        const stats = this.activityTracker.getStats();
+        console.log("Calculating score based on stats:", stats);
+        if (!stats) return 0;
+
+        let score = stats.attempts > 0 ? parseFloat(stats.accuracy) : 0;
+        score = Math.max(0, Math.min(100, Math.round(score)));
+        console.log("Final calculated score:", score);
+        return score;
+    }
+
     handleSubmit = async (event) => {
         event.preventDefault();
-        
+        this.activityTracker.startTracking();
+
         try {
             // Получение значений из формы
             const gameType = document.querySelector('input[name="gameType"]:checked')?.value;
@@ -131,32 +143,43 @@ class GameGenerator extends Component {
             const data = await response.json();
     
             // Отображение игры в зависимости от выбранного типа
+            const handleAttemptCallback = (isCorrect) => {
+                this.activityTracker.recordAttempt(isCorrect);
+            };
+
+            const handleGameCompleteCallback = async () => {
+                console.log("handleGameCompleteCallback triggered!");
+                if (this.props.ltiUserId) {
+                    const finalScore = this.calculateScore();
+                    console.log(`Submitting score ${finalScore} for LTI user ${this.props.ltiUserId}`);
+                    await this.submitLTIScore(finalScore);
+                    this.activityTracker.stopTracking();
+                } else {
+                    console.log("Game complete (non-LTI mode). Stats:", this.activityTracker.getStats());
+                    this.activityTracker.stopTracking();
+                }
+            };
+
+            this.activityTracker.recordGameGenerated({
+                gameType: gameType,       // Тип игры (crossword/wordsoup)
+                inputType: inputType,     // Тип ввода (text/topic/file)
+                totalWords: totalWords    // Запрошенное кол-во слов
+                // Можно добавить еще данные, если нужно
+            })
+
             if (gameType === 'wordsoup') {
                 if (data.grid && data.words) {
-                    const display = new WordSoupDisplay(data);
+                    const display = new WordSoupDisplay(data, handleAttemptCallback, handleGameCompleteCallback);
                     display.display();
                 } else {
                     UIUtils.showError('Не удалось получить данные для игры');
                 }
             } else {
                 if (data.crossword && data.layout.result) {
-                    CrosswordDisplay.displayCrossword(data.crossword, data.layout.result);
+                    CrosswordDisplay.displayCrossword(data.crossword, data.layout.result, handleAttemptCallback, handleGameCompleteCallback);
                 } else {
                     UIUtils.showError('Не удалось получить данные кроссворда');
                 }
-            }
-
-           // После успешной генерации игры, отправляем данные и оценку в Moodle (если это LTI режим)
-            if (this.props.ltiUserId) {
-                const calculatedScore = this.calculateScore();
-                // await this.submitLTIScore(calculatedScore); // Возможно, временно закомментировать
-                /*
-                this.activityTracker.trackPuzzleCompletion({
-                    gameType,
-                    inputType,
-                    totalWords
-                });
-                */
             }
 
         } catch (error) {
@@ -225,11 +248,6 @@ class GameGenerator extends Component {
         this.setState((prevState) => ({
         isSettingsOpen: !prevState.isSettingsOpen,
         }));
-    }
-
-    calculateScore() {
-        // Implement logic to calculate the game score
-        return 75; // Example score
     }
 
     submitLTIScore = async (score) => {
@@ -475,7 +493,6 @@ class GameGenerator extends Component {
                             <div id="clues-container" ref={this.cluesContainerRef} style={{ padding: '0px' }}></div> 
                         </section>
                     </section>
-                    
                     
                     {!isLTI && (
                         <div className='game-theme-changer'>
