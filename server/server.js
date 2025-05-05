@@ -43,11 +43,16 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.set('trust proxy', 1); 
+
 app.use(session({
-    secret: process.env.SESSION_SECRET, // Используем переменную окружения
-    resave: false,
+    secret: process.env.SESSION_SECRET, 
     saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        httpOnly: true
+    }
 }));
 
 app.post('/api/generate-game', upload.single('file-upload'), async (req, res) => {
