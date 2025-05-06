@@ -4,7 +4,7 @@ import MainPage from './components/MainPage';
 import SignInUp from './components/SignInUp';
 import PersonalAccount from './components/PersonalAccount';
 import GameGenerator from './components/GameGenerator';
-import { initializeSupabase } from './config/supabaseClient'; // Убрали getSupabaseClient
+import { initializeSupabase } from './config/supabaseClient';
 import { UIUtils } from './js/UIUtils';
 
 const AppContent = () => {
@@ -17,6 +17,11 @@ const AppContent = () => {
     const toggleTheme = () => {
         setIsBlackTheme(!isBlackTheme);
     };
+
+    // Определяем LTI режим
+    const isLTI = window.location.search.includes('lti=true');
+    const ltiUserId = isLTI ? new URLSearchParams(window.location.search).get('user_id') : null;
+    const ltiContextId = new URLSearchParams(window.location.search).get('context_id');
 
     // Initialize Supabase
     useEffect(() => {
@@ -114,8 +119,21 @@ const AppContent = () => {
         return <div className="loading">Загрузка...</div>;
     }
 
-    const ltiUserId = new URLSearchParams(window.location.search).get('user_id');
-    const ltiContextId = new URLSearchParams(window.location.search).get('context_id');
+    // Если это LTI режим, сразу перенаправляем на GameGenerator
+    if (isLTI) {
+        return (
+            <div className={isBlackTheme ? 'black-theme' : 'white-theme'}>
+                <GameGenerator
+                    isBlackTheme={isBlackTheme}
+                    toggleTheme={toggleTheme}
+                    user={user}
+                    supabase={supabaseInstance}
+                    ltiUserId={ltiUserId}
+                    ltiContextId={ltiContextId}
+                />
+            </div>
+        );
+    }
 
     return (
         <Router>

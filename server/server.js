@@ -7,6 +7,7 @@ const path = require('path');
 const multer = require('multer');
 const session = require('express-session');
 const { initializeLTI } = require('./middleware/ltiMiddleware');
+const { sendGradeToMoodle } = require('./services/ltiService');
 
 const CrosswordGenerator = require('./classes/CrosswordGenerator');
 const WordSoupGenerator = require('./classes/WordSoupGenerator');
@@ -29,19 +30,9 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',') 
-    : ['http://localhost:3000', 'http://localhost:3001'];
+const allowedOrigin = process.env.ALLOWED_ORIGINS 
 app.use(cors({
-    origin: function(origin, callback) {
-        if (!origin) return callback(null, true);
-        
-        if (allowedOrigins.indexOf(origin) === -1) {
-            return callback(new Error('CORS policy violation'), false);
-        }
-        return callback(null, true);
-    },
-    //origin: ['http://localhost:3000', 'http://192.168.0.102:3000'],
+    origin: allowedOrigin,
     methods: ['GET', 'POST'],
     credentials: true
 }));
@@ -52,11 +43,16 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.set('trust proxy', 1); 
+
 app.use(session({
-    secret: process.env.SESSION_SECRET, // Используем переменную окружения
-    resave: false,
+    secret: process.env.SESSION_SECRET, 
     saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        httpOnly: true
+    }
 }));
 
 app.post('/api/generate-game', upload.single('file-upload'), async (req, res) => {
@@ -134,22 +130,114 @@ app.post('/api/generate-game', upload.single('file-upload'), async (req, res) =>
     }
 });
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
+app.post('/api/lti/submit-score', express.json(), async (req, res) => {
+    console.log('Received request to submit score:', req.body);
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    if (!req.session || !req.session.lti) {
+        console.warn('Submit score attempt without active LTI session.');
+        return res.status(403).json({ error: 'Forbidden: No active LTI session.' });
+    }
+    const { lis_outcome_service_url, lis_result_sourcedid } = req.session;
+    if (!lis_outcome_service_url || !lis_result_sourcedid) {
+        console.error('Missing LTI outcome URL or sourcedId in session.');
+        return res.status(400).json({ error: 'Bad Request: Missing necessary LTI parameters in session for grade submission.' });
+    }
+
+    const { score, totalScore } = req.body;
+    if (score === undefined || score === null || totalScore === undefined || totalScore === null || isNaN(score) || isNaN(totalScore)) {
+        console.error('Invalid score or totalScore received:', req.body);
+        return res.status(400).json({ error: 'Bad Request: Invalid or missing score/totalScore.' });
+    }
+
+    const consumerKey = process.env.LTI_KEY;
+    const consumerSecret = process.env.LTI_SECRET;
+    if (!consumerKey || !consumerSecret) {
+        console.error('LTI_KEY or LTI_SECRET is not configured on the server.');
+        return res.status(500).json({ error: 'Internal Server Error: LTI credentials not configured.' });
+    }
+
+    // Получаем ПОЛНЫЙ sourcedId из сессии
+    const rawSourcedId = lis_result_sourcedid;
+
+    // ПАРСИМ JSON и извлекаем ТОЛЬКО HASH
+    let sourcedIdToSend;
+    try {
+        const parsedSourcedId = JSON.parse(rawSourcedId);
+        sourcedIdToSend = parsedSourcedId.hash; // Берем только значение поля hash
+        if (!sourcedIdToSend) {
+            throw new Error("Required 'hash' property not found in parsed sourcedId JSON.");
+        }
+        console.log(`Extracted hash from sourcedId: ${sourcedIdToSend}`);
+    } catch (parseError) {
+        console.error(`Failed to parse lis_result_sourcedid JSON or find hash: ${rawSourcedId}`, parseError);
+        return res.status(500).json({ error: 'Internal Server Error: Could not process sourcedId from session.' });
+    }
+
+    try {
+        const success = await sendGradeToMoodle(
+            lis_outcome_service_url,
+            sourcedIdToSend, // Используем извлеченный hash
+            parseFloat(score),
+            parseFloat(totalScore),
+            consumerKey,
+            consumerSecret
+        );
+
+        if (success) {
+            res.status(200).json({ message: 'Score submitted successfully to Moodle.' });
+        } else {
+            res.status(500).json({ error: 'Failed to submit score to Moodle for an unknown reason.' });
+        }
+    } catch (error) {
+        console.error('Error occurred during grade submission process:', error);
+        res.status(500).json({
+            error: 'Failed to submit score to Moodle.',
+            details: error.message || 'Unknown error'
+        });
+    }
+});
+
+app.post('/api/track-activity', express.json(), async (req, res) => {
+    console.log('Received tracking data:', req.body);
+    console.log('Tracking data successfully processed (simulated save).');
+    res.status(200).json({ message: 'Activity tracked successfully' });
 });
 
 // Маршруты
 app.post('/lti/launch', validateLTIRequest, (req, res) => {
-    // После успешной проверки перенаправляем пользователя на страницу игры
-    res.redirect('/game-generator');
-});
+    // Получаем userId из сессии (установлен middleware)
+    const ltiUserId = req.session.userId;
+    // Получаем contextId из тела запроса (стандартное поле LTI)
+    const ltiContextId = req.body.context_id;
+    const clientUrl = process.env.CLIENT_URL;
 
-// Остальные маршруты для генерации игр и статических файлов
-app.get('/game-generator', (req, res) => {
-    res.sendFile(path.join(publicPath, 'game-generator.html'));
+    // Проверяем наличие необходимых данных
+    if (!ltiUserId || !ltiContextId || !clientUrl) {
+        console.error('LTI Launch Error: Missing userId (from session), contextId (from body), or CLIENT_URL');
+        // Убедись, что Moodle точно отправляет context_id
+        console.log('LTI Request Body:', req.body);
+        return res.status(400).send('LTI launch configuration error: Missing required parameters.');
+    }
+
+    // Формируем URL для редиректа на клиент с ПРАВИЛЬНЫМИ именами параметров
+    try {
+        const redirectUrl = new URL(clientUrl);
+        redirectUrl.pathname = '/game-generator'; 
+
+        redirectUrl.searchParams.append('lti', 'true');
+        redirectUrl.searchParams.append('user_id', ltiUserId); 
+        redirectUrl.searchParams.append('context_id', ltiContextId);
+
+        console.log(`LTI Launch (after validation): Redirecting user ${ltiUserId} from context ${ltiContextId} to ${redirectUrl.toString()}`);
+
+        // Выполняем редирект
+        res.redirect(redirectUrl.toString());
+
+    } catch (error) {
+        console.error("Error creating redirect URL:", error);
+        console.error("Client URL from .env:", clientUrl);
+        return res.status(500).send('Internal Server Error: Failed to create redirect URL.');
+    }
 });
 
 // Запуск сервера
