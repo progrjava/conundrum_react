@@ -18,6 +18,8 @@
 .back-to-main-page {
     cursor: pointer;
     display: block;
+    width: 40px;
+    height: 40px;
 }
 
 .back-to-main-page:hover path{
@@ -123,6 +125,8 @@
     display: block;
     cursor: pointer;
     flex-shrink: 0; 
+    width: 24px;
+    height: 24px;
 }
 
 .birthday-role-gender-input {
@@ -301,3 +305,218 @@
     color: #ED7E98;
 }
 
+@media (max-width: 500px) {
+    .register-account {
+        width: calc(90% - 50px);
+        max-width: 85%;
+        padding: 25px;
+        margin: auto auto;
+    }
+
+    .back-to-main-page { 
+        width: 30px;
+        height: 30px;
+    }
+
+    .register-title {
+        line-height: 36px;
+        margin: 10px 0 30px 0;
+        font-weight: 500;
+        font-size: 24px;
+    }
+
+    .if-have-account {
+        gap: 10px;
+        margin-bottom: 28px;
+    }
+
+    .if-have-account p {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+    }
+
+    .sign-in-button {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+    }
+    
+    .reg-input-data {
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .reg-login-input, .reg-password-input {
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+        padding: 5px 15px;
+    }
+
+    .reg-input-password-div {
+        border-radius: 10px;
+        padding: 0;
+    }
+
+    .eye-open, .eye-closed {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .birthday-role-gender-input {
+        gap: 10px;
+    }
+
+    .reg-role {
+        border-radius: 10px;
+        padding: 5px 12px;
+        max-width: calc(62% - 25px);
+    }
+    
+    .reg-role-select {
+        font-size: 14px;
+        line-height: 21px;
+        background-size: 20px 20px; 
+    }
+    
+    .reg-gender {
+        border-radius: 10px;
+        flex: 1;
+        padding: 5px 12px;
+    }
+    
+    
+    .reg-gender-select {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+        background-size: 20px 20px;
+    }
+
+    .create-account-message {
+        margin-top: 25px;
+        font-size: 14px;
+        line-height: 21px;
+        color:#14c700;
+    }
+    
+    .create-account-button {
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        margin-top: 100px;
+        margin-bottom: 20px;
+    }
+}
+
+
+
+@media (max-width: 820px) and (min-width: 501px) {
+    .register-account {
+        width: calc(60% - 70px);
+        max-width: 85%;
+        padding: 35px;
+        margin: auto auto;
+    }
+
+    .back-to-main-page { 
+        width: 35px;
+        height: 35px;
+    }
+
+    .register-title {
+        line-height: 39px;
+        margin: 10px 0 30px 0;
+        font-weight: 500;
+        font-size: 26px;
+    }
+
+    .if-have-account {
+        gap: 10px;
+        margin-bottom: 28px;
+    }
+
+    .if-have-account p {
+        font-weight: 400;
+    }
+
+    .sign-in-button {
+        font-weight: 400;
+    }
+    
+    .reg-input-data {
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .reg-login-input, .reg-password-input {
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        padding: 5px 15px;
+    }
+
+    .reg-input-password-div {
+        border-radius: 10px;
+        padding: 0;
+    }
+
+    .eye-open, .eye-closed {
+        width: 22px;
+        height: 22px;
+        margin-right: 10px;
+    }
+
+    .birthday-role-gender-input {
+        gap: 10px;
+    }
+
+    .reg-role {
+        border-radius: 10px;
+        padding: 5px 12px;
+        max-width: calc(70% - 35px);
+    }
+    
+    .reg-role-select {
+        font-size: 16px;
+        line-height: 24px;
+        background-size: 23px 23px; 
+    }
+    
+    .reg-gender {
+        border-radius: 10px;
+        flex: 1;
+        padding: 5px 12px;
+    }
+    
+    
+    .reg-gender-select {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        background-size: 23px 23px;
+    }
+
+    .create-account-message {
+        margin-top: 25px;
+        font-size: 16px;
+        line-height: 24px;
+        color:#14c700;
+    }
+    
+    .create-account-button {
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 27px;
+        margin-top: 100px;
+        margin-bottom: 20px;
+    }
+}

@@ -8,7 +8,7 @@ export class CluesDisplay {
      */
     static displayCrosswordClues(words) {
         const cluesContainer = document.getElementById('clues-container');
-        cluesContainer.style.padding = '50px';
+        cluesContainer.style.padding = '5%';
         cluesContainer.innerHTML = '';
   
         const acrossClues = words.filter(wordData => wordData.orientation === 'across')
@@ -29,7 +29,7 @@ export class CluesDisplay {
      */
     static displayWordSoupClues(words) {
         const cluesContainer = document.getElementById('clues-container');
-        cluesContainer.style.padding = '50px';
+        cluesContainer.style.padding = '5%';
         cluesContainer.innerHTML = '';
   
         // Преобразуем слова в формат для отображения
@@ -67,8 +67,7 @@ export class CluesDisplay {
             // Создание SVG элемента
             const showAnswerButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             showAnswerButton.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            showAnswerButton.setAttribute('width', '24');
-            showAnswerButton.setAttribute('height', '24');
+            showAnswerButton.setAttribute('viewBox', '0 0 24 24');
             showAnswerButton.setAttribute('fill', 'none');
             showAnswerButton.classList.add('show-answer-button'); // Добавляем класс для стилей
 

@@ -40,13 +40,13 @@ const SignInField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
     return (
         <section className='login-account'>
             <div className='login-account-info'>
-                <svg onClick={goToMainPage} className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
+                <svg onClick={goToMainPage} className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" viewBox='0 0 40 40' fill="none">
                     <path stroke="#FBFBFE"  stroke-linecap="round" stroke-linejoin="round" 
                         stroke-width="4" d="M25 30 15 20l10-10"/>
                 </svg>
                 <p className='login-title'>Здравствуйте!</p>
                 <div className='if-have-not-account'>
-                    <p>У вас нет аккаунта?</p>
+                    <p>Нет аккаунта?</p>
                     <button className='sign-up-button' onClick={switchLoginProcess}>
                         Зарегистрироваться!
                     </button>
@@ -73,8 +73,7 @@ const SignInField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                             <svg 
                                 className={isPasswordVisible ? 'eye-open' : 'eye-closed'}
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="24" 
-                                height="24" 
+                                viewBox="0 0 24 24"
                                 fill="none" 
                                 stroke-width="2" 
                                 color="#000"

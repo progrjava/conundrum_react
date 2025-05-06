@@ -295,7 +295,7 @@ class GameGenerator extends Component {
                 {!isLTI && (
                     <header className={`main-page-header ${isAboutVisible || isManualVisible ? 'hidden' : ''}`} id='game-header'>
                         <div className='go-to-profile' id='game-go-to-profile' onClick={this.navToProfile}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 40 40' fill="none">
                                 <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                 d="M8 33.333v-1.666C8 25.223 13.223 20 19.667 20c6.443 0 11.666 5.223 11.666 11.667v1.666"/>
                                 <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -326,7 +326,7 @@ class GameGenerator extends Component {
                     <section className={`game-generator-slidebar-visible ${isSlidebarVisible ? 'visible' : ''}`}>
                         <div className='generator-slidebar-visible'>
                             <div className='game-menu-handler-open' onClick={this.toggleSlidebar}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
                                     <rect width="32" height="32" x="32" y="32" fill="#FBFBFE" fill-opacity="1" rx="16" 
                                     transform="rotate(180 32 32)"/>
                                     <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -338,7 +338,7 @@ class GameGenerator extends Component {
                             onClick={this.toggleFormCreatingPuzzle}>
                                 {isFormCreatingPuzzle ?
                                 <>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" transform='rotate(45)'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none" transform='rotate(45)'>
                                         <path fill="#FBFBFE" fill-rule="evenodd" d="M16 1.667C8.084 1.667 1.667 8.084 
                                         1.667 16S8.084 30.333 16 30.333 30.333 23.916 30.333 16 23.916 1.667 16 1.667Zm1 
                                         9a1 1 0 0 0-2 0V15h-4.333a1 1 0 1 0 0 2H15v4.333a1 1 0 1 0 2 0V17h4.333a1 1 0 1 0 
@@ -348,7 +348,7 @@ class GameGenerator extends Component {
                                 </>
                                 : 
                                 <>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
                                         <path fill="#FBFBFE" fill-rule="evenodd" d="M16 1.667C8.084 1.667 1.667 8.084 
                                         1.667 16S8.084 30.333 16 30.333 30.333 23.916 30.333 16 23.916 1.667 16 1.667Zm1 
                                         9a1 1 0 0 0-2 0V15h-4.333a1 1 0 1 0 0 2H15v4.333a1 1 0 1 0 2 0V17h4.333a1 1 0 1 0 
@@ -443,7 +443,7 @@ class GameGenerator extends Component {
                                                     name='file-upload'/>
 
                                                     <label for="file-upload" className="file-input-label">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
                                                             <path fill="#FBFBFE" fill-rule="evenodd" d="M4.8 3A1.8 1.8 0 0 0 3 4.8v22.4A1.8 1.8 0 0 0 4.8 29h22.4a1.8 1.8 0 0 0 1.8-1.8V4.8A1.8 1.8 0 0 0 27.2 3H4.8ZM17 12a1 1 0 1 0-2 0v3h-3a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 1 0 0-2h-3v-3Z" clip-rule="evenodd"/>
                                                         </svg>
                                                     </label>
@@ -480,7 +480,7 @@ class GameGenerator extends Component {
                                 </form>
                             </div>
                             <div className='game-my-puzzles-open'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
                                     <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                     d="M10.667 8h16M5.333 8.013 5.347 8M5.333 16.013l.014-.015M5.333 24.013l.014-.015M10.667 
                                     16h16M10.667 24h16"/>
