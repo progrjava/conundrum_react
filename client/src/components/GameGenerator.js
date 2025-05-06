@@ -256,6 +256,7 @@ class GameGenerator extends Component {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/lti/submit-score`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -266,13 +267,14 @@ class GameGenerator extends Component {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to submit score');
+                const errorData = await response.json();
+                console.error('Score submission error:', errorData);
+                throw new Error(`Failed to submit score: ${errorData.error || response.statusText}`);
             }
 
-            //this.setState({ ltiScore: score }); // set state is not needed
+            console.log('Score submitted successfully');
         } catch (error) {
             console.error('Error submitting LTI score:', error);
-            // Показать пользователю сообщение об ошибке
         }
     };
     render() {
