@@ -195,7 +195,6 @@ export class WordSoupDisplay extends DisplayBase {
         this.handleAttemptCallback(isCorrectAttempt);
 
 
-
         this.selectedCells = [];
         this.isSelecting = false;
         this.currentDirection = null;

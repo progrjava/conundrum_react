@@ -321,6 +321,7 @@ class GameGenerator extends Component {
                 <div className='game-my-puzzles'>
                     <MyPuzzlesIcon />
                 </div>
+
                         </div>
                     </section>
                     <section className={`game-generator-slidebar-visible ${isSlidebarVisible ? 'visible' : ''}`}>
