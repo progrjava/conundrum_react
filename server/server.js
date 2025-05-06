@@ -156,10 +156,27 @@ app.post('/api/lti/submit-score', express.json(), async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error: LTI credentials not configured.' });
     }
 
+    // Получаем ПОЛНЫЙ sourcedId из сессии
+    const rawSourcedId = lis_result_sourcedid;
+
+    // ПАРСИМ JSON и извлекаем ТОЛЬКО HASH
+    let sourcedIdToSend;
+    try {
+        const parsedSourcedId = JSON.parse(rawSourcedId);
+        sourcedIdToSend = parsedSourcedId.hash; // Берем только значение поля hash
+        if (!sourcedIdToSend) {
+            throw new Error("Required 'hash' property not found in parsed sourcedId JSON.");
+        }
+        console.log(`Extracted hash from sourcedId: ${sourcedIdToSend}`);
+    } catch (parseError) {
+        console.error(`Failed to parse lis_result_sourcedid JSON or find hash: ${rawSourcedId}`, parseError);
+        return res.status(500).json({ error: 'Internal Server Error: Could not process sourcedId from session.' });
+    }
+
     try {
         const success = await sendGradeToMoodle(
             lis_outcome_service_url,
-            lis_result_sourcedid,
+            sourcedIdToSend, // Используем извлеченный hash
             parseFloat(score),
             parseFloat(totalScore),
             consumerKey,
