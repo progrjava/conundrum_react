@@ -6,6 +6,7 @@ import PersonalAccount from './components/PersonalAccount';
 import GameGenerator from './components/GameGenerator';
 import { initializeSupabase } from './config/supabaseClient';
 import { UIUtils } from './js/UIUtils';
+import MyPuzzlesList from './components/MyPuzzlesList';
 
 const AppContent = () => {
     const [isBlackTheme, setIsBlackTheme] = useState(true);
@@ -183,17 +184,28 @@ const AppContent = () => {
                     <Route
                         path="/gamegenerator"
                         element={
-                            (isAuth || localStorage.getItem('lti') === 'true') ? ( // Добавлена проверка LTI режима
+                            (isAuth || localStorage.getItem('lti') === 'true') ? (
                                 <GameGenerator
                                     isBlackTheme={isBlackTheme}
                                     toggleTheme={toggleTheme}
                                     user={user}
+                                    isAuth={isAuth}
                                     supabase={supabaseInstance}
                                     ltiUserId={ltiUserId}
                                     ltiContextId={ltiContextId}
                                 />
                             ) : (
                                 <Navigate to="/register" replace/>
+                            )
+                        }
+                    />
+                    <Route
+                        path="/my-puzzles" // Новый маршрут
+                        element={
+                            isAuth ? (
+                                <MyPuzzlesList />
+                            ) : (
+                                <Navigate to="/register" replace />
                             )
                         }
                     />
