@@ -31,7 +31,6 @@ const AppContent = () => {
                 // Initialize Supabase
                 const supabase = await initializeSupabase();
                 setSupabaseInstance(supabase);
-                setIsLoading(false);
             } catch (error) {
                 console.error('Failed to initialize Supabase:', error);
                 setIsLoading(false);
@@ -48,6 +47,7 @@ const AppContent = () => {
         const setupAuth = async () => {
             if (!supabaseInstance) return;
 
+            console.log("AppContent: setupAuth started");
             try {
                 // Get initial session
                 const { data: { session }, error } = await supabaseInstance.auth.getSession();
@@ -65,32 +65,32 @@ const AppContent = () => {
                     }
                 }
 
-                // Listen for auth changes
-                const { data: { subscription } } = supabaseInstance.auth.onAuthStateChange(async (event, session) => {
-                    console.log('Auth state changed:', event, { hasSession: !!session });
-                    if (!mounted) return;
-
-                    if (event === 'SIGNED_IN' && session?.user) {
-                        setIsAuth(true);
-                        setUser(session.user);
-                    } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
-                        setIsAuth(false);
-                        setUser(null);
-                        // Clear any local storage data
-                        window.localStorage.removeItem('supabase.auth.token');
+                const { data: { subscription } } = supabaseInstance.auth.onAuthStateChange(
+                    (event, session) => {
+                        if (!mounted) return;
+                        console.log('Auth state changed:', event, { hasSession: !!session });
+                        if (event === 'SIGNED_IN' && session?.user) {
+                            setIsAuth(true);
+                            setUser(session.user);
+                        } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+                            setIsAuth(false);
+                            setUser(null);
+                            window.localStorage.removeItem('supabase.auth.token');
+                        }
                     }
-                });
+                );
 
                 authListener = subscription;
 
-                if (mounted) {
-                    setIsLoading(false);
-                }
             } catch (error) {
                 console.error('Auth setup error:', error);
                 if (mounted) {
                     setIsAuth(false);
                     setUser(null);
+                }
+            } finally {
+                if (mounted) {
+                    console.log("AppContent: setupAuth finished, setting isLoading to false");
                     setIsLoading(false);
                 }
             }
@@ -128,6 +128,7 @@ const AppContent = () => {
                     isBlackTheme={isBlackTheme}
                     toggleTheme={toggleTheme}
                     user={user}
+                    isAuth={!!user}
                     supabase={supabaseInstance}
                     ltiUserId={ltiUserId}
                     ltiContextId={ltiContextId}
@@ -136,79 +137,48 @@ const AppContent = () => {
         );
     }
 
+    console.log('AppContent RENDERING ROUTES:', { isAuth, user, isLoading });
+
     return (
         <Router>
             <div className={isBlackTheme ? 'black-theme' : 'white-theme'}>
                 <Routes>
                     <Route
                         path="/"
-                        element={
-                            <MainPage
-                                isBlackTheme={isBlackTheme}
-                                toggleTheme={toggleTheme}
-                                isAuth={isAuth}
-                            />
-                        }
+                        element={<MainPage isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} isAuth={!!user} />}
                     />
                     <Route
                         path="/register"
-                        element={
-                            isAuth ? (
-                                <Navigate to="/account" replace/>
-                            ) : (
-                                <SignInUp
-                                    isBlackTheme={isBlackTheme}
-                                    toggleTheme={toggleTheme}
-                                    supabase={supabaseInstance}
-                                />
-                            )
-                        }
-                    />
-                    <Route path="*" element={<Navigate to="/" replace/>}/>
-                    <Route path="/logout" element={<Navigate to="/" replace/>}/>
-                    <Route
-                        path="/account"
-                        element={
-                            isAuth ? (
-                                <PersonalAccount
-                                    isBlackTheme={isBlackTheme}
-                                    toggleTheme={toggleTheme}
-                                    user={user}
-                                    supabase={supabaseInstance}
-                                />
-                            ) : (
-                                <Navigate to="/register" replace/>
-                            )
-                        }
+                        element={user ? <Navigate to="/account" replace /> : <SignInUp isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} supabase={supabaseInstance} />}
                     />
                     <Route
                         path="/gamegenerator"
                         element={
-                            (isAuth || localStorage.getItem('lti') === 'true') ? (
+                            (user || localStorage.getItem('lti') === 'true') ? (
                                 <GameGenerator
                                     isBlackTheme={isBlackTheme}
                                     toggleTheme={toggleTheme}
                                     user={user}
-                                    isAuth={isAuth}
+                                    isAuth={!!user}
                                     supabase={supabaseInstance}
                                     ltiUserId={ltiUserId}
                                     ltiContextId={ltiContextId}
                                 />
                             ) : (
-                                <Navigate to="/register" replace/>
-                            )
-                        }
-                    />
-                    <Route
-                        path="/my-puzzles" // Новый маршрут
-                        element={
-                            isAuth ? (
-                                <MyPuzzlesList />
-                            ) : (
                                 <Navigate to="/register" replace />
                             )
                         }
                     />
+                    <Route
+                        path="/my-puzzles"
+                        element={user ? <MyPuzzlesList /> : <Navigate to="/register" replace />}
+                    />
+                    <Route
+                        path="/account"
+                        element={user ? <PersonalAccount isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} user={user} supabase={supabaseInstance} /> : <Navigate to="/register" replace />}
+                    />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="/logout" element={<Navigate to="/" replace />} />
                 </Routes>
             </div>
         </Router>
