@@ -30,24 +30,27 @@ export const savePuzzleToSupabase = async (puzzleDataToSave) => {
 
 export const getUserPuzzlesFromSupabase = async () => {
     const supabase = await getSupabaseClient();
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (userError || !user) {
-        // Можно вернуть пустой массив или бросить ошибку, если пользователь не вошел
-        console.warn('User not authenticated. Cannot fetch puzzles.');
+    if (!user) {
+        console.log('getUserPuzzlesFromSupabase: User not authenticated, returning empty array.');
         return [];
     }
 
-    // RLS-политика автоматически отфильтрует пазлы по auth.uid() = user_id
+    console.log(`getUserPuzzlesFromSupabase: Fetching puzzles for user_id: ${user.id}`);
+
     const { data, error } = await supabase
         .from('puzzles')
-        .select('id, name, game_type, created_at') // Выбираем только нужные поля для списка
+        .select('*')
+        .eq('user_id', user.id) // Фильтруем по user_id
         .order('created_at', { ascending: false });
 
     if (error) {
-        console.error('Supabase error fetching puzzles:', error);
+        console.error('Error fetching user puzzles from Supabase:', error);
         throw error;
     }
+
+    console.log('getUserPuzzlesFromSupabase: Fetched puzzles:', data);
     return data || [];
 };
 
@@ -70,5 +73,28 @@ export const getPuzzleByIdFromSupabase = async (puzzleId) => {
     }
     return data;
 };
+
+// export const deletePuzzleFromSupabase = async (puzzleId) => {
+//     const supabase = await getSupabaseClient();
+//     const { data: { user } } = await supabase.auth.getUser();
+
+//     if (!user) {
+//         throw new Error('Пользователь не авторизован');
+//     }
+
+//     const { error } = await supabase
+//         .from('puzzles')
+//         .delete()
+//         .eq('id', puzzleId)
+//         .eq('user_id', user.id); // Убедимся, что пользователь удаляет только свои пазлы
+
+//     if (error) {
+//         console.error('Error deleting puzzle from Supabase:', error);
+//         throw error;
+//     }
+
+//     console.log(`Puzzle ${puzzleId} deleted successfully`);
+//     return true;
+// };
 
 // Добавь также функции для update и delete по аналогии, если нужно
