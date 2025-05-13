@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createRef, Component } from 'react';
 import AboutPopup from './AboutPopup';
 import ManualPopup from './ManualPopup';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import ThemeChanger from './ThemeChanger';
 import '../css/gameGenerator.css';
 import '../css/crossword.css';
@@ -18,6 +18,7 @@ import MenuHandlerIcon from '../assets/svg/MenuHandlerIcon';
 import PuzzleCreatorIcon from '../assets/svg/PuzzleCreatorIcon';
 import MyPuzzlesIcon from '../assets/svg/MyPuzzlesIcon';
 import GameLogotype from '../assets/svg/GameLogotype';
+import { savePuzzleToSupabase, getPuzzleByIdFromSupabase } from '../services/puzzleService';
 
 class GameGenerator extends Component {
     constructor(props) {
@@ -33,6 +34,9 @@ class GameGenerator extends Component {
             isLoading: true,
             supabaseUrl: '',
             supabaseKey: '',
+            puzzleNameForSave: '',
+            showSaveModal: false,
+            currentGameData: null,
         };
 
         this.crosswordFormRef = createRef();
@@ -49,16 +53,23 @@ class GameGenerator extends Component {
 
     componentDidMount = async () => {
         try {
-            // Инициализируем UI после монтирования компонента
             UIUtils.initialize();
-            
-            // Инициализируем Supabase
             await initializeSupabase();
-            this.setState({ isLoading: false });
             this.activityTracker.startTracking();
+            // Проверка URL на наличие параметра загрузки
+            const urlParams = new URLSearchParams(window.location.search);
+            const puzzleIdToLoad = urlParams.get('load_puzzle_id');
+
+            if (puzzleIdToLoad) {
+                console.log(`Found puzzle ID in URL: ${puzzleIdToLoad}. Attempting to load...`);
+                await this.loadAndDisplayPuzzle(puzzleIdToLoad);
+            } else {
+                this.setState({ isLoading: false });
+            }
+
         } catch (error) {
-            console.error('Failed to initialize:', error);
-            UIUtils.showError('Failed to initialize. Please try again later.');
+            console.error('Failed to initialize GameGenerator or load puzzle:', error);
+            UIUtils.showError('Ошибка инициализации или загрузки игры.');
             this.setState({ isLoading: false });
         }
     }
@@ -85,6 +96,7 @@ class GameGenerator extends Component {
         try {
             // Получение значений из формы
             const gameType = document.querySelector('input[name="gameType"]:checked')?.value;
+            const initialPuzzleName = document.querySelector('.input-puzzle-name')?.value || '';
             const inputType = document.querySelector('input[name="inputType"]:checked')?.value;
             const documentText = this.documentTextRef.current?.value;
             const totalWords = parseInt(this.totalWordsRef.current?.value);
@@ -141,6 +153,10 @@ class GameGenerator extends Component {
             }
 
             const data = await response.json();
+            this.setState({ 
+                currentGameData: { ...data, gameType: gameType }, 
+                puzzleNameForSave: initialPuzzleName
+            });
     
             // Отображение игры в зависимости от выбранного типа
             const handleAttemptCallback = (isCorrect) => {
@@ -277,9 +293,131 @@ class GameGenerator extends Component {
             console.error('Error submitting LTI score:', error);
         }
     };
+
+    handleActualSavePuzzle = async () => {
+        if (!this.state.puzzleNameForSave.trim()) {
+            UIUtils.showError("Пожалуйста, введите название игры.");
+            return;
+        }
+
+        if (!this.state.currentGameData || !this.state.currentGameData.gameType) {
+            UIUtils.showError("Тип игры не определен в сохраненных данных. Попробуйте сгенерировать заново.");
+            console.error("Missing gameType in currentGameData:", this.state.currentGameData);
+            return;
+        }
+
+        const gameType = this.state.currentGameData.gameType;
+
+        if (!['crossword', 'wordsoup'].includes(gameType)) {
+            UIUtils.showError(`Недопустимый тип игры для сохранения: ${gameType}`);
+            console.error("Invalid gameType from state:", gameType);
+            return;
+        }
+
+        const puzzleToSave = {
+            name: this.state.puzzleNameForSave,
+            game_type: gameType,
+            game_data: this.state.currentGameData
+        };
+
+        try {
+            const savedPuzzle = await savePuzzleToSupabase(puzzleToSave);
+            if (savedPuzzle) {
+                UIUtils.showSuccess(`Игра "${savedPuzzle.name}" успешно сохранена!`);
+                this.setState({ showSaveModal: false, puzzleNameForSave: '' });
+            } else {
+                UIUtils.showError("Не удалось сохранить игру. Данные не вернулись.");
+            }
+        } catch (error) {
+            console.error('Error saving puzzle from component:', error);
+            UIUtils.showError(`Ошибка сохранения: ${error.message}`);
+        }
+    };
+
+    loadAndDisplayPuzzle = async (puzzleId) => {
+        this.setState({ isLoading: true });
+        DisplayBase.displayLoadingIndicator();
+
+        try {
+            const loadedPuzzle = await getPuzzleByIdFromSupabase(puzzleId);
+
+            if (loadedPuzzle && loadedPuzzle.game_data) {
+                console.log("Puzzle loaded from Supabase:", loadedPuzzle);
+
+                const gameDataForDisplay = loadedPuzzle.game_data;
+                const gameType = loadedPuzzle.game_type;
+
+                this.setState({
+                    currentGameData: gameDataForDisplay,
+                    puzzleNameForSave: loadedPuzzle.name,
+                    isFormCreatingPuzzle: false,
+                });
+
+                DisplayBase.clearGameField();
+                if (document.getElementById('clues-container')) {
+                    document.getElementById('clues-container').innerHTML = '';
+                }
+
+                this.activityTracker.reset();
+                this.activityTracker.startTracking({
+                    gameType: gameType,
+                    inputType: 'loaded_from_db',
+                    sourceName: loadedPuzzle.name,
+                    totalWords: gameDataForDisplay.words?.length || 0
+                });
+
+                const handleAttemptCallback = (isCorrect) => {
+                    this.activityTracker.recordAttempt(isCorrect);
+                };
+
+                const handleGameCompleteCallback = async () => {
+                    console.log("Game loaded from DB - GameCompleteCallback triggered!");
+                    if (this.props.ltiUserId) {
+                        const finalScore = this.calculateScore();
+                        await this.submitLTIScore(finalScore);
+                    }
+                    this.activityTracker.stopTracking();
+                    console.log("Game complete (loaded puzzle). Stats:", this.activityTracker.getStats());
+                };
+
+                if (gameType === 'wordsoup') {
+                    if (gameDataForDisplay.grid && gameDataForDisplay.words) {
+                        const display = new WordSoupDisplay(gameDataForDisplay, handleAttemptCallback, handleGameCompleteCallback);
+                        display.display();
+                    } else { UIUtils.showError('Ошибка данных для филворда.'); }
+                } else if (gameType === 'crossword') {
+                    if (gameDataForDisplay.crossword && gameDataForDisplay.layout?.result) {
+                        CrosswordDisplay.displayCrossword(gameDataForDisplay.crossword, gameDataForDisplay.layout.result, handleAttemptCallback, handleGameCompleteCallback);
+                    } else { UIUtils.showError('Ошибка данных для кроссворда.'); }
+                } else {
+                    UIUtils.showError(`Неизвестный тип игры: ${gameType}`);
+                }
+
+                this.setState({ isLoading: false });
+            } else {
+                UIUtils.showError('Не удалось загрузить пазл. Возможно, он был удален или у вас нет доступа.');
+                this.setState({ isLoading: false });
+            }
+        } catch (error) {
+            console.error('Error in loadAndDisplayPuzzle:', error);
+            UIUtils.showError(`Ошибка при загрузке игры: ${error.message}`);
+            this.setState({ isLoading: false });
+        } finally {
+            DisplayBase.hideLoadingIndicator();
+        }
+    };
+
     render() {
-        const { isBlackTheme, toggleTheme, ltiUserId } = this.props;
-        const isLTI = !!ltiUserId; 
+        const { isBlackTheme, toggleTheme, ltiUserId, user } = this.props;
+        const isLTI = !!ltiUserId;
+        const isAuthenticated = !!user;
+
+        console.log('Save button conditions:', {
+            isLTI,
+            isAuthenticated,
+            hasGameData: !!this.state.currentGameData,
+            user
+        });
 
         const {
         isAboutVisible,
@@ -362,7 +500,7 @@ class GameGenerator extends Component {
                             <div className={`creating-puzzle-input-data ${isFormCreatingPuzzle ? 'visible' : 'hidden'}`}>
                                 <form id='crossword-form' encType='multipart/form-data' 
                                 onSubmit={this.handleSubmit} ref={this.crosswordFormRef}>
-                                    <input className='input-puzzle-name' type='text' placeholder='НАЗВАНИЕ' required/>
+                                    <input className='input-puzzle-name' type='text' placeholder='НАЗВАНИЕ' />
                                     <div className='input-type-of-puzzle'>
                                         <h2>ВИД ГОЛОВОЛОМКИ</h2>
                                         <div>
@@ -481,13 +619,16 @@ class GameGenerator extends Component {
                                 </form>
                             </div>
                             <div className='game-my-puzzles-open'>
+                            <Link to="/my-puzzles">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
                                     <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                     d="M10.667 8h16M5.333 8.013 5.347 8M5.333 16.013l.014-.015M5.333 24.013l.014-.015M10.667 
                                     16h16M10.667 24h16"/>
                                 </svg>
                                 <p>Мои головоломки</p>
-                            </div>
+                            </Link>
+                        </div>
+
                         </div>
                     </section>
                     <section id='dispay-game-on-screen'>
@@ -506,6 +647,45 @@ class GameGenerator extends Component {
                         </div>
                     )}
                 </main>
+
+                {!isLTI && isAuthenticated && this.state.currentGameData && (
+                    <button
+                        className="save-puzzle-btn"
+                        style={{ // Добавим временные стили для заметности и позиционирования
+                            position: 'fixed', // Фиксированное позиционирование
+                            top: '10px',      // Сверху
+                            left: '10px',     // Слева
+                            zIndex: 9999,     // Поверх всего
+                            padding: '10px',
+                        }}
+                        onClick={() => this.setState({ showSaveModal: true })}
+                    >
+                        Сохранить игру
+                    </button>
+                )}
+
+                {!isLTI && isAuthenticated && this.state.showSaveModal && (
+                    <div className="save-puzzle-modal" 
+                    style={{ position: 'fixed',
+                    top: '50px',
+                    left: '10px',
+                    zIndex: 10000,
+                    background: 'lightgray',
+                    padding: '20px',
+                    border: '1px solid black' }}>
+                        <h3>Сохранить игру</h3>
+                        <input
+                            type="text"
+                            placeholder="Название игры"
+                            value={this.state.puzzleNameForSave}
+                            onChange={(e) => this.setState({ puzzleNameForSave: e.target.value })}
+                        />
+                        <button onClick={this.handleActualSavePuzzle}>Сохранить</button>
+                        <button onClick={() => this.setState({ showSaveModal: false, puzzleNameForSave: '' })}>
+                            Отмена
+                        </button>
+                    </div>
+                )}
             </>
         );
     }
