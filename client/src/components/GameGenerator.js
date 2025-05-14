@@ -407,6 +407,46 @@ class GameGenerator extends Component {
         }
     };
 
+    handleDownloadPdf = async () => {
+    try {
+        const { currentGameData, puzzleNameForSave } = this.state;
+
+        if (!currentGameData) {
+            UIUtils.showError('Нет данных игры для скачивания.');
+            return;
+        }
+
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/generate-pdf`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                gameData: currentGameData,
+                gameName: puzzleNameForSave || currentGameData.gameType
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to generate PDF');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${puzzleNameForSave || currentGameData.gameType || 'game'}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading PDF:', error);
+        UIUtils.showError(`Ошибка при скачивании PDF: ${error.message}`);
+    }
+};
+
     render() {
         const { isBlackTheme, toggleTheme, ltiUserId, user } = this.props;
         const isLTI = !!ltiUserId;
@@ -649,19 +689,22 @@ class GameGenerator extends Component {
                 </main>
 
                 {!isLTI && isAuthenticated && this.state.currentGameData && (
-                    <button
-                        className="save-puzzle-btn"
-                        style={{ // Добавим временные стили для заметности и позиционирования
-                            position: 'fixed', // Фиксированное позиционирование
-                            top: '10px',      // Сверху
-                            left: '10px',     // Слева
-                            zIndex: 9999,     // Поверх всего
-                            padding: '10px',
-                        }}
-                        onClick={() => this.setState({ showSaveModal: true })}
-                    >
-                        Сохранить игру
-                    </button>
+                    <div className="game-actions" style={{ position: 'fixed', top: '10px', left: '10px', zIndex: 9999 }}>
+                        <button
+                            className="save-puzzle-btn"
+                            style={{ padding: '10px', marginRight: '10px' }}
+                            onClick={() => this.setState({ showSaveModal: true })}
+                        >
+                            Сохранить игру
+                        </button>
+                        <button
+                            className="download-pdf-btn"
+                            style={{ padding: '10px' }}
+                            onClick={this.handleDownloadPdf}
+                        >
+                            Скачать PDF
+                        </button>
+                    </div>
                 )}
 
                 {!isLTI && isAuthenticated && this.state.showSaveModal && (

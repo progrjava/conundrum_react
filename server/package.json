@@ -12,6 +12,7 @@
         "oauth": "^0.10.2",
         "path": "^0.12.7",
         "pdf-parse": "^1.1.1",
+        "pdfkit": "^0.17.1",
         "supabase": "^1.223.10"
     },
     "name": "server",

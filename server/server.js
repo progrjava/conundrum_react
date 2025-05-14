@@ -37,6 +37,8 @@ app.use(cors({
     credentials: true
 }));
 
+const { generateGamePdf } = require('./services/pdfGeneratorService');
+
 // Configure middleware
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
@@ -239,6 +241,41 @@ app.post('/lti/launch', validateLTIRequest, (req, res) => {
         return res.status(500).send('Internal Server Error: Failed to create redirect URL.');
     }
 });
+
+
+// Функция для экранирования имени файла
+function sanitizeFilename(filename) {
+    // Заменяем недопустимые символы и кириллицу на безопасные
+    return encodeURIComponent(filename)
+        .replace(/[^a-zA-Z0-9-_.]/g, '_') // Заменяем всё, кроме букв, цифр, -_. на подчёркивание
+        .replace(/%20/g, '_'); // Пробелы на подчёркивание
+}
+
+app.post('/api/generate-pdf', async (req, res) => {
+    try {
+        const { gameData, gameName } = req.body;
+
+        if (!gameData || !gameData.gameType) {
+            return res.status(400).json({ error: 'Missing or invalid gameData' });
+        }
+
+        const pdfBuffer = await generateGamePdf({ ...gameData, name: gameName });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        // Используем экранированное имя файла
+        const safeFilename = sanitizeFilename(gameName || gameData.gameType || 'game');
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="${safeFilename}.pdf"`
+        );
+
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).json({ error: 'Failed to generate PDF', details: error.message });
+    }
+});
+
 
 // Запуск сервера
 const PORT = process.env.PORT || 5000;
