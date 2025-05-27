@@ -1,5 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
 
+.loading-spinner-profile {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #513888;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-spinner-profile svg{
+    width: 95%;
+    height: 95%;
+    animation: spin 2s linear infinite;
+    transform-origin: center;
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .personal-account-main {
     position: fixed; 
     top: 0;
@@ -9,6 +41,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
+}
+
+.profile-and-games {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    height: 70vh;
+    max-width: 90vw;
+    overflow-y: auto;
 }
 
 .personal-account-back {
@@ -22,84 +67,61 @@
 }
 
 .about-account-info {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px;
-    gap: 50px;
+    padding: 32px 16px;
     border-radius: 15px;
-    max-width: 800px;
+    height: calc(100% - 64px);
+    max-height: calc(100% - 64px);
+    overflow: hidden;
 }
 
-.about-account-info h1 {
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 24px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    align-self: center;
-    letter-spacing: 0.5px;
-}
-
-.account-data {
+.profile-title {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 0px 30px;
-    gap: 30px;
+    width: 100%;
+    gap: 16px;
+    margin-bottom: 40px;
+    flex: 0 0 auto;
 }
 
-.main-info-about-user {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.user-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 50px;
-    line-height: 32px;
-    gap: 5px;
-    letter-spacing: 0.5px;
-}
-
-.user-login-email-password {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 0 0 30px;
-    gap: 15px;
-}
-
-.user-login-email-password p {
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 30px;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0.5px;
-}
-
-.change-userdata {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    font-family: 'Roboto Slab';
+.profile-title h1 {
     font-style: normal;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 30px;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 100%;
+    display: flex;
+    align-self: center;
     align-items: center;
     text-align: center;
-    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.user-data {
+    width: 95%;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.user-data-item {
+    position: relative;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: calc(100% - 16px);
+}
+
+.user-data-item p:first-child {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .userdata-input-changer {
@@ -109,113 +131,35 @@
     border: none;
     font-family: 'Roboto Slab';
     font-style: normal;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 30px;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 100%;
     align-items: center;
     letter-spacing: 0.5px;
     padding: 0px;
-    text-decoration: underline;
-    text-underline-offset: 6px;
 }
 
 .userdata-input-changer:focus {
     outline: none;
 }
 
-.user-password {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 15px;
-}
-
-.user-password {
-    padding: 0;
-}
-
-.user-password p, .admin-stats p, .user-role-and-gender p {
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 30px;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0.5px;
-}
-
-.password-edit-icon {
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-}
-
-.password-edit-icon:hover path{
-    stroke: #ED7E98;
-    transition: stroke 0.2s ease;
-}
-
-.password-edit-icon:active path{
-    stroke: #ED7E98;
-    opacity: 0.75;
-}
-
-.reg-birthday-input {
-    width: 130px;
-    max-height: 30px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px 24px;
-    position: relative;
-}
-
-.reg-birthday-input input {
-    outline: none;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
-    border: none;
-    appearance: none;
-}
-
-
-.reg-birthday-input input::-webkit-calendar-picker-indicator {
-    margin-left: -11px;
-    opacity: 0;
-}
-
-.reg-birthday-input svg {
-    display: block;
-    position: absolute;
-    top: 10px;
-    right: 24px;
-    pointer-events: none;
-}
-
-.user-role-and-gender {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 20px;
-    width: 100%;
-}
-
-.reg-role {
+.user-data-role .reg-role {
     display: flex;
     align-items: center;
     border-radius: 15px;
     position: relative;
     width: auto;
-    flex: 5;
+    flex: 1;
 }
 
-.reg-role {
-    padding: 10px 24px;
+
+.user-data-role .reg-role, .user-data-gender .reg-gender {
+    padding: 5px 5px;
+    border-radius: 10px;
+}
+
+.user-data-role .reg-role-select, .user-data-gender .reg-gender-select {
+    font-size: 20px;
 }
 
 .reg-role-select {
@@ -294,12 +238,13 @@
 }
 
 .account-buttons {
-    width: calc(100% - 60px);
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    align-self: center ;
+    align-self: center;
+    margin-top: auto;
 }
 
 .log-out-button, .update-account-button {
@@ -308,9 +253,9 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 12px 36px;
+    padding: 6px 18px;
     border: 1px solid #ED7E98;
-    border-radius: 15px;
+    border-radius: 10px;
     background: transparent;
     font-family: 'Roboto Slab';
     font-style: normal;
@@ -351,100 +296,38 @@
 }
 
 
-
 @media (max-width: 500px) {
     .about-account-info {
-        padding: 25px 10px;
-        gap: 30px;
-        border-radius: 10px;
-        max-width: calc(100% - 30px);
+        width: 100%;
     }
 
-    .about-account-info h1 {
-        font-weight: 500;
-        font-size: 20px;
-        line-height: 30px;
+    .profile-and-games {
+        height: 75vh;
     }
 
-    .account-data {
-        padding: 0px 15px;
-        gap: 15px;
+    .profile-title h1 {
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 1.5;
     }
 
-    .user-avatar {
-        width: 60px;
-        height: 60px;
-        font-weight: 500;
-        font-size: 24px;
-        line-height: 36px;
-        gap: 5px;
-    }
-
-    .user-login-email-password {
-        padding: 0 0 0 15px;
-        gap: 10px;
-    }
-
-    .user-login-email-password p {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 21px;
-    }
-
-    .change-userdata {
-        gap: 5px;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 21px;
+    .user-data-item p:first-child {
+        font-size: 16px;
     }
 
     .userdata-input-changer {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 21px;
-        text-underline-offset: 4px;
+        font-weight: 400;
+        font-size: 16px;
     }
 
-    .user-password {
-        gap: 10px;
+
+    .user-data-role .reg-role-select, .user-data-gender .reg-gender-select {
+        font-size: 16px;
+        background-size: 16px;
     }
 
-    .user-password p, .admin-stats p, .user-role-and-gender p {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 21px;
-    }
-
-    .password-edit-icon {
-        cursor: pointer;
-        width: 17px;
-        height: 17px;
-    }
-
-    #reg-role {
-        border-radius: 10px;
-        padding: 5px 12px;
-    }
-
-    #reg-role-select {
-        font-size: 14px;
-        line-height: 21px;
-        background-size: 20px 20px; 
-    }
-
-    #reg-gender {
-        border-radius: 10px;
-        padding: 5px 12px;
-    }
-
-    #reg-gender-select {
-        font-size: 14px;
-        line-height: 21px;
-        background-size: 20px 20px; 
-    }
-
-    .account-buttons {
-        width: calc(100% - 30px);
+    .reg-role-select option:not(:first-child), .reg-gender-select option:not(:first-child){
+        font-size: 16px;
     }
 
     .log-out-button, .update-account-button {
@@ -465,117 +348,37 @@
     }
 }
 
-
+@media (max-width: 1400px) and (min-width: 821px) {
+    .profile-and-games {
+        height: 60vh;
+    }
+}
 
 @media (max-width: 820px) and (min-width: 501px) {
-    .about-account-info {
-        padding: 30px 15px;
-        gap: 40px;
-        border-radius: 10px;
-        max-width: calc(100% - 30px);
+    .profile-and-games {
+        height: 70vh;
     }
 
-    .about-account-info h1 {
-        font-weight: 500;
-        font-size: 24px;
-        line-height: 36px;
+    .profile-title h1 {
+        font-weight: 400;
+        font-size: 22px;
     }
 
-    .account-data {
-        padding: 0px 15px;
-        gap: 15px;
-    }
-
-    .user-avatar {
-        width: 70px;
-        height: 70px;
-        font-weight: 500;
-        font-size: 26px;
-        line-height: 39px;
-        gap: 5px;
-    }
-
-    .user-login-email-password {
-        padding: 0 0 0 20px;
-        gap: 10px;
-    }
-
-    .user-login-email-password p {
-        font-weight: 500;
+    .user-data-item p:first-child {
         font-size: 16px;
-        line-height: 24px;
-    }
-
-    .change-userdata {
-        gap: 5px;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
     }
 
     .userdata-input-changer {
-        font-weight: 500;
+        font-weight: 400;
+        font-size: 18px;
+    }
+
+
+    .user-data-role .reg-role-select, .user-data-gender .reg-gender-select {
+        font-size: 18px;
+    }
+
+    .reg-role-select option:not(:first-child), .reg-gender-select option:not(:first-child){
         font-size: 16px;
-        line-height: 24px;
-        text-underline-offset: 5px;
-    }
-
-    .user-password {
-        gap: 10px;
-    }
-
-    .user-password p, .admin-stats p, .user-role-and-gender p {
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
-    }
-
-    .password-edit-icon {
-        cursor: pointer;
-        width: 19px;
-        height: 19px;
-    }
-
-    #reg-role {
-        border-radius: 10px;
-        padding: 5px 14px;
-    }
-
-    #reg-role-select {
-        font-size: 16px;
-        line-height: 24px;
-        background-size: 22px 22px; 
-    }
-
-    #reg-gender {
-        border-radius: 10px;
-        padding: 5px 14px;
-    }
-
-    #reg-gender-select {
-        font-size: 16px;
-        line-height: 24px;
-        background-size: 22px 22px; 
-    }
-
-    .account-buttons {
-        width: calc(100% - 30px);
-    }
-
-    .log-out-button, .update-account-button {
-        padding: 8px 22px;
-        border-radius: 10px;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
-    }
-    
-    .personal-account-theme-changer {
-        bottom: 15px;
-        left: 15px;
-    }
-
-    .personal-account-logotype {
-        display: none;
     }
 }

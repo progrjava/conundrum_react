@@ -28,6 +28,35 @@ export const savePuzzleToSupabase = async (puzzleDataToSave) => {
     return data ? data[0] : null; // Возвращаем первый (и единственный) вставленный пазл
 };
 
+// Новая функция для проверки дубликатов
+export const checkForDuplicatePuzzle = async (puzzleToSave) => {
+    try {
+        const supabase = await getSupabaseClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) return false;
+
+        // Проверяем по имени и user_id
+        const { data: existingPuzzles, error } = await supabase
+            .from('puzzles')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('name', puzzleToSave.name);
+
+        if (error) throw error;
+
+        // Если нашли хотя бы одну головоломку с таким же именем
+        if (existingPuzzles && existingPuzzles.length > 0) {
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.error('Error checking for duplicate puzzle:', error);
+        return false; // В случае ошибки разрешаем сохранение
+    }
+};
+
 export const getUserPuzzlesFromSupabase = async () => {
     const supabase = await getSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -74,27 +103,40 @@ export const getPuzzleByIdFromSupabase = async (puzzleId) => {
     return data;
 };
 
-// export const deletePuzzleFromSupabase = async (puzzleId) => {
-//     const supabase = await getSupabaseClient();
-//     const { data: { user } } = await supabase.auth.getUser();
+export const updatePuzzleTags = async (puzzleId, newTags) => {
+    const supabase = await getSupabaseClient();
+    try {
+        const { data, error } = await supabase
+            .from('puzzles')
+            .update({ tags: newTags })
+            .eq('id', puzzleId);
+        
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.error('Error updating puzzle tags:', error);
+        throw error;
+    }
+};
 
-//     if (!user) {
-//         throw new Error('Пользователь не авторизован');
-//     }
+export const deletePuzzleFromSupabase = async (puzzleId) => {
+    const supabase = await getSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-//     const { error } = await supabase
-//         .from('puzzles')
-//         .delete()
-//         .eq('id', puzzleId)
-//         .eq('user_id', user.id); // Убедимся, что пользователь удаляет только свои пазлы
+    if (!user) {
+        throw new Error('Пользователь не авторизован');
+    }
 
-//     if (error) {
-//         console.error('Error deleting puzzle from Supabase:', error);
-//         throw error;
-//     }
+    const { error } = await supabase
+        .from('puzzles')
+        .delete()
+        .eq('id', puzzleId)
 
-//     console.log(`Puzzle ${puzzleId} deleted successfully`);
-//     return true;
-// };
+    if (error) {
+        console.error('Error deleting puzzle from Supabase:', error);
+        throw error;
+    }
 
-// Добавь также функции для update и delete по аналогии, если нужно
+    console.log(`Puzzle ${puzzleId} deleted successfully`);
+    return true;
+};

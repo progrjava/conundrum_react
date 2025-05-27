@@ -527,6 +527,31 @@ input[name="difficulty"]:not(:checked) + label::before {
     background: none; 
 }
 
+.game-actions {
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.save-puzzle-btn, .download-pdf-btn {
+    cursor: pointer;
+    display: flex;
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+}
+
+
+.game-actions svg {
+    display: block;
+    width: 30px;
+}
+
 
 @media (max-width: 768px) {
     #game-main-page {
@@ -700,6 +725,10 @@ input[name="difficulty"]:not(:checked) + label::before {
         bottom: 15px;
     }
 
+    .game-theme-changer .theme-changer {
+        flex-direction: column;
+    }
+
     .input-difficulty {
         gap: 5px;
     }
@@ -710,6 +739,21 @@ input[name="difficulty"]:not(:checked) + label::before {
 
     .difficulty-levels {
         gap: 5px;
+    }
+
+    .game-actions {
+        left: 10px;
+        bottom: 15px;
+        gap: 10px;
+    }
+
+    .save-puzzle-btn, .download-pdf-btn {
+        padding: 5px;
+    }
+
+
+    .game-actions svg {
+        width: 20px;
     }
 }
 
@@ -896,6 +940,14 @@ input[name="difficulty"]:not(:checked) + label::before {
         bottom: 15px;
     }
 
+    .game-theme-changer .theme-changer {
+        padding: 5px;
+    }
+
+    .game-theme-changer .theme-changer svg {
+        width: 20px;
+    }
+
     .input-difficulty {
         gap: 5px;
     }
@@ -906,5 +958,15 @@ input[name="difficulty"]:not(:checked) + label::before {
 
     .difficulty-levels {
         gap: 5px;
+    }
+
+    .game-actions {
+        left: 15px;
+        bottom: 15px;
+        gap: 10px;
+    }
+
+    .save-puzzle-btn, .download-pdf-btn {
+        padding: 5px;
     }
 }

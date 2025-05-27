@@ -33,7 +33,7 @@
     font-style: normal;
     font-weight: 500;
     font-size: 50px;
-    line-height: 66px;
+    line-height: 1.5;
 }
 
 .theme-changer-main-page {
@@ -54,7 +54,7 @@
     }
 
     .main-logo-title h1 {
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .theme-changer-main-page {

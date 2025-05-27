@@ -18,7 +18,11 @@ import MenuHandlerIcon from '../assets/svg/MenuHandlerIcon';
 import PuzzleCreatorIcon from '../assets/svg/PuzzleCreatorIcon';
 import MyPuzzlesIcon from '../assets/svg/MyPuzzlesIcon';
 import GameLogotype from '../assets/svg/GameLogotype';
-import { savePuzzleToSupabase, getPuzzleByIdFromSupabase } from '../services/puzzleService';
+import { 
+    savePuzzleToSupabase, 
+    getPuzzleByIdFromSupabase, 
+    checkForDuplicatePuzzle 
+} from '../services/puzzleService';
 
 class GameGenerator extends Component {
     constructor(props) {
@@ -321,6 +325,13 @@ class GameGenerator extends Component {
         };
 
         try {
+            // Проверяем, существует ли уже такая головоломка
+            const isDuplicate = await checkForDuplicatePuzzle(puzzleToSave);
+            if (isDuplicate) {
+                UIUtils.showError("Такая головоломка уже существует!");
+                return;
+            }
+
             const savedPuzzle = await savePuzzleToSupabase(puzzleToSave);
             if (savedPuzzle) {
                 UIUtils.showSuccess(`Игра "${savedPuzzle.name}" успешно сохранена!`);
@@ -540,7 +551,12 @@ class GameGenerator extends Component {
                             <div className={`creating-puzzle-input-data ${isFormCreatingPuzzle ? 'visible' : 'hidden'}`}>
                                 <form id='crossword-form' encType='multipart/form-data' 
                                 onSubmit={this.handleSubmit} ref={this.crosswordFormRef}>
-                                    <input className='input-puzzle-name' type='text' placeholder='НАЗВАНИЕ' />
+                                    <input 
+                                        className='input-puzzle-name' 
+                                        type='text' 
+                                        placeholder='НАЗВАНИЕ'
+                                        onChange={(e) => this.setState({ puzzleNameForSave: e.target.value })} 
+                                    />
                                     <div className='input-type-of-puzzle'>
                                         <h2>ВИД ГОЛОВОЛОМКИ</h2>
                                         <div>
@@ -658,17 +674,16 @@ class GameGenerator extends Component {
                                     </button>
                                 </form>
                             </div>
-                            <div className='game-my-puzzles-open'>
-                            <Link to="/my-puzzles">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
-                                    <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M10.667 8h16M5.333 8.013 5.347 8M5.333 16.013l.014-.015M5.333 24.013l.014-.015M10.667 
-                                    16h16M10.667 24h16"/>
-                                </svg>
-                                <p>Мои головоломки</p>
+                            <Link to="/account" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <div className='game-my-puzzles-open'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
+                                        <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="M10.667 8h16M5.333 8.013 5.347 8M5.333 16.013l.014-.015M5.333 24.013l.014-.015M10.667 
+                                        16h16M10.667 24h16"/>
+                                    </svg>
+                                    <p>Мои головоломки</p>
+                                </div>
                             </Link>
-                        </div>
-
                         </div>
                     </section>
                     <section id='dispay-game-on-screen'>
@@ -686,49 +701,31 @@ class GameGenerator extends Component {
                                 page='game' />
                         </div>
                     )}
+
+                    {!isLTI && isAuthenticated && this.state.currentGameData && (
+                        <div className="game-actions">
+                            <button
+                                className="save-puzzle-btn"
+                                onClick={this.handleActualSavePuzzle}
+                                title='Сохранить в свои головоломки'
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15 20V15H9V20M18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H14.1716C14.702 4 15.2107 4.21071 15.5858 4.58579L19.4142 8.41421C19.7893 8.78929 20 9.29799 20 9.82843V18C20 19.1046 19.1046 20 18 20Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button
+                                className="download-pdf-btn"
+                                onClick={this.handleDownloadPdf}
+                                title='Cкачать в PDF'
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    )}
                 </main>
-
-                {!isLTI && isAuthenticated && this.state.currentGameData && (
-                    <div className="game-actions" style={{ position: 'fixed', top: '10px', left: '10px', zIndex: 9999 }}>
-                        <button
-                            className="save-puzzle-btn"
-                            style={{ padding: '10px', marginRight: '10px' }}
-                            onClick={() => this.setState({ showSaveModal: true })}
-                        >
-                            Сохранить игру
-                        </button>
-                        <button
-                            className="download-pdf-btn"
-                            style={{ padding: '10px' }}
-                            onClick={this.handleDownloadPdf}
-                        >
-                            Скачать PDF
-                        </button>
-                    </div>
-                )}
-
-                {!isLTI && isAuthenticated && this.state.showSaveModal && (
-                    <div className="save-puzzle-modal" 
-                    style={{ position: 'fixed',
-                    top: '50px',
-                    left: '10px',
-                    zIndex: 10000,
-                    background: 'lightgray',
-                    padding: '20px',
-                    border: '1px solid black' }}>
-                        <h3>Сохранить игру</h3>
-                        <input
-                            type="text"
-                            placeholder="Название игры"
-                            value={this.state.puzzleNameForSave}
-                            onChange={(e) => this.setState({ puzzleNameForSave: e.target.value })}
-                        />
-                        <button onClick={this.handleActualSavePuzzle}>Сохранить</button>
-                        <button onClick={() => this.setState({ showSaveModal: false, puzzleNameForSave: '' })}>
-                            Отмена
-                        </button>
-                    </div>
-                )}
             </>
         );
     }

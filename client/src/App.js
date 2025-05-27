@@ -6,7 +6,6 @@ import PersonalAccount from './components/PersonalAccount';
 import GameGenerator from './components/GameGenerator';
 import { initializeSupabase } from './config/supabaseClient';
 import { UIUtils } from './js/UIUtils';
-import MyPuzzlesList from './components/MyPuzzlesList';
 
 const AppContent = () => {
     const [isBlackTheme, setIsBlackTheme] = useState(true);
@@ -168,10 +167,6 @@ const AppContent = () => {
                                 <Navigate to="/register" replace />
                             )
                         }
-                    />
-                    <Route
-                        path="/my-puzzles"
-                        element={user ? <MyPuzzlesList /> : <Navigate to="/register" replace />}
                     />
                     <Route
                         path="/account"

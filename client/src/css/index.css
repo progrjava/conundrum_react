@@ -3,6 +3,9 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    letter-spacing: 0.5px;
 }
 
 body {
@@ -388,6 +391,72 @@ html, body {
         border: 2px solid rgba(47, 45, 56, 0.8);
         transition: border 0.5s ease;
     }
+
+    .horizontal-line {
+        border-bottom: 1px solid #FBFBFE;
+    }
+
+    .user-data-item {
+        border-bottom: 1px solid #FBFBFE;
+    }
+
+    .saved-games-item {
+        background: #2F2D38;
+        border: 1px solid #FBFBFE;
+    }
+
+    .saved-games-tags li {
+        border: 1px solid #FBFBFE;
+    }
+
+    .user-tags-content h2 {
+        color: #2F2D38;
+    }
+
+    .search-tags-input {
+        background-color: #2F2D38;
+        color: #FBFBFE;
+    }
+
+    .search-tags-input::placeholder {
+        color: #FBFBFE;
+    }
+
+    .user-tags-item {
+        border: 2px solid #2F2D38;
+        color: #2F2D38;
+        transition: 
+            color 0.2s ease,
+            border 0.2s ease
+        ;
+    }
+
+    .user-tags-item:hover {
+        color: #FBFBFE;
+        border: 2px solid #FBFBFE;
+    }
+
+    .user-tags-item.selected {
+        background: #513888;
+        border-color:transparent;
+        color: #FBFBFE;
+    }
+
+    .game-actions button {
+        background: #FBFBFE;
+
+        svg path {
+            stroke: #2F2D38;
+        }
+    }
+
+    .game-actions button:hover {
+        background: #62E953;
+
+        svg path {
+            stroke: #FBFBFE;
+        }
+    }
 }
 
 .white-theme {
@@ -757,6 +826,85 @@ html, body {
     input[name='difficulty'] + label::before {
         border: 2px solid rgba(251, 251, 254, 0.8);
         transition: border 0.5s ease;
+    }
+
+    .horizontal-line {
+        border-bottom: 1px solid #2F2D38;
+    }
+
+    .user-data-item {
+        border-bottom: 1px solid #2F2D38;
+    }
+
+    .saved-games-item {
+        background: #FBFBFE;
+        border: 1px solid #2F2D38;
+    }
+
+    .saved-games-item:hover {
+        color: #FBFBFE;
+
+        .saved-games-tags li {
+            border: 1px solid #FBFBFE;
+        }
+
+        .horizontal-line {
+            border-bottom: 1px solid #FBFBFE;
+        }
+    }
+
+    .saved-games-tags li {
+        border: 1px solid #2F2D38;
+    }
+
+    .user-tags-content h2 {
+        color: #FBFBFE;
+    }
+
+    .search-tags-input {
+        background-color: #FBFBFE;
+        color: #2F2D38;
+    }
+
+    .search-tags-input::placeholder {
+        color: #2F2D38;
+    }
+
+    .user-tags-item {
+        border: 2px solid #FBFBFE;
+        color: #FBFBFE;
+
+        transition: 
+            color 0.2s ease,
+            border 0.2s ease
+        ;
+    }
+
+    .user-tags-item:hover {
+        color: #2F2D38;
+        border: 2px solid #2F2D38;
+    }
+
+    .user-tags-item.selected {
+        background: #513888;
+        border-color:transparent;
+        color: #FBFBFE;
+    }
+
+    .game-actions button {
+        background: #2F2D38;
+
+        svg path {
+            stroke: #FBFBFE;
+        }
+    }
+
+    .game-actions button:hover {
+        background: #62E953;
+
+        svg path {
+            stroke: #2F2D38;
+        }
     }
 }
 

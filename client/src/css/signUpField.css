@@ -174,16 +174,16 @@
     pointer-events: none;
 }
 
-.reg-role {
+.birthday-role-gender-input .reg-role {
     display: flex;
     align-items: center;
     border-radius: 15px;
     position: relative;
     width: auto;
-    flex: 5;
+    flex: 3;
 }
 
-.reg-role {
+.birthday-role-gender-input .reg-role {
     padding: 10px 24px;
 }
 
@@ -216,7 +216,7 @@
     background: #62E953; 
 }
 
-.reg-gender {
+.birthday-role-gender-input .reg-gender {
     display: flex;
     align-items: center;
     border-radius: 15px;
@@ -225,7 +225,7 @@
     flex: 2;
 }
 
-.reg-gender {
+.birthday-role-gender-input .reg-gender {
     padding: 10px 24px;
 }
 
@@ -370,26 +370,26 @@
         gap: 10px;
     }
 
-    .reg-role {
+    .birthday-role-gender-input .reg-role {
         border-radius: 10px;
         padding: 5px 12px;
         max-width: calc(62% - 25px);
     }
     
-    .reg-role-select {
+    .birthday-role-gender-input .reg-role .reg-role-select {
         font-size: 14px;
         line-height: 21px;
         background-size: 20px 20px; 
     }
     
-    .reg-gender {
+    .birthday-role-gender-input .reg-gender {
         border-radius: 10px;
         flex: 1;
         padding: 5px 12px;
     }
     
     
-    .reg-gender-select {
+    .birthday-role-gender-input .reg-gender .reg-gender-select {
         font-weight: 500;
         font-size: 14px;
         line-height: 21px;
@@ -477,10 +477,9 @@
         gap: 10px;
     }
 
-    .reg-role {
+    .birthday-role-gender-input .reg-role {
         border-radius: 10px;
         padding: 5px 12px;
-        max-width: calc(70% - 35px);
     }
     
     .reg-role-select {
@@ -489,10 +488,10 @@
         background-size: 23px 23px; 
     }
     
-    .reg-gender {
+    .birthday-role-gender-input .reg-gender {
         border-radius: 10px;
         flex: 1;
-        padding: 5px 12px;
+        padding: 5px 5px;
     }
     
     
