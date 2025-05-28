@@ -140,3 +140,38 @@ export const deletePuzzleFromSupabase = async (puzzleId) => {
     console.log(`Puzzle ${puzzleId} deleted successfully`);
     return true;
 };
+
+export const fetchRegeneratedLayout = async (gameType, wordsAndClues) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/recalculate-game-layout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ gameType: gameType, words: wordsAndClues }),
+    });
+
+    if (!response.ok) {
+        let errorData;
+        try {
+            errorData = await response.json();
+        } catch (e) {
+            errorData = { error: response.statusText || "Неизвестная ошибка при перегенерации сетки." };
+        }
+        console.error("Ошибка при перегенерации сетки:", errorData, "Статус:", response.status);
+        throw new Error(errorData.error || `Ошибка при перегенерации сетки: ${response.status}`);
+    }
+    return response.json();
+};
+
+export const updatePuzzleInSupabase = async (puzzleId, puzzleUpdateData) => {
+    const supabase = await getSupabaseClient();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) { throw new Error(userError?.message || 'Пользователь не авторизован.'); }
+    const { data, error } = await supabase
+        .from('puzzles')
+        .update(puzzleUpdateData)
+        .eq('id', puzzleId)
+        .select();
+    if (error) { console.error('Ошибка Supabase при обновлении пазла:', error); throw error; }
+    return data ? data[0] : null;
+};

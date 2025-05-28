@@ -8,8 +8,6 @@ import '../css/crossword.css';
 import { CluesDisplay } from '../js/CluesDisplay';
 import { DisplayBase } from '../js/DisplayBase';
 import { CrosswordDisplay } from '../js/CrosswordDisplay';
-import { elements } from '../js/elements';
-import { GameStateManager } from '../js/GameStateManager';
 import { UIUtils } from '../js/UIUtils';
 import { WordSoupDisplay } from '../js/WordSoupDisplay';
 import { getSupabaseClient, initializeSupabase } from '../config/supabaseClient';
@@ -21,8 +19,12 @@ import GameLogotype from '../assets/svg/GameLogotype';
 import { 
     savePuzzleToSupabase, 
     getPuzzleByIdFromSupabase, 
-    checkForDuplicatePuzzle 
+    checkForDuplicatePuzzle,
+    updatePuzzleInSupabase,
+    fetchRegeneratedLayout
 } from '../services/puzzleService';
+import SaveButton from '../assets/svg/SaveButton';
+import DownloadPdf from '../assets/svg/DownloadPdf';
 
 class GameGenerator extends Component {
     constructor(props) {
@@ -41,6 +43,11 @@ class GameGenerator extends Component {
             puzzleNameForSave: '',
             showSaveModal: false,
             currentGameData: null,
+            isEditing: false,
+            editableWordsAndClues: [],
+            currentPuzzleId: null,
+            hasUnsavedChanges: false,
+            originalPuzzleNameForEdit: '',
         };
 
         this.crosswordFormRef = createRef();
@@ -333,15 +340,19 @@ class GameGenerator extends Component {
             }
 
             const savedPuzzle = await savePuzzleToSupabase(puzzleToSave);
-            if (savedPuzzle) {
+            if (savedPuzzle && savedPuzzle.id) {
                 UIUtils.showSuccess(`Игра "${savedPuzzle.name}" успешно сохранена!`);
-                this.setState({ showSaveModal: false, puzzleNameForSave: '' });
+                this.setState({ 
+                    showSaveModal: false, 
+                    currentPuzzleId: savedPuzzle.id,
+                    originalPuzzleNameForEdit: savedPuzzle.name
+                });
             } else {
-                UIUtils.showError("Не удалось сохранить игру. Данные не вернулись.");
+                UIUtils.showError("Не удалось сохранить игру или ID не был получен.");
             }
         } catch (error) {
-            console.error('Error saving puzzle from component:', error);
-            UIUtils.showError(`Ошибка сохранения: ${error.message}`);
+            console.error("Ошибка при сохранении пазла:", error);
+            UIUtils.showError(`Ошибка при сохранении: ${error.message || "Неизвестная ошибка"}`);
         }
     };
 
@@ -351,17 +362,19 @@ class GameGenerator extends Component {
 
         try {
             const loadedPuzzle = await getPuzzleByIdFromSupabase(puzzleId);
-
-            if (loadedPuzzle && loadedPuzzle.game_data) {
-                console.log("Puzzle loaded from Supabase:", loadedPuzzle);
-
+            if (loadedPuzzle && loadedPuzzle.game_data && loadedPuzzle.id) {
                 const gameDataForDisplay = loadedPuzzle.game_data;
                 const gameType = loadedPuzzle.game_type;
 
                 this.setState({
                     currentGameData: gameDataForDisplay,
                     puzzleNameForSave: loadedPuzzle.name,
+                    currentPuzzleId: loadedPuzzle.id,
+                    originalPuzzleNameForEdit: loadedPuzzle.name,
                     isFormCreatingPuzzle: false,
+                    isLoading: false
+                }, () => {
+                    this.displayGeneratedGameWithCurrentData();
                 });
 
                 DisplayBase.clearGameField();
@@ -457,6 +470,257 @@ class GameGenerator extends Component {
         UIUtils.showError(`Ошибка при скачивании PDF: ${error.message}`);
     }
 };
+
+    handleEnterEditMode = () => {
+        if (!this.state.currentGameData || !this.state.currentGameData.words) {
+            UIUtils.showError("Нет данных для редактирования.");
+            return;
+        }
+
+        const wordsToEdit = JSON.parse(JSON.stringify(this.state.currentGameData.words));
+        const wordsWithOriginalIndex = wordsToEdit.map((word, index) => ({
+            ...word,
+            originalArrayIndex: index
+        }));
+
+        this.setState({
+            isEditing: true,
+            editableWordsAndClues: wordsWithOriginalIndex,
+            hasUnsavedChanges: false,
+            originalPuzzleNameForEdit: this.state.puzzleNameForSave
+        }, () => {
+            this.renderCluesForEditing();
+            if (this.crosswordContainerRef.current) {
+                this.crosswordContainerRef.current.classList.add('grid-disabled');
+            }
+        });
+    };
+
+    renderCluesForEditing = () => {
+        if (!this.cluesContainerRef.current) return;
+        CluesDisplay.renderEditable(
+            this.state.editableWordsAndClues,
+            this.state.currentGameData.gameType,
+            this.handleEditableItemChange
+        );
+    };
+
+    handleEditableItemChange = (originalItemIndex, fieldToChange, newValue) => {
+        this.setState(prevState => {
+            const updatedEditableWords = prevState.editableWordsAndClues.map(item => {
+                if (item.originalArrayIndex === originalItemIndex) {
+                    return { ...item, [fieldToChange]: newValue };
+                }
+                return item;
+            });
+            return {
+                editableWordsAndClues: updatedEditableWords,
+                hasUnsavedChanges: true
+            };
+        });
+    };
+
+    handleCancelEdit = () => {
+        this.setState({
+            isEditing: false,
+            editableWordsAndClues: [],
+            hasUnsavedChanges: false,
+            puzzleNameForSave: this.state.originalPuzzleNameForEdit
+        }, () => {
+            this.displayGeneratedGameWithCurrentData();
+            if (this.crosswordContainerRef.current) {
+                this.crosswordContainerRef.current.classList.remove('grid-disabled');
+            }
+        });
+    };
+
+    handleSaveChangesAndRegenerate = async () => {
+        const { editableWordsAndClues, currentGameData, currentPuzzleId, puzzleNameForSave, originalPuzzleNameForEdit, hasUnsavedChanges } = this.state;
+
+        if (!currentGameData) {
+            UIUtils.showError("Нет данных игры для сохранения.");
+            return;
+        }
+
+        const wordsActuallyChanged = JSON.stringify(editableWordsAndClues.map(w => ({word: w.word, clue: w.clue}))) !== JSON.stringify(currentGameData.words.map(w => ({word: w.word, clue: w.clue})));
+        const nameActuallyChanged = puzzleNameForSave !== originalPuzzleNameForEdit;
+
+        if (!wordsActuallyChanged && !nameActuallyChanged && !hasUnsavedChanges) {
+            UIUtils.showInfo("Нет изменений для сохранения.");
+            this.setState({ isEditing: false }, () => {
+                 this.displayGeneratedGameWithCurrentData();
+                 if (this.crosswordContainerRef.current) {
+                    this.crosswordContainerRef.current.classList.remove('grid-disabled');
+                }
+            });
+            return;
+        }
+        
+        DisplayBase.displayLoadingIndicator();
+
+        try {
+            let newGameDataSubset = {};
+            if (wordsActuallyChanged) {
+                const wordsForBackend = editableWordsAndClues.map(({originalArrayIndex, ...rest}) => rest);
+                newGameDataSubset = await fetchRegeneratedLayout(currentGameData.gameType, wordsForBackend);
+            } else {
+                newGameDataSubset = {
+                    [currentGameData.gameType === 'crossword' ? 'crossword' : 'grid']: currentGameData.gameType === 'crossword' ? currentGameData.crossword : currentGameData.grid,
+                    words: currentGameData.words,
+                    layout: currentGameData.layout,
+                    gridSize: currentGameData.gridSize
+                };
+            }
+
+            const updatedGameDataForSave = {
+                ...this.state.currentGameData,
+                gameType: this.state.currentGameData.gameType,
+                name: this.state.puzzleNameForSave,
+
+                ...(this.state.currentGameData.gameType === 'crossword' && {
+                    crossword: newGameDataSubset.crossword,
+                    grid: newGameDataSubset.crossword,
+                    layout: newGameDataSubset.layout
+                }),
+                ...(this.state.currentGameData.gameType === 'wordsoup' && {
+                    grid: newGameDataSubset.grid,
+                    gridSize: newGameDataSubset.gridSize
+                }),
+
+                words: newGameDataSubset.words
+            };
+            
+            if (currentPuzzleId) {
+                await updatePuzzleInSupabase(currentPuzzleId, {
+                    name: puzzleNameForSave,
+                    game_data: updatedGameDataForSave
+                });
+                UIUtils.showSuccess(`Пазл "${puzzleNameForSave}" успешно обновлен!`);
+                this.setState({
+                    currentGameData: updatedGameDataForSave,
+                    isEditing: false,
+                    editableWordsAndClues: [],
+                    hasUnsavedChanges: false,
+                    originalPuzzleNameForEdit: puzzleNameForSave
+                }, () => {
+                    this.displayGeneratedGameWithCurrentData();
+                    if (this.crosswordContainerRef.current) {
+                        this.crosswordContainerRef.current.classList.remove('grid-disabled');
+                    }
+                });
+            } else { // Если ID НЕТ - СОЗДАЕМ новый пазл
+                if (!puzzleNameForSave.trim()) {
+                    UIUtils.showError("Пожалуйста, введите название для нового пазла.");
+                    DisplayBase.hideLoadingIndicator();
+                    return;
+                }
+                const puzzleToCreate = {
+                    name: puzzleNameForSave,
+                    game_type: currentGameData.gameType,
+                    game_data: updatedGameDataForSave
+                };
+
+                const isDuplicate = await checkForDuplicatePuzzle(puzzleToCreate);
+                if (isDuplicate) {
+                    UIUtils.showError("Пазл с таким именем уже существует!");
+                    DisplayBase.hideLoadingIndicator();
+                    return;
+                }
+
+                const newSavedPuzzle = await savePuzzleToSupabase(puzzleToCreate);
+                if (newSavedPuzzle && newSavedPuzzle.id) {
+                    UIUtils.showSuccess(`Новый пазл "${newSavedPuzzle.name}" успешно создан и сохранен!`);
+                    this.setState({
+                        currentGameData: updatedGameDataForSave,
+                        currentPuzzleId: newSavedPuzzle.id,
+                        puzzleNameForSave: newSavedPuzzle.name,
+                        originalPuzzleNameForEdit: newSavedPuzzle.name,
+                        isEditing: false,
+                        editableWordsAndClues: [],
+                        hasUnsavedChanges: false
+                    }, () => {
+                        this.displayGeneratedGameWithCurrentData();
+                        if (this.crosswordContainerRef.current) {
+                            this.crosswordContainerRef.current.classList.remove('grid-disabled');
+                        }
+                    });
+                } else {
+                    UIUtils.showError("Не удалось создать и сохранить новый пазл.");
+                }
+            }
+        } catch (error) {
+            console.error("Ошибка при сохранении и перегенерации:", error);
+            UIUtils.showError(`Ошибка: ${error.message || "Не удалось сохранить изменения."}`);
+        } finally {
+            DisplayBase.hideLoadingIndicator();
+        }
+    };
+
+    displayGeneratedGameWithCurrentData = () => {
+        const { currentGameData } = this.state;
+        if (!currentGameData) {
+            console.warn("displayGeneratedGameWithCurrentData called but no currentGameData");
+            return;
+        }
+
+        // Очистка предыдущей игры
+        DisplayBase.clearGameField();
+        if (this.cluesContainerRef.current) {
+            this.cluesContainerRef.current.innerHTML = '';
+        } else {
+            console.warn("Clues container ref is not available in displayGeneratedGameWithCurrentData");
+        }
+        
+        this.activityTracker.reset(); // Сброс трекера активности для "новой" игры
+
+        const gameType = currentGameData.gameType;
+        const handleAttemptCallback = (isCorrect) => this.activityTracker.recordAttempt(isCorrect);
+        
+        // Заглушка для handleGameCompleteCallback, если он вам не нужен здесь специфичный
+        const handleGameCompleteCallback = async () => { 
+            console.log("Game complete (after edit/cancel). Stats:", this.activityTracker.getStats());
+            if (this.props.ltiUserId) { // Используем this.props, а не просто ltiUserId
+                const finalScore = this.calculateScore();
+                await this.submitLTIScore(finalScore);
+            }
+            this.activityTracker.stopTracking();
+        };
+
+        this.activityTracker.startTracking({
+            gameType: gameType,
+            inputType: 'loaded_or_edited', // Можете уточнить
+            sourceName: this.state.puzzleNameForSave || 'Unnamed Puzzle',
+            totalWords: currentGameData.words?.length || 0
+        });
+
+        if (gameType === 'wordsoup') {
+            if (currentGameData.grid && currentGameData.words) {
+                const display = new WordSoupDisplay(currentGameData, handleAttemptCallback, handleGameCompleteCallback);
+                display.display(); // Отображает и сетку, и подсказки
+            } else { 
+                console.error('Error in WordSoup data for displayGeneratedGameWithCurrentData:', currentGameData);
+                UIUtils.showError('Ошибка данных для филворда после операции.'); 
+            }
+        } else if (gameType === 'crossword') {
+            if (currentGameData.crossword && currentGameData.layout?.result) {
+                // CrosswordDisplay.displayCrossword должен сам вызвать CluesDisplay.displayCrosswordClues
+                CrosswordDisplay.displayCrossword(currentGameData.crossword, currentGameData.layout.result, handleAttemptCallback, handleGameCompleteCallback);
+            } else { 
+                console.error('Error in Crossword data for displayGeneratedGameWithCurrentData:', currentGameData);
+                UIUtils.showError('Ошибка данных для кроссворда после операции.'); 
+            }
+        } else {
+            console.error('Unknown game type in displayGeneratedGameWithCurrentData:', gameType);
+            UIUtils.showError(`Неизвестный тип игры: ${gameType}`);
+        }
+    };
+
+    handlePuzzleNameChangeInEdit = (newName) => {
+        this.setState({ 
+            puzzleNameForSave: newName,
+            hasUnsavedChanges: true
+        });
+    };
 
     render() {
         const { isBlackTheme, toggleTheme, ltiUserId, user } = this.props;
@@ -555,7 +819,7 @@ class GameGenerator extends Component {
                                         className='input-puzzle-name' 
                                         type='text' 
                                         placeholder='НАЗВАНИЕ'
-                                        onChange={(e) => this.setState({ puzzleNameForSave: e.target.value })} 
+                                        onChange={(e) => this.setState({ puzzleNameForSave: e.target.value } )}required 
                                     />
                                     <div className='input-type-of-puzzle'>
                                         <h2>ВИД ГОЛОВОЛОМКИ</h2>
@@ -688,7 +952,7 @@ class GameGenerator extends Component {
                     </section>
                     <section id='dispay-game-on-screen'>
                         <section id='crossword-and-clues'>
-                            <div id="crossword-container" ref={this.crosswordContainerRef}></div>
+                            <div id="crossword-container" ref={this.crosswordContainerRef} className={this.state.isEditing ? 'grid-disabled' : ''}></div>
                             <div id="clues-container" ref={this.cluesContainerRef} style={{ padding: '0px' }}></div> 
                         </section>
                     </section>
@@ -704,25 +968,67 @@ class GameGenerator extends Component {
 
                     {!isLTI && isAuthenticated && this.state.currentGameData && (
                         <div className="game-actions">
-                            <button
-                                className="save-puzzle-btn"
-                                onClick={this.handleActualSavePuzzle}
-                                title='Сохранить в свои головоломки'
-                            >
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M15 20V15H9V20M18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H14.1716C14.702 4 15.2107 4.21071 15.5858 4.58579L19.4142 8.41421C19.7893 8.78929 20 9.29799 20 9.82843V18C20 19.1046 19.1046 20 18 20Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                            <button
-                                className="download-pdf-btn"
-                                onClick={this.handleDownloadPdf}
-                                title='Cкачать в PDF'
-                            >
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
+                            {!this.state.isEditing && this.state.currentGameData && (
+                                <button
+                                    className="game-action-btn edit-puzzle-btn"
+                                    onClick={this.handleEnterEditMode}
+                                    title='Редактировать слова и подсказки'
+                                    disabled={this.state.isLoading}
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13.0207 5.82839L15.8491 2.99996L20.7988 7.94971L17.9704 10.7781M13.0207 5.82839L3.41405 15.435C3.22652 15.6225 3.12116 15.8768 3.12116 16.1421V20.6874H7.66648C7.93181 20.6874 8.18613 20.582 8.37367 20.3945L17.9704 10.7781M13.0207 5.82839L17.9704 10.7781" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </button>
+                            )}
+
+                            {this.state.isEditing && (
+                                <>
+                                    <button
+                                        className="game-action-btn save-changes-btn"
+                                        onClick={this.handleSaveChangesAndRegenerate}
+                                        title='Сохранить изменения и перегенерировать сетку'
+                                        disabled={this.state.isLoading}
+                                    >
+                                        {this.state.isLoading ? "Сохранение..." : "Сохранить"}
+                                    </button>
+                                    <button
+                                        className="game-action-btn cancel-edit-btn"
+                                        onClick={this.handleCancelEdit}
+                                        title='Отменить редактирование'
+                                        disabled={this.state.isLoading}
+                                    >
+                                        Отмена
+                                    </button>
+                                    <input 
+                                        type="text"
+                                        value={this.state.puzzleNameForSave}
+                                        onChange={(e) => this.handlePuzzleNameChangeInEdit(e.target.value)}
+                                        placeholder="Название пазла"
+                                        className="puzzle-name-edit-input"
+                                    />
+                                </>
+                            )}
+
+                            {!this.state.isEditing && (
+                                <>
+                                    <button
+                                        className="game-action-btn save-puzzle-btn"
+                                        onClick={this.handleActualSavePuzzle}
+                                        title='Сохранить в свои головоломки'
+                                        disabled={this.state.isLoading || !!this.state.currentPuzzleId}
+                                    >
+                                       <SaveButton />
+                                    </button>
+                                    <button
+                                        className="game-action-btn download-pdf-btn"
+                                        onClick={this.handleDownloadPdf}
+                                        title='Cкачать в PDF'
+                                        disabled={this.state.isLoading}
+                                    >
+                                        <DownloadPdf />
+                                    </button>
+                                </>
+                            )}
                         </div>
                     )}
                 </main>

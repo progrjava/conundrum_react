@@ -48,61 +48,86 @@ export class CluesDisplay {
      * Создает список подсказок
      * @private
      */
-    static createClueList(clues, title) {
+    static createClueList(cluesDataArray, title, isEditingMode = false, onItemChange = null, gameType = 'crossword') {
         const list = document.createElement('ul');
         list.className = 'word-list';
-  
-        clues.forEach(wordData => {
+
+        cluesDataArray.forEach(wordData => {
             const li = document.createElement('li');
             li.className = 'word-item';
-            if (wordData.cleanWord) {
+            const itemIdentifier = typeof wordData.originalArrayIndex === 'number' ? wordData.originalArrayIndex : wordData.position;
+
+            if (wordData.cleanWord && !isEditingMode) {
                 li.setAttribute('data-word', wordData.word);
                 li.setAttribute('data-clean-word', wordData.cleanWord);
             }
-            
-            const clueText = document.createElement('span');
-            clueText.textContent = `${wordData.position}. ${wordData.clue}`;
-            li.appendChild(clueText);
-  
-            // Создание SVG элемента
-            const showAnswerButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            showAnswerButton.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            showAnswerButton.setAttribute('viewBox', '0 0 24 24');
-            showAnswerButton.setAttribute('fill', 'none');
-            showAnswerButton.classList.add('show-answer-button'); // Добавляем класс для стилей
 
-            // Первый путь
-            const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path1.setAttribute('stroke', '#62E953');
-            path1.setAttribute('stroke-linecap', 'round');
-            path1.setAttribute('stroke-linejoin', 'round');
-            path1.setAttribute('stroke-width', '2');
-            path1.setAttribute('d', 'M3 13c3.6-8 14.4-8 18 0');
+            const positionSpan = document.createElement('span');
+            positionSpan.textContent = `${wordData.position}. `;
+            positionSpan.className = 'clue-position';
+            li.appendChild(positionSpan);
 
-            // Второй путь
-            const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path2.setAttribute('stroke', '#62E953');
-            path2.setAttribute('stroke-linecap', 'round');
-            path2.setAttribute('stroke-linejoin', 'round');
-            path2.setAttribute('stroke-width', '2');
-            path2.setAttribute('d', 'M12 17a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z');
+            if (isEditingMode) {
+                const clueTextarea = document.createElement('textarea');
+                clueTextarea.className = 'editable-clue-textarea';
+                clueTextarea.value = wordData.clue;
+                clueTextarea.rows = 2;
+                clueTextarea.oninput = (e) => {
+                    if (onItemChange) {
+                        onItemChange(itemIdentifier, 'clue', e.target.value);
+                    }
+                };
+                li.appendChild(clueTextarea);
 
-            // Добавляем пути в SVG
-            showAnswerButton.appendChild(path1);
-            showAnswerButton.appendChild(path2);
+                const wordInput = document.createElement('input');
+                wordInput.type = 'text';
+                wordInput.className = 'editable-word-input';
+                wordInput.value = wordData.word || wordData.answer || '';
+                wordInput.oninput = (e) => {
+                    if (onItemChange) {
+                        onItemChange(itemIdentifier, 'word', e.target.value);
+                    }
+                };
+                li.appendChild(wordInput);
+            } else {
+                const clueText = document.createElement('span');
+                clueText.className = 'clue-text-content';
+                clueText.textContent = wordData.clue;
+                li.appendChild(clueText);
 
-            // Добавление обработчика клика
-            showAnswerButton.addEventListener('click', () => {
-                showAnswerButton.remove();
-                const displayWord = wordData.originalWord || wordData.word;
-                clueText.textContent += ` (${displayWord})`;
-            });
+                const showAnswerButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                showAnswerButton.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                showAnswerButton.setAttribute('viewBox', '0 0 24 24');
+                showAnswerButton.setAttribute('fill', 'none');
+                showAnswerButton.classList.add('show-answer-button');
 
-            // Добавление SVG в список
-            li.appendChild(showAnswerButton);
+                const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path1.setAttribute('stroke', '#62E953');
+                path1.setAttribute('stroke-linecap', 'round');
+                path1.setAttribute('stroke-linejoin', 'round');
+                path1.setAttribute('stroke-width', '2');
+                path1.setAttribute('d', 'M3 13c3.6-8 14.4-8 18 0');
+
+                const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path2.setAttribute('stroke', '#62E953');
+                path2.setAttribute('stroke-linecap', 'round');
+                path2.setAttribute('stroke-linejoin', 'round');
+                path2.setAttribute('stroke-width', '2');
+                path2.setAttribute('d', 'M12 17a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z');
+
+                showAnswerButton.appendChild(path1);
+                showAnswerButton.appendChild(path2);
+
+                showAnswerButton.addEventListener('click', () => {
+                    showAnswerButton.remove();
+                    const displayWord = wordData.word || wordData.originalWord || wordData.answer;
+                    clueText.textContent += ` (${displayWord})`;
+                });
+                li.appendChild(showAnswerButton);
+            }
             list.appendChild(li);
         });
-  
+
         const container = document.createElement('div');
         container.className = 'clues-section';
         const titleElement = document.createElement('h3');
@@ -111,4 +136,34 @@ export class CluesDisplay {
         container.appendChild(list);
         return container;
     }
+
+    // Новый метод для отображения подсказок в режиме редактирования
+    static renderEditable(wordsToEdit, gameType, onItemChangeCallback) {
+        const cluesContainer = document.getElementById('clues-container');
+        if (!cluesContainer) return;
+        cluesContainer.style.padding = '5%';
+        cluesContainer.innerHTML = '';
+
+        if (gameType === 'crossword') {
+            const acrossClues = wordsToEdit.filter(wordData => wordData.orientation === 'across')
+                .sort((a, b) => a.position - b.position);
+            const downClues = wordsToEdit.filter(wordData => wordData.orientation === 'down')
+                .sort((a, b) => a.position - b.position);
+
+            const acrossContainer = this.createClueList(acrossClues, 'По горизонтали (редактирование)', true, onItemChangeCallback, gameType);
+            const downContainer = this.createClueList(downClues, 'По вертикали (редактирование)', true, onItemChangeCallback, gameType);
+
+            cluesContainer.appendChild(acrossContainer);
+            cluesContainer.appendChild(downContainer);
+        } else if (gameType === 'wordsoup') {
+            const cluesData = wordsToEdit.map((word, index) => ({
+                ...word,
+                position: word.position || index + 1,
+            }));
+            const container = this.createClueList(cluesData, 'Слова в филворде (редактирование)', true, onItemChangeCallback, gameType);
+            cluesContainer.appendChild(container);
+        }
+    }
+
+
 }

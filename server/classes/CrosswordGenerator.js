@@ -274,6 +274,57 @@ class CrosswordGenerator {
         });
         return grid;
     }
+
+    buildCrosswordFromWords(wordsAndClues) {
+        if (!wordsAndClues || !Array.isArray(wordsAndClues) || wordsAndClues.length === 0) {
+            throw new Error('Не предоставлены слова для генерации кроссворда.');
+        }
+
+        // Фильтрация и нормализация слов
+        const validWordsAndClues = wordsAndClues.filter(
+            item => item && typeof item.word === 'string' && typeof item.clue === 'string' && item.word.trim() !== ''
+        ).map(item => ({ word: item.word.trim(), clue: item.clue.trim() }));
+
+        if (validWordsAndClues.length === 0) {
+            throw new Error('Нет валидных слов для генерации кроссворда.');
+        }
+
+        // Подготовка данных для генерации сетки
+        const layoutInput = validWordsAndClues.map(item => ({
+            answer: item.word.replace(/\s+/g, '').toUpperCase(),
+            clue: item.clue
+        }));
+
+        // Генерация макета кроссворда
+        const layout = clg.generateLayout(layoutInput);
+
+        if (!layout || !layout.result || layout.result.length === 0) {
+            throw new Error("Не удалось сгенерировать валидный макет кроссворда. Возможно, слова не пересекаются или их слишком мало.");
+        }
+
+        // Сопоставление сгенерированных слов с оригинальными
+        const displayWords = layout.result.map(wordData => {
+            const originalItem = validWordsAndClues.find(
+                item => item.word.replace(/\s+/g, '').toUpperCase() === wordData.answer.toUpperCase()
+            );
+            const originalWord = originalItem ? originalItem.word : wordData.answer;
+            return {
+                ...wordData,
+                word: originalWord,
+                originalWord: originalWord,
+                cleanAnswer: wordData.answer
+            };
+        });
+
+        // Создание сетки кроссворда
+        const crosswordGrid = this.createGridFromLayout(layout);
+
+        return {
+            crossword: crosswordGrid,
+            words: displayWords,
+            layout: layout
+        };
+    }
 }
 
 module.exports = CrosswordGenerator;

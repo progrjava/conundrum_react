@@ -191,6 +191,61 @@ class WordSoupGenerator extends CrosswordGenerator {
         const response = await super.generateCrossword(text, inputType, totalWords, difficulty);
         return response.words;
     }
+
+    buildSoupFromWords(wordsAndClues) {
+        if (!wordsAndClues || !Array.isArray(wordsAndClues) || wordsAndClues.length === 0) {
+            throw new Error('Не предоставлены слова для генерации супа из слов.');
+        }
+
+        // Нормализация и очистка слов
+        const cleanWordObjects = wordsAndClues.map(item => ({
+            originalWord: item.word.trim(),
+            clue: item.clue.trim(),
+            cleanWord: item.word.replace(/\s+/g, '').toUpperCase()
+        })).filter(item => item.cleanWord.length > 0);
+        
+        if (cleanWordObjects.length === 0) {
+            throw new Error('Нет валидных слов для генерации супа из слов.');
+        }
+
+        // Определение размера сетки
+        const longestWordLength = Math.max(0, ...cleanWordObjects.map(w => w.cleanWord.length));
+        const gridSize = Math.max(15, longestWordLength + Math.min(5, cleanWordObjects.length));
+
+        // Создание пустой сетки
+        const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
+        const placedWordsOutput = [];
+        let position = 1;
+
+        // Сортировка слов по длине (длинные первыми)
+        const sortedWords = [...cleanWordObjects].sort((a, b) => b.cleanWord.length - a.cleanWord.length);
+
+        // Размещение слов в сетке
+        for (const wordData of sortedWords) {
+            const placedInfo = this.placeWordInSoup(grid, wordData.originalWord);
+
+            if (placedInfo) {
+                placedWordsOutput.push({
+                    word: wordData.originalWord,
+                    clue: wordData.clue,
+                    cleanAnswer: wordData.cleanWord,
+                    ...placedInfo,
+                    position: position++
+                });
+            } else {
+                console.warn(`Не удалось разместить слово: ${wordData.originalWord}`);
+            }
+        }
+
+        // Заполнение пустых клеток случайными буквами
+        this.fillEmptyCells(grid);
+
+        return {
+            grid: grid,
+            words: placedWordsOutput,
+            gridSize: gridSize
+        };
+    }
 }
 
 module.exports = WordSoupGenerator;

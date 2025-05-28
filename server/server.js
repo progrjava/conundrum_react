@@ -276,6 +276,44 @@ app.post('/api/generate-pdf', async (req, res) => {
     }
 });
 
+app.post('/api/recalculate-game-layout', express.json(), async (req, res) => {
+    try {
+        const { gameType, words } = req.body;
+
+        // Валидация входных данных
+        if (!gameType || !words || !Array.isArray(words) || words.length === 0) {
+            return res.status(400).json({ error: 'Неверные входные данные: требуется gameType и непустой массив слов.' });
+        }
+
+        // Проверка структуры каждого слова
+        for (const item of words) {
+            if (!item || typeof item.word !== 'string' || typeof item.clue !== 'string' || item.word.trim() === '') {
+                return res.status(400).json({ error: 'Неверный массив слов: каждый элемент должен содержать строки "word" и "clue".' });
+            }
+        }
+        
+        let recalculatedData;
+        if (gameType === 'crossword') {
+            recalculatedData = crosswordGenerator.buildCrosswordFromWords(words);
+        } else if (gameType === 'wordsoup') {
+            recalculatedData = wordSoupGenerator.buildSoupFromWords(words);
+        } else {
+            return res.status(400).json({ error: 'Неверный тип игры для перегенерации.' });
+        }
+
+        res.json(recalculatedData);
+
+    } catch (error) {
+        console.error('Ошибка при перегенерации сетки:', error);
+        if (error.message.includes("Could not generate") || error.message.includes("No words provided") || error.message.includes("No valid words")) {
+            return res.status(422).json({ error: error.message }); // Unprocessable Entity
+        }
+        res.status(500).json({ 
+            error: 'Произошла ошибка при перегенерации сетки игры.',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
 
 // Запуск сервера
 const PORT = process.env.PORT || 5000;
