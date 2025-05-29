@@ -538,7 +538,7 @@ input[name="difficulty"]:not(:checked) + label::before {
     justify-content: center;
 }
 
-.save-puzzle-btn, .download-pdf-btn {
+.save-puzzle-btn, .download-pdf-btn, .edit-puzzle-btn {
     cursor: pointer;
     display: flex;
     border-radius: 10px;
@@ -552,6 +552,101 @@ input[name="difficulty"]:not(:checked) + label::before {
     width: 30px;
 }
 
+.editable-clue-textarea {
+    background: none;
+    border: 1px solid #FBFBFE;
+    border-radius: 5px;
+    padding: 5px;
+    resize: vertical;
+    font-size: 16px;
+    color: #FBFBFE;
+    width: 40vw !important;
+    height: auto !important;
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+
+.editable-clue-textarea:focus {
+    outline: none;
+}
+
+.editable-word-input {
+    background: none;
+    border: 1px solid #FBFBFE;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    color: #FBFBFE;
+    width: 30vw;
+}
+
+.edit-puzzle-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(81, 56, 136, 0.8);
+    border-radius: 15px;
+    width: calc(100% - 30px);
+}
+
+.puzzle-name-edit-input {
+    background: none;
+    border: 1px solid #FBFBFE;
+    border-radius: 10px;
+    padding: 5px;
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: #FBFBFE;
+}
+
+.puzzle-name-edit-input:focus {
+    outline: none;
+}
+
+.edit-puzzle-info-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.save-changes-btn, .cancel-edit-btn {
+    border: 1px solid #FBFBFE;
+    border-radius: 10px;
+    padding: 5px 10px;
+    background: none;
+    font-family: 'Roboto Slab';
+    font-weight: 400;
+    font-size: 16px;
+    color: #FBFBFE;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.save-changes-btn:hover {
+    background-color: #4dc83f;
+    border-color: #4dc83f;
+}
+
+.cancel-edit-btn:hover {
+    background-color: #ED7E98;
+    border-color: #ED7E98;
+}
+
+.puzzle-info-and-iditing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
 
 @media (max-width: 768px) {
     #game-main-page {
@@ -747,7 +842,7 @@ input[name="difficulty"]:not(:checked) + label::before {
         gap: 10px;
     }
 
-    .save-puzzle-btn, .download-pdf-btn {
+    .save-puzzle-btn, .download-pdf-btn, .edit-puzzle-btn {
         padding: 5px;
     }
 
@@ -755,6 +850,23 @@ input[name="difficulty"]:not(:checked) + label::before {
     .game-actions svg {
         width: 20px;
     }
+
+    .editable-clue-textarea {
+        font-size: 14px;
+    }
+
+    .editable-word-input {
+        font-size: 14px;
+    }
+
+    .puzzle-name-edit-input {
+        font-size: 14px;
+    }
+
+    .save-changes-btn, .cancel-edit-btn {
+        font-size: 14px;
+    }
+
 }
 
 
@@ -966,7 +1078,7 @@ input[name="difficulty"]:not(:checked) + label::before {
         gap: 10px;
     }
 
-    .save-puzzle-btn, .download-pdf-btn {
+    .save-puzzle-btn, .download-pdf-btn, .edit-puzzle-btn {
         padding: 5px;
     }
 }

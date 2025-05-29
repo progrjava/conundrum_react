@@ -153,6 +153,10 @@ input.crossword-input:focus {
     gap: 20px;
 }
 
+.clue-position {
+    max-width: 20px;
+}
+
 .word-item span {
     font-family: 'Roboto Slab';
     font-style: normal;

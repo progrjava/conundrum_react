@@ -71,7 +71,7 @@ export class CluesDisplay {
                 const clueTextarea = document.createElement('textarea');
                 clueTextarea.className = 'editable-clue-textarea';
                 clueTextarea.value = wordData.clue;
-                clueTextarea.rows = 2;
+                clueTextarea.rows = 3;
                 clueTextarea.oninput = (e) => {
                     if (onItemChange) {
                         onItemChange(itemIdentifier, 'clue', e.target.value);

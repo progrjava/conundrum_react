@@ -546,7 +546,7 @@ class GameGenerator extends Component {
         const nameActuallyChanged = puzzleNameForSave !== originalPuzzleNameForEdit;
 
         if (!wordsActuallyChanged && !nameActuallyChanged && !hasUnsavedChanges) {
-            UIUtils.showInfo("Нет изменений для сохранения.");
+            UIUtils.showError("Нет изменений для сохранения.");
             this.setState({ isEditing: false }, () => {
                  this.displayGeneratedGameWithCurrentData();
                  if (this.crosswordContainerRef.current) {
@@ -952,7 +952,39 @@ class GameGenerator extends Component {
                     </section>
                     <section id='dispay-game-on-screen'>
                         <section id='crossword-and-clues'>
-                            <div id="crossword-container" ref={this.crosswordContainerRef} className={this.state.isEditing ? 'grid-disabled' : ''}></div>
+                            <section className='puzzle-info-and-iditing'>
+                                <div id="crossword-container" ref={this.crosswordContainerRef} className={this.state.isEditing ? 'grid-disabled' : ''}></div>
+                                {this.state.isEditing && (
+                                    <div className='edit-puzzle-info-wrapper'>
+                                        <input 
+                                            type="text"
+                                            value={this.state.puzzleNameForSave}
+                                            onChange={(e) => this.handlePuzzleNameChangeInEdit(e.target.value)}
+                                            placeholder="Название пазла"
+                                            className="puzzle-name-edit-input"
+                                        />
+                                        <div className='edit-puzzle-info-buttons'>
+                                            <button
+                                                className="game-action-btn save-changes-btn"
+                                                onClick={this.handleSaveChangesAndRegenerate}
+                                                title='Сохранить изменения и перегенерировать сетку'
+                                                disabled={this.state.isLoading}
+                                            >
+                                                {this.state.isLoading ? "Сохранение..." : "Сохранить"}
+                                            </button>
+                                            <button
+                                                className="game-action-btn cancel-edit-btn"
+                                                onClick={this.handleCancelEdit}
+                                                title='Отменить редактирование'
+                                                disabled={this.state.isLoading}
+                                            >
+                                                Отмена
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </section>
+                            
                             <div id="clues-container" ref={this.cluesContainerRef} style={{ padding: '0px' }}></div> 
                         </section>
                     </section>
@@ -979,34 +1011,6 @@ class GameGenerator extends Component {
                                         <path d="M13.0207 5.82839L15.8491 2.99996L20.7988 7.94971L17.9704 10.7781M13.0207 5.82839L3.41405 15.435C3.22652 15.6225 3.12116 15.8768 3.12116 16.1421V20.6874H7.66648C7.93181 20.6874 8.18613 20.582 8.37367 20.3945L17.9704 10.7781M13.0207 5.82839L17.9704 10.7781" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>
                                 </button>
-                            )}
-
-                            {this.state.isEditing && (
-                                <>
-                                    <button
-                                        className="game-action-btn save-changes-btn"
-                                        onClick={this.handleSaveChangesAndRegenerate}
-                                        title='Сохранить изменения и перегенерировать сетку'
-                                        disabled={this.state.isLoading}
-                                    >
-                                        {this.state.isLoading ? "Сохранение..." : "Сохранить"}
-                                    </button>
-                                    <button
-                                        className="game-action-btn cancel-edit-btn"
-                                        onClick={this.handleCancelEdit}
-                                        title='Отменить редактирование'
-                                        disabled={this.state.isLoading}
-                                    >
-                                        Отмена
-                                    </button>
-                                    <input 
-                                        type="text"
-                                        value={this.state.puzzleNameForSave}
-                                        onChange={(e) => this.handlePuzzleNameChangeInEdit(e.target.value)}
-                                        placeholder="Название пазла"
-                                        className="puzzle-name-edit-input"
-                                    />
-                                </>
                             )}
 
                             {!this.state.isEditing && (
