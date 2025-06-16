@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MainPage from './components/MainPage';
 import SignInUp from './components/SignInUp';
 import PersonalAccount from './components/PersonalAccount';
@@ -139,44 +139,42 @@ const AppContent = () => {
     console.log('AppContent RENDERING ROUTES:', { isAuth, user, isLoading });
 
     return (
-        <Router>
-            <div className={isBlackTheme ? 'black-theme' : 'white-theme'}>
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<MainPage isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} isAuth={!!user} />}
-                    />
-                    <Route
-                        path="/register"
-                        element={user ? <Navigate to="/account" replace /> : <SignInUp isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} supabase={supabaseInstance} />}
-                    />
-                    <Route
-                        path="/gamegenerator"
-                        element={
-                            (user || localStorage.getItem('lti') === 'true') ? (
-                                <GameGenerator
-                                    isBlackTheme={isBlackTheme}
-                                    toggleTheme={toggleTheme}
-                                    user={user}
-                                    isAuth={!!user}
-                                    supabase={supabaseInstance}
-                                    ltiUserId={ltiUserId}
-                                    ltiContextId={ltiContextId}
-                                />
-                            ) : (
-                                <Navigate to="/register" replace />
-                            )
-                        }
-                    />
-                    <Route
-                        path="/account"
-                        element={user ? <PersonalAccount isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} user={user} supabase={supabaseInstance} /> : <Navigate to="/register" replace />}
-                    />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                    <Route path="/logout" element={<Navigate to="/" replace />} />
-                </Routes>
-            </div>
-        </Router>
+        <div className={isBlackTheme ? 'black-theme' : 'white-theme'}>
+            <Routes>
+                <Route
+                    path="/"
+                    element={<MainPage isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} isAuth={!!user} />}
+                />
+                <Route
+                    path="/register"
+                    element={user ? <Navigate to="/account" replace /> : <SignInUp isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} supabase={supabaseInstance} />}
+                />
+                <Route
+                    path="/gamegenerator"
+                    element={
+                        (user || localStorage.getItem('lti') === 'true') ? (
+                            <GameGenerator
+                                isBlackTheme={isBlackTheme}
+                                toggleTheme={toggleTheme}
+                                user={user}
+                                isAuth={!!user}
+                                supabase={supabaseInstance}
+                                ltiUserId={ltiUserId}
+                                ltiContextId={ltiContextId}
+                            />
+                        ) : (
+                            <Navigate to="/register" replace />
+                        )
+                    }
+                />
+                <Route
+                    path="/account"
+                    element={user ? <PersonalAccount isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} user={user} supabase={supabaseInstance} /> : <Navigate to="/register" replace />}
+                />
+                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="/logout" element={<Navigate to="/" replace />} />
+            </Routes>
+        </div>
     );
 };
 
