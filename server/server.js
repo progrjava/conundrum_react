@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -8,6 +7,8 @@ const multer = require('multer');
 const session = require('express-session');
 const { initializeLTI } = require('./middleware/ltiMiddleware');
 const { sendGradeToMoodle } = require('./services/ltiService');
+const jwt = require('jsonwebtoken');
+const { createClient } = require('@supabase/supabase-js');
 
 const CrosswordGenerator = require('./classes/CrosswordGenerator');
 const WordSoupGenerator = require('./classes/WordSoupGenerator');
@@ -21,6 +22,12 @@ const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL;
 
 // Инициализация LTI
 const { validateLTIRequest } = initializeLTI();
+
+// Инициализация админского клиента Supabase (только на бэкенде!)
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 const crosswordGenerator = new CrosswordGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
 const wordSoupGenerator = new WordSoupGenerator(OPENROUTER_API_KEY, OPENROUTER_API_URL);
@@ -193,43 +200,85 @@ app.post('/api/track-activity', express.json(), async (req, res) => {
     res.status(200).json({ message: 'Activity tracked successfully' });
 });
 
-// Маршруты
-app.post('/lti/launch', validateLTIRequest, (req, res) => {
-    // Получаем userId из сессии (установлен middleware)
-    const ltiUserId = req.session.userId;
-    // Получаем contextId из тела запроса (стандартное поле LTI)
-    const ltiContextId = req.body.context_id;
-    const clientUrl = process.env.CLIENT_URL;
-
-    // Проверяем наличие необходимых данных
-    if (!ltiUserId || !ltiContextId || !clientUrl) {
-        console.error('LTI Launch Error: Missing userId (from session), contextId (from body), or CLIENT_URL');
-        // Убедись, что Moodle точно отправляет context_id
-        console.log('LTI Request Body:', req.body);
-        return res.status(400).send('LTI launch configuration error: Missing required parameters.');
-    }
-
-    // Формируем URL для редиректа на клиент с ПРАВИЛЬНЫМИ именами параметров
+app.post('/lti/launch', validateLTIRequest, async (req, res) => {
     try {
-        const redirectUrl = new URL(clientUrl);
-        redirectUrl.pathname = '/game-generator'; 
+        // 1. Получаем данные пользователя из сессии
+        const moodleUserId = req.session.userId;
+        const moodleUserEmail = req.session.lis_person_contact_email_primary;
+        const moodleFullName = req.session.lis_person_name_full;
+        const rolesString = req.session.roles || '';
 
-        redirectUrl.searchParams.append('lti', 'true');
-        redirectUrl.searchParams.append('user_id', ltiUserId); 
-        redirectUrl.searchParams.append('context_id', ltiContextId);
+        if (!moodleUserId || !moodleUserEmail) {
+            throw new Error("LTI request is missing user_id or email.");
+        }
 
-        console.log(`LTI Launch (after validation): Redirecting user ${ltiUserId} from context ${ltiContextId} to ${redirectUrl.toString()}`);
+        // 2. Ищем пользователя в Supabase по его Moodle ID
+        const { data: existingUser, error: findError } = await supabaseAdmin.auth.admin.listUsers();
+        
+        let user = existingUser.users.find(u => u.user_metadata.moodle_id === moodleUserId);
 
-        // Выполняем редирект
-        res.redirect(redirectUrl.toString());
+        // 3. Если пользователь не найден - создаем его (Just-in-Time Provisioning)
+        if (!user) {
+            console.log(`User with Moodle ID ${moodleUserId} not found. Creating new user...`);
+            const { data: newUserObject, error: createError } = await supabaseAdmin.auth.admin.createUser({
+                email: moodleUserEmail,
+                email_confirm: true,
+                user_metadata: {
+                    full_name: moodleFullName,
+                    moodle_id: moodleUserId,
+                    roles: rolesString,
+                    source: 'lti_moodle'
+                }
+            });
+
+            if (createError) {
+                if (createError.message.includes('duplicate key value')) {
+                     throw new Error(`User with email ${moodleUserEmail} already exists but is not linked to this Moodle account. Please contact support.`);
+                }
+                throw createError;
+            }
+            user = newUserObject.user;
+            console.log(`Created new user with Supabase ID: ${user.id}`);
+        } else {
+            console.log(`Found existing user. Supabase ID: ${user.id}`);
+        }
+
+        // 4. Теперь у нас есть `user.id` - это UUID из Supabase. Используем его для JWT.
+        const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
+        if (!supabaseJwtSecret) {
+            throw new Error("SUPABASE_JWT_SECRET is not set on the server.");
+        }
+
+        const payload = {
+            sub: user.id,
+            aud: 'authenticated',
+        };
+        
+        const supabaseToken = jwt.sign(payload, supabaseJwtSecret, { expiresIn: '1h' });
+
+        // 5. Формируем URL для редиректа на фронтенд
+        const clientUrl = new URL(process.env.CLIENT_URL);
+        clientUrl.pathname = '/gamegenerator';
+        
+        clientUrl.searchParams.append('supabase_token', supabaseToken);
+        clientUrl.searchParams.append('lti', 'true');
+        clientUrl.searchParams.append('resource_link_id', req.session.resource_link_id);
+
+        const rolesLowerCase = rolesString.toLowerCase();
+        if (rolesLowerCase.includes('instructor') || rolesLowerCase.includes('teacher') || rolesLowerCase.includes('administrator')) {
+            clientUrl.searchParams.append('mode', 'configure');
+        } else {
+            clientUrl.searchParams.append('mode', 'solve');
+        }
+
+        console.log(`Redirecting to: ${clientUrl.toString()}`);
+        res.redirect(clientUrl.toString());
 
     } catch (error) {
-        console.error("Error creating redirect URL:", error);
-        console.error("Client URL from .env:", clientUrl);
-        return res.status(500).send('Internal Server Error: Failed to create redirect URL.');
+        console.error("FATAL Error during LTI launch:", error);
+        res.status(500).send(`Internal Server Error: ${error.message}`);
     }
 });
-
 
 // Функция для экранирования имени файла
 function sanitizeFilename(filename) {

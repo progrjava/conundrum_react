@@ -25,6 +25,7 @@ import {
 } from '../services/puzzleService';
 import SaveButton from '../assets/svg/SaveButton';
 import DownloadPdf from '../assets/svg/DownloadPdf';
+import { saveLtiConfiguration, getLtiConfiguration } from '../services/ltiConfigService';
 
 class GameGenerator extends Component {
     constructor(props) {
@@ -48,6 +49,8 @@ class GameGenerator extends Component {
             currentPuzzleId: null,
             hasUnsavedChanges: false,
             originalPuzzleNameForEdit: '',
+            resourceLinkId: null,
+            isConfigureMode: false,
         };
 
         this.crosswordFormRef = createRef();
@@ -62,26 +65,55 @@ class GameGenerator extends Component {
         this.activityTracker = new ActivityTracker();
     }
 
-    componentDidMount = async () => {
-        try {
-            UIUtils.initialize();
-            await initializeSupabase();
-            this.activityTracker.startTracking();
-            // Проверка URL на наличие параметра загрузки
-            const urlParams = new URLSearchParams(window.location.search);
-            const puzzleIdToLoad = urlParams.get('load_puzzle_id');
+    componentDidMount() {
+        UIUtils.initialize();
+        this.activityTracker.startTracking();
+        this.handleLtiOrPuzzleLoad();
+    }
 
-            if (puzzleIdToLoad) {
-                console.log(`Found puzzle ID in URL: ${puzzleIdToLoad}. Attempting to load...`);
-                await this.loadAndDisplayPuzzle(puzzleIdToLoad);
+    componentDidUpdate(prevProps) {
+        if (!prevProps.user && this.props.user) {
+            console.log("GameGenerator: User prop received. Re-evaluating LTI.");
+            this.handleLtiOrPuzzleLoad();
+        }
+    }
+
+    handleLtiOrPuzzleLoad = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isLTI = urlParams.has('lti');
+        const puzzleIdToLoad = urlParams.get('load_puzzle_id');
+
+        if (isLTI) {
+            if (this.props.user) {
+                const mode = urlParams.get('mode');
+                const resourceLinkId = urlParams.get('resource_link_id');
+                console.log(`LTI Mode Detected: ${mode}`);
+
+                const newState = { resourceLinkId, isLoading: false };
+
+                if (mode === 'configure') {
+                    newState.isFormCreatingPuzzle = true;
+                    newState.isConfigureMode = true;
+                    this.setState(newState);
+                } else if (mode === 'solve') {
+                    newState.isFormCreatingPuzzle = false;
+                    newState.isConfigureMode = false;
+                    this.setState(newState, () => {
+                        getLtiConfiguration(this.props.supabase, resourceLinkId)
+                            .then(config => {
+                                if (config) this.generateGameFromConfig(config);
+                                else UIUtils.showError("Задание еще не настроено преподавателем.");
+                            }).catch(err => UIUtils.showError(`Ошибка загрузки задания: ${err.message}`));
+                    });
+                }
             } else {
-                this.setState({ isLoading: false });
+                console.log("GameGenerator: LTI mode, but waiting for user prop from App.js...");
+                this.setState({ isLoading: true });
             }
-
-        } catch (error) {
-            console.error('Failed to initialize GameGenerator or load puzzle:', error);
-            UIUtils.showError('Ошибка инициализации или загрузки игры.');
-            this.setState({ isLoading: false });
+        } else if (puzzleIdToLoad) {
+            this.loadAndDisplayPuzzle(puzzleIdToLoad);
+        } else {
+            this.setState({ isLoading: false, isFormCreatingPuzzle: true, isConfigureMode: true });
         }
     }
 
@@ -102,10 +134,41 @@ class GameGenerator extends Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-        this.activityTracker.startTracking();
 
+        if (this.state.isConfigureMode && new URLSearchParams(window.location.search).has('lti')) {
+            await this.handleSaveLtiConfig();
+        } else {
+            await this.handleGenerateGame();
+        }
+    }
+
+    handleSaveLtiConfig = async () => {
+        DisplayBase.displayLoadingIndicator();
         try {
-            // Получение значений из формы
+            const generationParams = {
+                gameType: document.querySelector('input[name="gameType"]:checked')?.value,
+                inputType: document.querySelector('input[name="inputType"]:checked')?.value,
+                topic: this.topicRef.current?.value || '',
+                text: this.documentTextRef.current?.value || '',
+                totalWords: parseInt(this.totalWordsRef.current?.value, 10),
+                difficulty: document.querySelector('input[name="difficulty"]:checked')?.value || 'normal'
+            };
+            if (!generationParams.gameType || !generationParams.inputType || !generationParams.totalWords) {
+                throw new Error("Пожалуйста, заполните все обязательные поля.");
+            }
+            await saveLtiConfiguration(this.props.supabase, this.state.resourceLinkId, generationParams);
+            UIUtils.showSuccess("Конфигурация для этого задания успешно сохранена!");
+        } catch (error) {
+            console.error("Error saving LTI config:", error);
+            UIUtils.showError(`Ошибка сохранения: ${error.message}`);
+        } finally {
+            DisplayBase.hideLoadingIndicator();
+        }
+    }
+
+    handleGenerateGame = async () => {
+        this.activityTracker.startTracking();
+        try {
             const gameType = document.querySelector('input[name="gameType"]:checked')?.value;
             const initialPuzzleName = document.querySelector('.input-puzzle-name')?.value || '';
             const inputType = document.querySelector('input[name="inputType"]:checked')?.value;
@@ -114,7 +177,6 @@ class GameGenerator extends Component {
             const topic = this.topicRef.current?.value;
             const fileInput = this.fileInputRef.current;
 
-            // Валидация введенных данных
             if (!inputType) {
                 return UIUtils.showError('Выберите тип ввода.');
             }
@@ -135,10 +197,8 @@ class GameGenerator extends Component {
                 return UIUtils.showError('Введите корректное количество слов (больше 0).');
             }
         
-            // Показываем индикатор загрузки
             DisplayBase.displayLoadingIndicator();
         
-            // Создаем FormData и добавляем все необходимые поля
             const formData = new FormData();
             formData.append('gameType', gameType);
             formData.append('inputType', inputType);
@@ -152,7 +212,6 @@ class GameGenerator extends Component {
                 formData.append('file-upload', fileInput.files[0]);
             }
 
-            // Отправка данных на сервер
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/generate-game`, {
                 method: 'POST',
                 body: formData
@@ -169,7 +228,6 @@ class GameGenerator extends Component {
                 puzzleNameForSave: initialPuzzleName
             });
     
-            // Отображение игры в зависимости от выбранного типа
             const handleAttemptCallback = (isCorrect) => {
                 this.activityTracker.recordAttempt(isCorrect);
             };
@@ -188,11 +246,10 @@ class GameGenerator extends Component {
             };
 
             this.activityTracker.recordGameGenerated({
-                gameType: gameType,       // Тип игры (crossword/wordsoup)
-                inputType: inputType,     // Тип ввода (text/topic/file)
-                totalWords: totalWords    // Запрошенное кол-во слов
-                // Можно добавить еще данные, если нужно
-            })
+                gameType: gameType,
+                inputType: inputType,
+                totalWords: totalWords
+            });
 
             if (gameType === 'wordsoup') {
                 if (data.grid && data.words) {
@@ -213,8 +270,7 @@ class GameGenerator extends Component {
             console.error('Error generating game:', error);
             if (error.message) {
                  UIUtils.showError(error.message);
-            }
-            else{
+            } else {
                UIUtils.showError("Произошла ошибка при генерации игры. Пожалуйста, попробуйте снова.");
             }
         } finally {
@@ -232,7 +288,6 @@ class GameGenerator extends Component {
         if (topicInput) topicInput.style.display = selectedFormat === 'topic' ? 'block' : 'none';
         if (fileInput) fileInput.style.display = selectedFormat === 'file' ? 'flex' : 'none';
 
-        // Очищаем значения неактивных полей
         if (selectedFormat !== 'text' && textInput) textInput.value = '';
         if (selectedFormat !== 'topic' && topicInput) topicInput.value = '';
         if (selectedFormat !== 'file' && fileInput) {
@@ -278,8 +333,6 @@ class GameGenerator extends Component {
     }
 
     submitLTIScore = async (score) => {
-       // if (!this.props.isLTIMode) return; // Use props instead
-
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/lti/submit-score`, {
                 method: 'POST',
@@ -289,7 +342,7 @@ class GameGenerator extends Component {
                 },
                 body: JSON.stringify({
                     score,
-                    totalScore: 100 // или другое максимальное значение
+                    totalScore: 100
                 })
             });
 
@@ -332,7 +385,6 @@ class GameGenerator extends Component {
         };
 
         try {
-            // Проверяем, существует ли уже такая головоломка
             const isDuplicate = await checkForDuplicatePuzzle(puzzleToSave);
             if (isDuplicate) {
                 UIUtils.showError("Такая головоломка уже существует!");
@@ -372,7 +424,8 @@ class GameGenerator extends Component {
                     currentPuzzleId: loadedPuzzle.id,
                     originalPuzzleNameForEdit: loadedPuzzle.name,
                     isFormCreatingPuzzle: false,
-                    isLoading: false
+                    isLoading: false,
+                    isConfigureMode: true
                 }, () => {
                     this.displayGeneratedGameWithCurrentData();
                 });
@@ -432,44 +485,44 @@ class GameGenerator extends Component {
     };
 
     handleDownloadPdf = async () => {
-    try {
-        const { currentGameData, puzzleNameForSave } = this.state;
+        try {
+            const { currentGameData, puzzleNameForSave } = this.state;
 
-        if (!currentGameData) {
-            UIUtils.showError('Нет данных игры для скачивания.');
-            return;
+            if (!currentGameData) {
+                UIUtils.showError('Нет данных игры для скачивания.');
+                return;
+            }
+
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/generate-pdf`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    gameData: currentGameData,
+                    gameName: puzzleNameForSave || currentGameData.gameType
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to generate PDF');
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${puzzleNameForSave || currentGameData.gameType || 'game'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading PDF:', error);
+            UIUtils.showError(`Ошибка при скачивании PDF: ${error.message}`);
         }
-
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/generate-pdf`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                gameData: currentGameData,
-                gameName: puzzleNameForSave || currentGameData.gameType
-            })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to generate PDF');
-        }
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${puzzleNameForSave || currentGameData.gameType || 'game'}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-    } catch (error) {
-        console.error('Error downloading PDF:', error);
-        UIUtils.showError(`Ошибка при скачивании PDF: ${error.message}`);
-    }
-};
+    };
 
     handleEnterEditMode = () => {
         if (!this.state.currentGameData || !this.state.currentGameData.words) {
@@ -608,7 +661,7 @@ class GameGenerator extends Component {
                         this.crosswordContainerRef.current.classList.remove('grid-disabled');
                     }
                 });
-            } else { // Если ID НЕТ - СОЗДАЕМ новый пазл
+            } else {
                 if (!puzzleNameForSave.trim()) {
                     UIUtils.showError("Пожалуйста, введите название для нового пазла.");
                     DisplayBase.hideLoadingIndicator();
@@ -663,7 +716,6 @@ class GameGenerator extends Component {
             return;
         }
 
-        // Очистка предыдущей игры
         DisplayBase.clearGameField();
         if (this.cluesContainerRef.current) {
             this.cluesContainerRef.current.innerHTML = '';
@@ -671,15 +723,14 @@ class GameGenerator extends Component {
             console.warn("Clues container ref is not available in displayGeneratedGameWithCurrentData");
         }
         
-        this.activityTracker.reset(); // Сброс трекера активности для "новой" игры
+        this.activityTracker.reset();
 
         const gameType = currentGameData.gameType;
         const handleAttemptCallback = (isCorrect) => this.activityTracker.recordAttempt(isCorrect);
         
-        // Заглушка для handleGameCompleteCallback, если он вам не нужен здесь специфичный
         const handleGameCompleteCallback = async () => { 
             console.log("Game complete (after edit/cancel). Stats:", this.activityTracker.getStats());
-            if (this.props.ltiUserId) { // Используем this.props, а не просто ltiUserId
+            if (this.props.ltiUserId) {
                 const finalScore = this.calculateScore();
                 await this.submitLTIScore(finalScore);
             }
@@ -688,7 +739,7 @@ class GameGenerator extends Component {
 
         this.activityTracker.startTracking({
             gameType: gameType,
-            inputType: 'loaded_or_edited', // Можете уточнить
+            inputType: 'loaded_or_edited',
             sourceName: this.state.puzzleNameForSave || 'Unnamed Puzzle',
             totalWords: currentGameData.words?.length || 0
         });
@@ -696,14 +747,13 @@ class GameGenerator extends Component {
         if (gameType === 'wordsoup') {
             if (currentGameData.grid && currentGameData.words) {
                 const display = new WordSoupDisplay(currentGameData, handleAttemptCallback, handleGameCompleteCallback);
-                display.display(); // Отображает и сетку, и подсказки
+                display.display();
             } else { 
                 console.error('Error in WordSoup data for displayGeneratedGameWithCurrentData:', currentGameData);
                 UIUtils.showError('Ошибка данных для филворда после операции.'); 
             }
         } else if (gameType === 'crossword') {
             if (currentGameData.crossword && currentGameData.layout?.result) {
-                // CrosswordDisplay.displayCrossword должен сам вызвать CluesDisplay.displayCrosswordClues
                 CrosswordDisplay.displayCrossword(currentGameData.crossword, currentGameData.layout.result, handleAttemptCallback, handleGameCompleteCallback);
             } else { 
                 console.error('Error in Crossword data for displayGeneratedGameWithCurrentData:', currentGameData);
@@ -722,27 +772,64 @@ class GameGenerator extends Component {
         });
     };
 
+    generateGameFromConfig = async (config) => {
+        console.log("Generating game for student using config:", config);
+        DisplayBase.displayLoadingIndicator();
+        try {
+            const formData = new FormData();
+            formData.append('gameType', config.gameType);
+            formData.append('inputType', config.inputType);
+            formData.append('totalWords', config.totalWords);
+            formData.append('difficulty', config.difficulty || 'normal');
+            if (config.inputType === 'text') formData.append('text', config.text);
+            else if (config.inputType === 'topic') formData.append('topic', config.topic);
+
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/generate-game`, {
+                method: 'POST', body: formData
+            });
+            if (!response.ok) throw new Error((await response.json()).error);
+            
+            const data = await response.json();
+            this.setState({ currentGameData: { ...data, gameType: config.gameType } });
+
+            const handleAttemptCallback = (isCorrect) => this.activityTracker.recordAttempt(isCorrect);
+            const handleGameCompleteCallback = async () => {
+                const finalScore = this.calculateScore();
+                await this.submitLTIScore(finalScore);
+                this.activityTracker.stopTracking();
+            };
+            this.activityTracker.startTracking();
+
+            if (config.gameType === 'wordsoup') {
+                new WordSoupDisplay(data, handleAttemptCallback, handleGameCompleteCallback).display();
+            } else {
+                CrosswordDisplay.displayCrossword(data.crossword, data.layout.result, handleAttemptCallback, handleGameCompleteCallback);
+            }
+        } catch (error) {
+            UIUtils.showError("Не удалось загрузить задание: " + error.message);
+        } finally {
+            DisplayBase.hideLoadingIndicator();
+        }
+    }
+
     render() {
-        const { isBlackTheme, toggleTheme, ltiUserId, user } = this.props;
-        const isLTI = !!ltiUserId;
+        const { isBlackTheme, toggleTheme, user, isAuth } = this.props;
+        const urlParams = new URLSearchParams(window.location.search);
+        const isLTI = urlParams.has('lti');
         const isAuthenticated = !!user;
 
-        console.log('Save button conditions:', {
-            isLTI,
-            isAuthenticated,
-            hasGameData: !!this.state.currentGameData,
-            user
-        });
-
         const {
-        isAboutVisible,
-        isManualVisible,
-        isSlidebarVisible,
-        isFormCreatingPuzzle,
+            isAboutVisible,
+            isManualVisible,
+            isSlidebarVisible,
+            isFormCreatingPuzzle,
+            isConfigureMode,
         } = this.state;
+
         if (this.state.redirectToProfile) {
             return <Navigate to='/account'/>
         }
+        const shouldShowSidebar = isConfigureMode;
         return (
             <>
                 {!isLTI && (
@@ -763,193 +850,196 @@ class GameGenerator extends Component {
                 )}
                 <main id='game-main-page'>
                     <GameLogotype />
-                    <section className={`game-generator-slidebar-hidden ${isSlidebarVisible ? '' : 'visible'}`}>
-                        <div className='generator-slidebar-hidden'>
-                        <div className='game-menu-handler' onClick={this.toggleSlidebar}>
-                    <MenuHandlerIcon />
-                </div>
-                <div className='game-puzzle-creator' onClick={() => {this.toggleFormCreatingPuzzle(); this.toggleSlidebar()}}>
-                    <PuzzleCreatorIcon />
-                </div>
-                <div className='game-my-puzzles'>
-                    <MyPuzzlesIcon />
-                </div>
-
+                    {shouldShowSidebar && (
+                        <>
+                            <section className={`game-generator-slidebar-hidden ${isSlidebarVisible ? '' : 'visible'}`}>
+                                <div className='generator-slidebar-hidden'>
+                                <div className='game-menu-handler' onClick={this.toggleSlidebar}>
+                            <MenuHandlerIcon />
                         </div>
-                    </section>
-                    <section className={`game-generator-slidebar-visible ${isSlidebarVisible ? 'visible' : ''}`}>
-                        <div className='generator-slidebar-visible'>
-                            <div className='game-menu-handler-open' onClick={this.toggleSlidebar}>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-                                    <rect width="32" height="32" x="32" y="32" fill="#FBFBFE" fill-opacity="1" rx="16" 
-                                    transform="rotate(180 32 32)"/>
-                                    <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="m20 24-8-8 8-8"/>
-                                </svg>
-                                <p>Свернуть меню</p>
-                            </div>
-                            <div className='game-puzzle-creator-open'
-                            onClick={this.toggleFormCreatingPuzzle}>
-                                {isFormCreatingPuzzle ?
-                                <>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none" transform='rotate(45)'>
-                                        <path fill="#FBFBFE" fill-rule="evenodd" d="M16 1.667C8.084 1.667 1.667 8.084 
-                                        1.667 16S8.084 30.333 16 30.333 30.333 23.916 30.333 16 23.916 1.667 16 1.667Zm1 
-                                        9a1 1 0 0 0-2 0V15h-4.333a1 1 0 1 0 0 2H15v4.333a1 1 0 1 0 2 0V17h4.333a1 1 0 1 0 
-                                        0-2H17v-4.333Z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <p>Отменить</p>
-                                </>
-                                : 
-                                <>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
-                                        <path fill="#FBFBFE" fill-rule="evenodd" d="M16 1.667C8.084 1.667 1.667 8.084 
-                                        1.667 16S8.084 30.333 16 30.333 30.333 23.916 30.333 16 23.916 1.667 16 1.667Zm1 
-                                        9a1 1 0 0 0-2 0V15h-4.333a1 1 0 1 0 0 2H15v4.333a1 1 0 1 0 2 0V17h4.333a1 1 0 1 0 
-                                        0-2H17v-4.333Z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <p>Создать головоломку</p>
-                                </>
-                                }
-                            </div>
-                            <div className={`creating-puzzle-input-data ${isFormCreatingPuzzle ? 'visible' : 'hidden'}`}>
-                                <form id='crossword-form' encType='multipart/form-data' 
-                                onSubmit={this.handleSubmit} ref={this.crosswordFormRef}>
-                                    <input 
-                                        className='input-puzzle-name' 
-                                        type='text' 
-                                        placeholder='НАЗВАНИЕ'
-                                        onChange={(e) => this.setState({ puzzleNameForSave: e.target.value } )}required 
-                                    />
-                                    <div className='input-type-of-puzzle'>
-                                        <h2>ВИД ГОЛОВОЛОМКИ</h2>
-                                        <div>
-                                            <input type="radio" id="crossword" value='crossword' name="gameType" ref={this.gameTypeRef} required/>
-                                            <label for="crossword">Кроссворд</label>
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="fillword" value='wordsoup' name="gameType" ref={this.gameTypeRef} required/>
-                                            <label for="fillword">Филворд</label>
-                                        </div>
+                        <div className='game-puzzle-creator' onClick={() => {this.toggleFormCreatingPuzzle(); this.toggleSlidebar()}}>
+                            <PuzzleCreatorIcon />
+                        </div>
+                        <div className='game-my-puzzles'>
+                            <MyPuzzlesIcon />
+                        </div>
+
+                                </div>
+                            </section>
+                            <section className={`game-generator-slidebar-visible ${isSlidebarVisible ? 'visible' : ''}`}>
+                                <div className='generator-slidebar-visible'>
+                                    <div className='game-menu-handler-open' onClick={this.toggleSlidebar}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+                                            <rect width="32" height="32" x="32" y="32" fill="#FBFBFE" fill-opacity="1" rx="16" 
+                                            transform="rotate(180 32 32)"/>
+                                            <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            d="m20 24-8-8 8-8"/>
+                                        </svg>
+                                        <p>Свернуть меню</p>
                                     </div>
-                                    <div className='input-interaction-format'>
-                                        <h2>ФОРМАТ ВЗАИМОДЕЙСТВИЯ</h2>
-                                        <div>
-                                            <input 
-                                            type="radio" 
-                                            id="set-topic" 
-                                            value='topic' 
-                                            name='inputType' 
-                                            onChange={this.handleInteractionFormatChange}
-                                            required
-                                            ref={this.inputTypeRef}/>
-
-                                            <label for="set-topic">Задать тему</label>
-                                            
-
-                                                <div className='topic-input'>
-                                                    <input
-                                                        ref={this.topicRef}
-                                                        type='text'
-                                                        id='topic'
-                                                        name='topic'
-                                                        placeholder='Например: Фрукты'
-                                                        style={{ display: 'none' }}
-                                                    />
-                                                </div>
-                                        </div>
-                                        <div>
-                                            <input 
-                                            type="radio" 
-                                            id="set-text" 
-                                            value='text' 
-                                            name='inputType' 
-                                            onChange={this.handleInteractionFormatChange}
-                                            required
-                                            ref={this.inputTypeRef}/>
-
-                                            <label for="set-text">Задать текст</label>
-                                            
-
-                                                <div className='text-input'>
-                                                    <textarea
-                                                        ref={this.documentTextRef}
-                                                        className='text-input-textarea'
-                                                        id='document'
-                                                        name='text'
-                                                        placeholder='Например: Однажды весною, в час небывало жаркого заката...'
-                                                        style={{ display: 'none' }}
-                                                    />
-                                                </div>
-                                        </div>
-                                        <div>
-                                            <input 
-                                            type="radio" 
-                                            id="upload-file" 
-                                            value='file' 
-                                            name='inputType' 
-                                            onChange={this.handleInteractionFormatChange}
-                                            required
-                                            ref={this.inputTypeRef}/>
-                                            <label for="upload-file">Загрузить файл</label>
-
-                                                <div className='file-input' id='file-input-div' style={{ display: 'none' }}>
-                                                    <input type='file' 
-                                                    className='file-input-area' 
-                                                    id='file-upload' 
-                                                    
-                                                    ref={this.fileInputRef}
-                                                    name='file-upload'/>
-
-                                                    <label for="file-upload" className="file-input-label">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
-                                                            <path fill="#FBFBFE" fill-rule="evenodd" d="M4.8 3A1.8 1.8 0 0 0 3 4.8v22.4A1.8 1.8 0 0 0 4.8 29h22.4a1.8 1.8 0 0 0 1.8-1.8V4.8A1.8 1.8 0 0 0 27.2 3H4.8ZM17 12a1 1 0 1 0-2 0v3h-3a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 1 0 0-2h-3v-3Z" clip-rule="evenodd"/>
-                                                        </svg>
-                                                    </label>
-                                                </div>
-                                        </div>
+                                    <div className='game-puzzle-creator-open'
+                                    onClick={this.toggleFormCreatingPuzzle}>
+                                        {isFormCreatingPuzzle ?
+                                        <>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none" transform='rotate(45)'>
+                                                <path fill="#FBFBFE" fill-rule="evenodd" d="M16 1.667C8.084 1.667 1.667 8.084 
+                                                1.667 16S8.084 30.333 16 30.333 30.333 23.916 30.333 16 23.916 1.667 16 1.667Zm1 
+                                                9a1 1 0 0 0-2 0V15h-4.333a1 1 0 1 0 0 2H15v4.333a1 1 0 1 0 2 0V17h4.333a1 1 0 1 0 
+                                                0-2H17v-4.333Z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <p>Отменить</p>
+                                        </>
+                                        : 
+                                        <>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
+                                                <path fill="#FBFBFE" fill-rule="evenodd" d="M16 1.667C8.084 1.667 1.667 8.084 
+                                                1.667 16S8.084 30.333 16 30.333 30.333 23.916 30.333 16 23.916 1.667 16 1.667Zm1 
+                                                9a1 1 0 0 0-2 0V15h-4.333a1 1 0 1 0 0 2H15v4.333a1 1 0 1 0 2 0V17h4.333a1 1 0 1 0 
+                                                0-2H17v-4.333Z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <p>Создать головоломку</p>
+                                        </>
+                                        }
                                     </div>
-                                    <div className='input-puzzle-size'>
-                                        <h2>КОЛИЧЕСТВО СЛОВ</h2>
-                                        <input type="number" ref={this.totalWordsRef} id='total-words' name="totalWords" min="5" max="20" step="1" required/>
-                                    </div>
-                                    <div className='open-full-settings-button'>
-                                        <h3 onClick={this.toggleSettings}>Продвинутые настройки</h3>
-                                        <div className={`input-difficulty ${this.state.isSettingsOpen ? 'open' : ''}`}>
-                                            <h2 className='difficulty-choice'>СЛОЖНОСТЬ</h2>
-                                            <div className='difficulty-levels'>
+                                    <div className={`creating-puzzle-input-data ${isFormCreatingPuzzle ? 'visible' : 'hidden'}`}>
+                                        <form id='crossword-form' encType='multipart/form-data' 
+                                        onSubmit={this.handleSubmit} ref={this.crosswordFormRef}>
+                                            <input 
+                                                className='input-puzzle-name' 
+                                                type='text' 
+                                                placeholder='НАЗВАНИЕ'
+                                                onChange={(e) => this.setState({ puzzleNameForSave: e.target.value } )}required 
+                                            />
+                                            <div className='input-type-of-puzzle'>
+                                                <h2>ВИД ГОЛОВОЛОМКИ</h2>
                                                 <div>
-                                                    <input type="radio" id="easy" value='easy' name="difficulty" defaultChecked={false}/>
-                                                    <label htmlFor="easy">Легко</label>
+                                                    <input type="radio" id="crossword" value='crossword' name="gameType" ref={this.gameTypeRef} required/>
+                                                    <label htmlFor="crossword">Кроссворд</label>
                                                 </div>
                                                 <div>
-                                                    <input type="radio" id="normal" value='normal' name="difficulty" defaultChecked={true}/>
-                                                    <label htmlFor="normal">Нормально</label>
-                                                </div>
-                                                <div>
-                                                    <input type="radio" id="hard" value='hard' name="difficulty" defaultChecked={false}/>
-                                                    <label htmlFor="hard">Сложно</label>
+                                                    <input type="radio" id="fillword" value='wordsoup' name="gameType" ref={this.gameTypeRef} required/>
+                                                    <label htmlFor="fillword">Филворд</label>
                                                 </div>
                                             </div>
-                                        </div>
+                                            <div className='input-interaction-format'>
+                                                <h2>ФОРМАТ ВЗАИМОДЕЙСТВИЯ</h2>
+                                                <div>
+                                                    <input 
+                                                    type="radio" 
+                                                    id="set-topic" 
+                                                    value='topic' 
+                                                    name='inputType' 
+                                                    onChange={this.handleInteractionFormatChange}
+                                                    required
+                                                    ref={this.inputTypeRef}/>
+
+                                                    <label htmlFor="set-topic">Задать тему</label>
+                                                    
+                                                        <div className='topic-input'>
+                                                            <input
+                                                                ref={this.topicRef}
+                                                                type='text'
+                                                                id='topic'
+                                                                name='topic'
+                                                                placeholder='Например: Фрукты'
+                                                                style={{ display: 'none' }}
+                                                            />
+                                                        </div>
+                                                </div>
+                                                <div>
+                                                    <input 
+                                                    type="radio" 
+                                                    id="set-text" 
+                                                    value='text' 
+                                                    name='inputType' 
+                                                    onChange={this.handleInteractionFormatChange}
+                                                    required
+                                                    ref={this.inputTypeRef}/>
+
+                                                    <label htmlFor="set-text">Задать текст</label>
+                                                    
+                                                        <div className='text-input'>
+                                                            <textarea
+                                                                ref={this.documentTextRef}
+                                                                className='text-input-textarea'
+                                                                id='document'
+                                                                name='text'
+                                                                placeholder='Например: Однажды весною, в час небывало жаркого заката...'
+                                                                style={{ display: 'none' }}
+                                                            />
+                                                        </div>
+                                                </div>
+                                                <div>
+                                                    <input 
+                                                    type="radio" 
+                                                    id="upload-file" 
+                                                    value='file' 
+                                                    name='inputType' 
+                                                    onChange={this.handleInteractionFormatChange}
+                                                    required
+                                                    ref={this.inputTypeRef}/>
+                                                    <label htmlFor="upload-file">Загрузить файл</label>
+
+                                                        <div className='file-input' id='file-input-div' style={{ display: 'none' }}>
+                                                            <input type='file' 
+                                                            className='file-input-area' 
+                                                            id='file-upload' 
+                                                            
+                                                            ref={this.fileInputRef}
+                                                            name='file-upload'/>
+
+                                                            <label htmlFor="file-upload" className="file-input-label">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
+                                                                    <path fill="#FBFBFE" fill-rule="evenodd" d="M4.8 3A1.8 1.8 0 0 0 3 4.8v22.4A1.8 1.8 0 0 0 4.8 29h22.4a1.8 1.8 0 0 0 1.8-1.8V4.8A1.8 1.8 0 0 0 27.2 3H4.8ZM17 12a1 1 0 1 0-2 0v3h-3a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 1 0 0-2h-3v-3Z" clip-rule="evenodd"/>
+                                                                </svg>
+                                                            </label>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div className='input-puzzle-size'>
+                                                <h2>КОЛИЧЕСТВО СЛОВ</h2>
+                                                <input type="number" ref={this.totalWordsRef} id='total-words' name="totalWords" min="5" max="20" step="1" required/>
+                                            </div>
+                                            <div className='open-full-settings-button'>
+                                                <h3 onClick={this.toggleSettings}>Продвинутые настройки</h3>
+                                                <div className={`input-difficulty ${this.state.isSettingsOpen ? 'open' : ''}`}>
+                                                    <h2 className='difficulty-choice'>СЛОЖНОСТЬ</h2>
+                                                    <div className='difficulty-levels'>
+                                                        <div>
+                                                            <input type="radio" id="easy" value='easy' name="difficulty" defaultChecked={false}/>
+                                                            <label htmlFor="easy">Легко</label>
+                                                        </div>
+                                                        <div>
+                                                            <input type="radio" id="normal" value='normal' name="difficulty" defaultChecked={true}/>
+                                                            <label htmlFor="normal">Нормально</label>
+                                                        </div>
+                                                        <div>
+                                                            <input type="radio" id="hard" value='hard' name="difficulty" defaultChecked={false}/>
+                                                            <label htmlFor="hard">Сложно</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type='submit' className='generate-puzzle-button'>
+                                                {isLTI && isConfigureMode ? 'Сохранить конфигурацию' : 'Генерировать'}
+                                            </button>
+                                        </form>
                                     </div>
-                                    <button type='submit' className='generate-puzzle-button'>
-                                        Генерировать
-                                    </button>
-                                </form>
-                            </div>
-                            <Link to="/account" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <div className='game-my-puzzles-open'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
-                                        <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="M10.667 8h16M5.333 8.013 5.347 8M5.333 16.013l.014-.015M5.333 24.013l.014-.015M10.667 
-                                        16h16M10.667 24h16"/>
-                                    </svg>
-                                    <p>Мои головоломки</p>
+                                    <Link to="/account" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <div className='game-my-puzzles-open'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 32 32' fill="none">
+                                                <path stroke="#FBFBFE" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="M10.667 8h16M5.333 8.013 5.347 8M5.333 16.013l.014-.015M5.333 24.013l.014-.015M10.667 
+                                                16h16M10.667 24h16"/>
+                                            </svg>
+                                            <p>Мои головоломки</p>
+                                        </div>
+                                    </Link>
                                 </div>
-                            </Link>
-                        </div>
-                    </section>
+                            </section>
+                        </>
+                    )}
+
                     <section id='dispay-game-on-screen'>
                         <section id='crossword-and-clues'>
                             <section className='puzzle-info-and-iditing'>
@@ -1039,7 +1129,6 @@ class GameGenerator extends Component {
             </>
         );
     }
-    
 }
 
 export default GameGenerator;

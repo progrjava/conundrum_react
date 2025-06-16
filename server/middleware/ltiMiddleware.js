@@ -32,10 +32,13 @@ const initializeLTI = () => {
         const userId = req.body.user_id;
         req.session.userId = userId;
         req.session.lti = true;
-        // Сохраняем нужные LTI параметры в сессию (например, для Grade Passback)
+        req.session.roles = req.body.roles || '';
+        req.session.resource_link_id = req.body.resource_link_id;
+        // Сохраняем все нужные данные в сессию
         req.session.lis_outcome_service_url = req.body.lis_outcome_service_url;
         req.session.lis_result_sourcedid = req.body.lis_result_sourcedid;
-
+        req.session.lis_person_contact_email_primary = req.body.lis_person_contact_email_primary;
+        req.session.lis_person_name_full = req.body.lis_person_name_full;
 
         console.log('LTI validation successful for user:', userId);
         next(); // Переходим к следующему middleware
