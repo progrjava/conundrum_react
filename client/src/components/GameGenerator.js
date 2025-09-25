@@ -16,6 +16,7 @@ import MenuHandlerIcon from '../assets/svg/MenuHandlerIcon';
 import PuzzleCreatorIcon from '../assets/svg/PuzzleCreatorIcon';
 import MyPuzzlesIcon from '../assets/svg/MyPuzzlesIcon';
 import GameLogotype from '../assets/svg/GameLogotype';
+import { Helmet } from "react-helmet";
 import { 
     savePuzzleToSupabase, 
     getPuzzleByIdFromSupabase, 
@@ -917,6 +918,11 @@ class GameGenerator extends Component {
         const shouldShowSidebar = isConfigureMode;
         return (
             <>
+                <Helmet>
+                    <title>Генератор игр | Conundrum</title>
+                    <meta name="description" content="Генерация кроссвордов и филвордов для обучения. Загрузите текст или файл, и Conundrum создаст игру за секунды." />
+                    <meta name="keywords" content="образование, геймификация, кроссворд, филворд, LTI, Moodle, школа" />
+                </Helmet>
                 {/*{!isLTI && (
                     <Header 
                         isBlackTheme={isBlackTheme} 
