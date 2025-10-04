@@ -281,6 +281,8 @@ class GameGenerator extends Component {
             } else {
                UIUtils.showError("Произошла ошибка при генерации игры. Пожалуйста, попробуйте снова.");
             }
+            this.setState({ currentGameData: null });
+            DisplayBase.clearGameField();
         } finally {
             DisplayBase.hideLoadingIndicator();
         }
@@ -620,37 +622,32 @@ class GameGenerator extends Component {
         this.setState({ isEditing: false });
         DisplayBase.displayLoadingIndicator();
 
-        try {
-            let newGameDataSubset = {};
-            if (wordsActuallyChanged) {
-                const wordsForBackend = editableWordsAndClues.map(({originalArrayIndex, ...rest}) => rest);
-                newGameDataSubset = await fetchRegeneratedLayout(currentGameData.gameType, wordsForBackend);
-            } else {
-                newGameDataSubset = {
-                    [currentGameData.gameType === 'crossword' ? 'crossword' : 'grid']: currentGameData.gameType === 'crossword' ? currentGameData.crossword : currentGameData.grid,
-                    words: currentGameData.words,
-                    layout: currentGameData.layout,
-                    gridSize: currentGameData.gridSize
+        try {    
+            const wordsForBackend = editableWordsAndClues.map(({originalArrayIndex, ...rest}) => rest);
+            const newGameDataSubset = await fetchRegeneratedLayout(currentGameData.gameType, wordsForBackend);    
+            if (!newGameDataSubset || !newGameDataSubset.words) {
+                throw new Error("Сервер вернул некорректные данные после перегенерации.");
+            }
+            let updatedGameDataForSave;
+    
+            if (currentGameData.gameType === 'crossword') {
+                updatedGameDataForSave = {
+                    ...currentGameData, // Берем старые данные за основу
+                    name: puzzleNameForSave,
+                    crossword: newGameDataSubset.crossword, // Обновляем сетку
+                    grid: newGameDataSubset.crossword,      // Дублируем для совместимости
+                    layout: newGameDataSubset.layout,       // Обновляем layout
+                    words: newGameDataSubset.words          // Обновляем слова
+                };
+            } else { // gameType === 'wordsoup'
+                updatedGameDataForSave = {
+                    ...currentGameData,
+                    name: puzzleNameForSave,
+                    grid: newGameDataSubset.grid,
+                    gridSize: newGameDataSubset.gridSize,
+                    words: newGameDataSubset.words
                 };
             }
-
-            const updatedGameDataForSave = {
-                ...this.state.currentGameData,
-                gameType: this.state.currentGameData.gameType,
-                name: this.state.puzzleNameForSave,
-
-                ...(this.state.currentGameData.gameType === 'crossword' && {
-                    crossword: newGameDataSubset.crossword,
-                    grid: newGameDataSubset.crossword,
-                    layout: newGameDataSubset.layout
-                }),
-                ...(this.state.currentGameData.gameType === 'wordsoup' && {
-                    grid: newGameDataSubset.grid,
-                    gridSize: newGameDataSubset.gridSize
-                }),
-
-                words: newGameDataSubset.words
-            };
             
             if (currentPuzzleId) {
                 await updatePuzzleInSupabase(currentPuzzleId, {
@@ -715,6 +712,7 @@ class GameGenerator extends Component {
         } catch (error) {
             console.error("Ошибка при сохранении и перегенерации:", error);
             UIUtils.showError(`Ошибка: ${error.message || "Не удалось сохранить изменения."}`);
+            this.setState({ isEditing: true });
         } finally {
             DisplayBase.hideLoadingIndicator();
         }
