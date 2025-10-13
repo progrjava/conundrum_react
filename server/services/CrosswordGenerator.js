@@ -1,5 +1,6 @@
 // Импорт необходимых модулей
 const clg = require('crossword-layout-generator');
+const { cleanApiResponse } = require('../utils/jsonUtils');
 
 /**
  * Класс для генерации кроссвордов
@@ -92,60 +93,16 @@ class CrosswordGenerator {
                 throw new Error('Нейросеть не сгенерировала текст...');
             }
 
-            let originalContent = generatedText.replace(/```json/g, '').trim();
-            let cleanedMessageContent = originalContent;
-            
-            // 1. Удаление одинарных кавычек по краям
-            if (cleanedMessageContent.startsWith("'") && cleanedMessageContent.endsWith("'")) {
-                cleanedMessageContent = cleanedMessageContent.slice(1, -1);
-                console.log("Удалены одинарные кавычки по краям.");
-            }
-            
-            // 2. Удаление бэкслешей перед кавычками
-            cleanedMessageContent = cleanedMessageContent.replace(/\\"/g, '"');
-            
-            // 3. Удаление лишних точек
-            cleanedMessageContent = cleanedMessageContent.replace(/\.{5,}/g, '');
-            
-            // 4. Находим начало и конец JSON (и обрезаем лишний текст)
-            const startIndex = cleanedMessageContent.indexOf('[');
-            const endIndex = cleanedMessageContent.lastIndexOf(']');
-            
-            if (startIndex !== -1 && endIndex !== -1 && (startIndex > 0 || endIndex < cleanedMessageContent.length - 1) ) {
-                cleanedMessageContent = cleanedMessageContent.substring(startIndex, endIndex + 1);
-                console.log("Обрезан лишний текст до или после JSON.");
-            }
-            
-            // 5. Удаление непечатаемых символов, \r, \n, • и множественных пробелов
-            cleanedMessageContent = cleanedMessageContent
-                .replace(/[\u0000-\u001F\u007F-\u009F•\r\n]+/g, "")
-                .replace(/\s+/g, " ")  // Заменяем множественные пробелы на один
-                .replace(/\[\s+/g, "[") // Убираем пробелы после [
-                .replace(/\s+\]/g, "]") // Убираем пробелы перед ]
-                .replace(/,\s+/g, ",")  // Убираем лишние пробелы после запятых
-                .replace(/\s+{/g, "{")  // Убираем пробелы перед {
-                .replace(/}\s+/g, "}")  // Убираем пробелы после }
-                .replace(/\]\s*\]/g, "]"); // Убираем двойные ]]
-            
-            // 6. Удаление лишних пробелов в конце
-            cleanedMessageContent = cleanedMessageContent.trim();
-            
-            // 7. Удаляем запятую после последнего элемента массива
-            cleanedMessageContent = cleanedMessageContent.replace(/,\s*\]$/, ']');
-            
-            if (originalContent !== cleanedMessageContent) {
-                console.log("Произведена очистка JSON. Исходный текст:", originalContent);
-                console.log("Очищенный текст:", cleanedMessageContent);
-            }
+            const cleanedMessageContent = cleanApiResponse(generatedText);
 
             console.log("Текст перед парсингом:", cleanedMessageContent);
 
             let parsedData;
-
             try {
                 parsedData = JSON.parse(cleanedMessageContent);
             } catch (jsonError) {
-                throw new Error("Нейросеть вернула невалидный JSON. Попробуйте повторить запрос.");
+                console.error("JSON Parse Error. Content:", cleanedMessageContent);
+                throw new Error("Нейросеть вернула невалидный JSON даже после очистки.");
             }
 
             const wordsData = parsedData.map(item => {
