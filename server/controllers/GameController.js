@@ -1,9 +1,11 @@
 const CrosswordGenerator = require('../services/CrosswordGenerator');
 const WordSoupGenerator = require('../services/WordSoupGenerator');
+const RebusGenerator = require('../services/RebusGenerator'); // <--- ДОБАВИЛИ ИМПОРТ
 const FileManager = require('../services/FileManager');
 
 const crosswordGenerator = new CrosswordGenerator(process.env.OPENROUTER_API_KEY, process.env.OPENROUTER_API_URL);
 const wordSoupGenerator = new WordSoupGenerator(process.env.OPENROUTER_API_KEY, process.env.OPENROUTER_API_URL);
+const rebusGenerator = new RebusGenerator(process.env.OPENROUTER_API_KEY, process.env.OPENROUTER_API_URL); // <--- ИНИЦИАЛИЗАЦИЯ
 const fileManager = new FileManager();
 
 // Логика генерации игры с нуля
@@ -13,6 +15,7 @@ exports.generateGame = async (req, res) => {
         const totalWords = parseInt(req.body.totalWords);
         let text = '';
         
+        // 1. Обработка входных данных
         if (inputType === 'text') text = req.body.text;
         else if (inputType === 'topic') text = req.body.topic;
         else if (inputType === 'file' && req.file) {
@@ -24,14 +27,19 @@ exports.generateGame = async (req, res) => {
         if (!text?.trim()) throw new Error('Empty input text');
         if (isNaN(totalWords) || totalWords < 1) throw new Error('Invalid words count');
         
+        // 2. Вызов генераторов
         let gameData;
         if (gameType === 'wordsoup') {
             gameData = await wordSoupGenerator.generateWordSoup(text, inputType, totalWords, difficulty || 'normal');
+        } else if (gameType === 'rebus') {
+            const rebusData = await rebusGenerator.generateRebus(text, inputType, totalWords, difficulty || 'normal');
+            gameData = { ...rebusData, gameType: 'rebus' };
         } else {
             const cwData = await crosswordGenerator.generateCrossword(text, inputType, totalWords, difficulty || 'normal');
             gameData = { grid: cwData.crossword, words: cwData.words, layout: cwData.layout, crossword: cwData.crossword };
         }
         res.json(gameData);
+
     } catch (error) {
         console.error('Gen Error:', error.message);
         
@@ -43,9 +51,7 @@ exports.generateGame = async (req, res) => {
         if (errorMessage.includes('invalid') || errorMessage.includes('empty') || errorMessage.includes('words count') || errorMessage.includes('file')) {
             statusCode = 400;
             userMessage = error.message;
-        } 
-        // Ошибки Нейросети/API (503)
-        else if (errorMessage.includes('api') || errorMessage.includes('нейросеть') || errorMessage.includes('openrouter')) {
+        } else if (errorMessage.includes('api') || errorMessage.includes('нейросеть') || errorMessage.includes('openrouter')) {
             statusCode = 503;
             userMessage = 'AI service is temporarily unavailable. Please try again.';
         }
