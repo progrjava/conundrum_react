@@ -10,6 +10,7 @@ import { DisplayBase } from '../js/DisplayBase';
 import { CrosswordDisplay } from '../js/CrosswordDisplay';
 import { UIUtils } from '../js/UIUtils';
 import { WordSoupDisplay } from '../js/WordSoupDisplay';
+import RebusDisplay from './RebusDisplay';
 import { getSupabaseClient, initializeSupabase } from '../config/supabaseClient';
 import ActivityTracker from '../modules/ActivityTracker';
 import MenuHandlerIcon from '../assets/svg/MenuHandlerIcon';
@@ -259,18 +260,22 @@ class GameGenerator extends Component {
                 totalWords: totalWords
             });
 
-            if (gameType === 'wordsoup') {
+            if (gameType === 'rebus') {
+                // Для ребусов НИЧЕГО не делаем. React сам их отрисует в render().
+                console.log("Rebus data loaded into state. React will now render it.");
+            } else if (gameType === 'wordsoup') {
+                // Старая логика для филворда
                 if (data.grid && data.words) {
-                    const display = new WordSoupDisplay(data, handleAttemptCallback, handleGameCompleteCallback);
-                    display.display();
+                    new WordSoupDisplay(data, handleAttemptCallback, handleGameCompleteCallback).display();
                 } else {
-                    UIUtils.showError('Не удалось получить данные для игры');
+                    UIUtils.showError('Не удалось получить данные для филворда');
                 }
-            } else {
+            } else { // gameType === 'crossword'
+                // Старая логика для кроссворда
                 if (data.crossword && data.layout.result) {
                     CrosswordDisplay.displayCrossword(data.crossword, data.layout.result, handleAttemptCallback, handleGameCompleteCallback);
                 } else {
-                    UIUtils.showError('Не удалось получить данные кроссворда');
+                    UIUtils.showError('Не удалось получить данные для кроссворда');
                 }
             }
 
@@ -382,7 +387,7 @@ class GameGenerator extends Component {
 
         const gameType = this.state.currentGameData.gameType;
 
-        if (!['crossword', 'wordsoup'].includes(gameType)) {
+        if (!['crossword', 'wordsoup', 'rebus'].includes(gameType)) {
             UIUtils.showError(`Недопустимый тип игры для сохранения: ${gameType}`);
             console.error("Invalid gameType from state:", gameType);
             return;
@@ -476,6 +481,8 @@ class GameGenerator extends Component {
                     if (gameDataForDisplay.crossword && gameDataForDisplay.layout?.result) {
                         CrosswordDisplay.displayCrossword(gameDataForDisplay.crossword, gameDataForDisplay.layout.result, handleAttemptCallback, handleGameCompleteCallback);
                     } else { UIUtils.showError('Ошибка данных для кроссворда.'); }
+                } else if (gameType === 'rebus') {
+                    RebusDisplay.displayRebus(gameDataForDisplay.rebuses, handleAttemptCallback, handleGameCompleteCallback);
                 } else {
                     UIUtils.showError(`Неизвестный тип игры: ${gameType}`);
                 }
@@ -776,7 +783,9 @@ class GameGenerator extends Component {
                 console.error('Error in Crossword data for displayGeneratedGameWithCurrentData:', currentGameData);
                 UIUtils.showError('Ошибка данных для кроссворда после операции.'); 
             }
-        } else {
+        } else if (gameType === 'rebus') {
+            RebusDisplay.displayRebus(currentGameData.rebuses, handleAttemptCallback, handleGameCompleteCallback);
+        } else { 
             console.error('Unknown game type in displayGeneratedGameWithCurrentData:', gameType);
             UIUtils.showError(`Неизвестный тип игры: ${gameType}`);
         }
@@ -908,6 +917,7 @@ class GameGenerator extends Component {
             isSlidebarVisible,
             isFormCreatingPuzzle,
             isConfigureMode,
+            currentGameData,
         } = this.state;
 
         if (this.state.redirectToProfile) {
@@ -967,6 +977,10 @@ class GameGenerator extends Component {
                                 <div>
                                     <input type="radio" id="fillword" value='wordsoup' name="gameType" ref={this.gameTypeRef} required/>
                                     <label htmlFor="fillword">Филворд</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="rebus" value='rebus' name="gameType" ref={this.gameTypeRef} required/>
+                                    <label htmlFor="rebus">Ребусы</label>
                                 </div>
                             </div>
                             <div className='input-interaction-format'>
@@ -1327,8 +1341,13 @@ class GameGenerator extends Component {
                             <div id="preloader-container" style={{display: 'none'}}>
                                 <Preloader/>
                             </div>
-                            {(!this.state.isEditing) && (
+                            {(!this.state.isEditing && currentGameData?.gameType !== 'rebus') && (
                                 <div id="crossword-container" ref={this.crosswordContainerRef} className={this.state.isEditing ? 'grid-disabled' : ''} style={{display: 'none'}}></div>
+                            )}
+                            {currentGameData && currentGameData.gameType === 'rebus' && (
+                                <div className="rebus-wrapper">
+                                    <RebusDisplay gameData={currentGameData} />
+                                </div>
                             )}
                             <section className='puzzle-info-and-iditing'>
                                 {this.state.isEditing && (

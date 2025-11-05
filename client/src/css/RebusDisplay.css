@@ -1,0 +1,207 @@
+.rebus-wrapper {
+    width: calc(95% - 20px);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.rebus-game-container {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-radius: 30px;
+    padding: 24px;
+    background: rgba(81, 56, 136, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+    color: #FBFBFE;
+}
+
+.rebus-game-container h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: left;
+}
+
+.rebuses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.rebus-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.rebus-number {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    font-weight: 700;
+    color: #c6b7f0;
+}
+
+.rebus-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+
+.rebus-text-part {
+    font-size: 32px;
+    font-weight: 700;
+    color: #FBFBFE;
+    font-family: 'Rubik', 'Inter', system-ui, -apple-system, sans-serif;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    letter-spacing: 1px;
+}
+
+.rebus-image-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.rebus-image {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: #FBFBFE;
+    padding: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+.commas {
+    font-family: 'Rubik', 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #ED7E98;
+    line-height: 1;
+    position: absolute;
+    top: 0; /* Выравниваем по верху картинки */
+    display: flex; /* Чтобы несколько запятых стояли в ряд */
+    gap: 2px;
+}
+
+.commas-left {
+    right: 100%; /* Начинаемся там, где заканчивается родительский блок, но СЛЕВА от него */
+    margin-right: 8px; /* Небольшой отступ от картинки */
+    transform: scaleX(-1); /* Разворачиваем запятые */
+}
+
+.commas-right {
+    left: 100%; /* Начинаемся там, где начинается родительский блок, но СПРАВА от него */
+    margin-left: 8px; /* Небольшой отступ */
+}
+
+.rebus-answer-section {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-show-answer {
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #FBFBFE;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.btn-show-answer:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+}
+
+.btn-show-answer:active {
+    transform: translateY(0);
+}
+
+.rebus-answer-text {
+    font-size: 22px;
+    color: #62E953;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 900px) {
+    .rebus-wrapper {
+        width: calc(100% - 12px);
+        padding: 16px 12px;
+    }
+
+    .rebus-game-container {
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .rebus-text-part {
+        font-size: 26px;
+    }
+
+    .rebus-image {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media (max-width: 600px) {
+    .rebus-game-container {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .rebus-card {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .rebus-text-part {
+        font-size: 22px;
+    }
+
+    .rebus-image {
+        width: 72px;
+        height: 72px;
+    }
+
+    .btn-show-answer {
+        width: 100%;
+    }
+}
