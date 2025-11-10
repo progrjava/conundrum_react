@@ -69,7 +69,18 @@ class RebusGenerator extends CrosswordGenerator {
                 throw new Error("Нейросеть не смогла придумать валидные ребусы.");
             }
 
-            return { rebuses: validRebuses };
+            const wordsForCompatibility = validRebuses.map(rebus => {
+                return {
+                    word: rebus.word, // Само слово-отгадка
+                    clue: `Ребус №${validRebuses.indexOf(rebus) + 1}` // Генерируем простую подсказку
+                };
+            });
+
+            return {
+                rebuses: validRebuses,      // Основные данные для отрисовки ребуса
+                words: wordsForCompatibility, // Данные для совместимости (для страницы "Мои пазлы")
+                rawResponse: responseData
+            };
 
         } catch (error) {
             console.error('Error in generateRebus:', error);
