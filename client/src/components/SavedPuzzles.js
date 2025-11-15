@@ -234,7 +234,7 @@ const SavedPuzzles = () => {
                                                 <rect fill="none" height="7" stroke="#ED7E98" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="7" x="2.5" y="14.5"/>
                                             </g>
                                         </svg>
-                                        <p>{puzzle.game_data.words.length} слов</p>
+                                        <p>{puzzle.game_data.words?.length || puzzle.game_data.rebuses?.length || 0} слов</p>
                                     </div>
                                 </div>
                                 <div className='horizontal-line'></div>

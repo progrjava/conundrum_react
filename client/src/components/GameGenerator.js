@@ -472,7 +472,9 @@ class GameGenerator extends Component {
                     console.log("Game complete (loaded puzzle). Stats:", this.activityTracker.getStats());
                 };
 
-                if (gameType === 'wordsoup') {
+                if (gameType === 'rebus') {
+                    console.log("Loaded Rebus data into state. React will now render it.");
+                } else if (gameType === 'wordsoup') {
                     if (gameDataForDisplay.grid && gameDataForDisplay.words) {
                         const display = new WordSoupDisplay(gameDataForDisplay, handleAttemptCallback, handleGameCompleteCallback);
                         display.display();
@@ -481,8 +483,6 @@ class GameGenerator extends Component {
                     if (gameDataForDisplay.crossword && gameDataForDisplay.layout?.result) {
                         CrosswordDisplay.displayCrossword(gameDataForDisplay.crossword, gameDataForDisplay.layout.result, handleAttemptCallback, handleGameCompleteCallback);
                     } else { UIUtils.showError('Ошибка данных для кроссворда.'); }
-                } else if (gameType === 'rebus') {
-                    RebusDisplay.displayRebus(gameDataForDisplay.rebuses, handleAttemptCallback, handleGameCompleteCallback);
                 } else {
                     UIUtils.showError(`Неизвестный тип игры: ${gameType}`);
                 }
@@ -784,7 +784,7 @@ class GameGenerator extends Component {
                 UIUtils.showError('Ошибка данных для кроссворда после операции.'); 
             }
         } else if (gameType === 'rebus') {
-            RebusDisplay.displayRebus(currentGameData.rebuses, handleAttemptCallback, handleGameCompleteCallback);
+            console.log("Rebus data is in state, render() will now display it.");
         } else { 
             console.error('Unknown game type in displayGeneratedGameWithCurrentData:', gameType);
             UIUtils.showError(`Неизвестный тип игры: ${gameType}`);
