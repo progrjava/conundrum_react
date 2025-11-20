@@ -23,8 +23,21 @@ async function generateGamePdf(gameData) {
         doc.on('error', reject);
 
         try {
-            const { gameType, grid, words, layout } = gameData;
-
+            const { gameType, grid, words, layout, rebuses } = gameData;
+            if (gameType === 'rebus') {
+                doc.fontSize(20).text(`Ребусы: ${gameData.name || 'Без названия'}`, { align: 'center' });
+                doc.moveDown(1.5);
+                doc.fontSize(12);
+                
+                // Просто печатаем ответы
+                (rebuses || []).forEach((rebus, index) => {
+                    doc.text(`${index + 1}. ${rebus.word}`);
+                    doc.moveDown(0.5);
+                });
+            
+                doc.end();
+                return; // ВАЖНО: Выходим из функции, чтобы не выполнять старый код
+            }
             // Заголовок
             doc.fontSize(20).text(`${gameType === 'crossword' ? 'Кроссворд' : 'Филворд'}: ${gameData.name || 'Без названия'}`, {
                 align: 'center'
