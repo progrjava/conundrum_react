@@ -1,13 +1,21 @@
-version: '3.8'
 services:
   server:
     build: ./server
-    ports: ["5000:5000"]
+    container_name: conundrum-server
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
     environment:
-      - PORT=5000
+      - NODE_ENV=production
+
   client:
-    build: ./client
-    ports: ["3000:3000"]
-    stdin_open: true
+    build:
+      context: ./client
+      args:
+        REACT_APP_API_URL: http://localhost:5000
+    container_name: conundrum-client
+    ports:
+      - "3000:3000"
     depends_on:
       - server
