@@ -1,10 +1,11 @@
 import React from "react";
 
 const DownloadPdf = () => (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 512 512" enable-background="new 0 0 512 512">
+        <path d="M315.1,4.1v229.2h98.5L256,410.5L98.5,233.3h98.5V4.1C84.1,30.8,0,132,0,253c0,141.4,114.6,256,256,256
+        c141.4,0,256-114.6,256-256C512,132,427.9,30.8,315.1,4.1z"/>
+    </svg>
 )
 
 export default DownloadPdf;

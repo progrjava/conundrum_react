@@ -1,8 +1,8 @@
 import React from 'react';
 
 const PuzzleCreatorIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-    <path fill="#FBFBFE" fillRule="evenodd" d="M16 1.667C8.084 1.667 1.667 8.084 1.667 16S8.084 30.333 16 30.333 30.333 23.916 30.333 16 23.916 1.667 16 1.667Zm1 9a1 1 0 0 0-2 0V15h-4.333a1 1 0 1 0 0 2H15v4.333a1 1 0 0 0 2 0V17h4.333a1 1 0 1 0 0-2H17v-4.333Z" clipRule="evenodd"/>
+  <svg  viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+    <path d="M856 40H142q-42 0-72 30t-30 72v714q0 42 30 72t72 30h714q42 0 72-30t30-72V142q0-42-30-72t-72-30zM754 550H550v204H448V550H244V448h204V244h102v204h204v102z"/>
   </svg>
 );
 

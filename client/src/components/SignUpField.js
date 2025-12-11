@@ -65,11 +65,7 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
     return (
         <section className='register-account'>
             <div className='register-account-info'>
-                <svg onClick={goToMainPage} className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
-                    <path stroke="#FBFBFE" strokeLinecap="round" strokeLinejoin="round" 
-                        strokeWidth="4" d="M25 30 15 20l10-10"/>
-                </svg>
-                <p className='register-title'>Создайте аккаунт</p>
+                <p className='register-title'>Добро пожаловать!</p>
                 <div className='if-have-account'>
                     <p>Уже есть аккаунт?</p>
                     <button className='sign-in-button' onClick={switchLoginProcess}>
@@ -130,8 +126,8 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                         </div>
                     </div>
                     <div className='birthday-role-gender-input'>
-                        <div className='reg-role' id='reg-role'>
-                            <select className='reg-role-select' id='reg-role-select' required value={occupation}
+                        <div className='reg-role registr' id='reg-role'>
+                            <select className='reg-role-select registr' id='reg-role-select' required value={occupation}
                     onChange={(e) => setOccupation(e.target.value)}>
                     disabled={isLoading}
                                 <option value={''} disabled selected hidden>Выберите роль</option>
@@ -149,7 +145,7 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                             </select>
                         </div>
                         <div className='reg-gender' id='reg-gender'>
-                            <select className='reg-gender-select' id='reg-gender-select' required value={gender}
+                            <select className='reg-gender-select registr' id='reg-gender-select' required value={gender}
                     onChange={(e) => setGender(e.target.value)}>
                     disabled={isLoading}
                                 <option value={''} disabled selected hidden>Пол</option>
@@ -159,13 +155,23 @@ const SignUpField = ({ isPasswordVisible, togglePasswordVisibility, switchLoginP
                         </div>
                     </div>
                     {message && <p className='create-account-message'>{message}</p>}
-                    <button 
-                        type='submit' 
-                        className='create-account-button'
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Создание аккаунта...' : 'Создать аккаунт'}
-                    </button>
+                    <div className='create-and-exit-buttons'>
+                        <button className='back-to-main-page-button' onClick={goToMainPage}>
+                            <svg  className='back-to-main-page' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+                                <path stroke="#FBFBFE" strokeLinecap="round" strokeLinejoin="round" 
+                                    strokeWidth="4" d="M25 30 15 20l10-10"/>
+                            </svg>
+                            На главную
+                        </button>
+                        <button 
+                            type='submit' 
+                            className='create-account-button'
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Создание аккаунта...' : 'Создать аккаунт'}
+                        </button>
+                    </div>
+                    
                 </form>
             </div>
         </section>

@@ -1,13 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 #dispay-game-on-screen {
     position: relative;
     display: flex;
-    justify-content: center;
+    justify-content: end;
     align-items: center;
-    overflow-y: auto;
-    overflow-x: hidden;
+    align-self: center;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -35,58 +33,139 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 50px;
+    gap: 30px;
     flex-wrap: wrap;
-    max-width: 90%;
-    max-height: 100%;
-    padding: 140px 10px;
+    width: calc(95% - 20px);
+    padding: 20px 20px 20px 0;
     box-sizing: border-box;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-
+#crossword-container {
+    overflow: auto;
+    scrollbar-width: none;
+}
 
 #crossword-container, #clues-container {
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     width: fit-content;
-    background: rgba(81, 56, 136, 0.8);
-    backdrop-filter: blur(12.5px);
-    border-radius: 15px;
+    border-radius: 30px;
+    padding: 25px;
+    background: rgba(81, 56, 136, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+}
+
+#crossword-container::before, #clues-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+#crossword-container::after, #clues-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
 }
 
 #clues-container {
     display: flex;
     flex-direction: column;
+    max-width: 100%;
     gap: 30px;
-}
-
-.crossword-table {
-    margin: 50px;
 }
 
 .crossword-table td {
     box-sizing: border-box;
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
+    width: 45px;
+    height: 45px;
+    border-radius: 0px;
 }
+
+/* первая буква горизонтального */
+td.cross {
+    border-radius: 0;
+}
+
+td.first-letter-horizontal:not(.cross) {
+    border-radius: 5px 0 0 5px;
+}
+
+td.last-letter-horizontal:not(.cross) {
+    border-radius: 0 5px 5px 0;
+}
+
+td.first-letter-vertical:not(.cross) {
+    border-radius: 5px 5px 0 0;
+}
+
+td.last-letter-vertical:not(.cross) {
+    border-radius: 0 0 5px 5px;
+}
+
+td.cross.first-letter-horizontal.first-letter-vertical {
+    border-radius: 5px 0 0 0;
+}
+
+td.cross.last-letter-horizontal.first-letter-vertical {
+    border-radius: 0 5px 0 0;
+}
+
+td.cross.first-letter-horizontal.last-letter-vertical {
+    border-radius: 0 0 0 5px;
+}
+
+td.cross.last-letter-horizontal.last-letter-vertical {
+    border-radius: 0 0 5px 0;
+}
+
 
 td.crossword-cell {
     box-sizing: border-box;
-    background: #FBFBFE;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 1000;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
     position: relative;
 }
 
 td.crossword-cell span {
     position: absolute;
-    top: 5%;
-    left: 5%;
-    transform: translate(-5%, -5%);
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 900;
-    font-size: 15px;
-    line-height: 15px;
+    top: 10%;
+    left: 10%;
+    transform: translate(-10%, -10%);
+    font-size: 16px;
+    line-height: 1;
     text-transform: uppercase;
     color:#513888;
 }
@@ -101,18 +180,16 @@ span.word-number {
 
 input.crossword-input {
     border: none;
-    width: 48px;
-    height: 48px;
+    width: 45px;
+    height: 45px;
     background-color: transparent;
     text-align: center;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 900;
     font-size: 20px;
-    line-height: 26px;
+    line-height: 1.5;
     text-transform: uppercase;
     color:#FBFBFE;
-    text-shadow: -2px 2px 5px rgba(47, 45, 56, 1);
+    font-weight: 500;
+    text-shadow: 0px 3px 5px rgba(47, 45, 56, 1);
     caret-color: #513888;
 }
 
@@ -128,14 +205,10 @@ input.crossword-input:focus {
 }
 
 .clues-section h3 {
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 700;
     font-size: 20px;
-    line-height: 24px;
+    line-height: 1.5;
     display: flex;
     align-items: center;
-    letter-spacing: 0.5px;
     color: #FBFBFE;
 }
 
@@ -144,94 +217,133 @@ input.crossword-input:focus {
     display: flex;
     flex-direction: column;
     gap: 7px;
+    font-weight: 500;
 }
 
 .word-item {
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: 20px;
+    position: relative;
+    align-items: stretch;
 }
 
 .clue-position {
-    max-width: 20px;
+    max-width: 15px;
 }
 
 .word-item span {
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
+    font-size: 20px;
+    line-height: 1.5;
+    align-self: self-start;
     color: #FBFBFE;
 }
 
+.clue-text-content {
+    text-align: justify;
+}
+
 .show-answer-button {
+    height: fit-content;
+    margin-left: auto;
     cursor: pointer;
-    transition: transform 0.2s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 2px 8px;
+    font-size: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+}
+
+.show-answer-button span {
+    line-height: 1.2;
+}
+
+.show-answer-button:focus {
+    outline: none;
+}
+
+.show-answer-button svg {
     display: block;
     width: 24px;
     height: 24px;
-}
-
-.show-answer-button:hover {
-    transform: scale(1.1);
+    path {
+        stroke: #FBFBFE;
+    }
 }
 
 
 .word-soup-container {
-    margin: 30px;
-    -webkit-overflow-scrolling: touch; 
-
-
-
+    -webkit-overflow-scrolling: touch;
     touch-action: none;
-    overflow: hidden;
+    overflow: auto;
+    scrollbar-width: none;
+    aspect-ratio: 1 / 1;
 }
 
 .word-soup-grid {
     display: inline-block;
-    background: white;
     margin: 0;
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
     position: relative;
     border-radius: 15px;
-
-
     overscroll-behavior: contain;
+    table-layout: fixed;
 }
 
 .word-soup-cell {
+    background: white;
     text-align: center;
     font-size: 20px;
-    font-weight: bold;
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     transition: background-color 0.2s;
+    height: 40px;
     width: 40px;
-    height: 40px; 
     padding: 0;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 900;
-    font-size: 20px;
-    line-height: 26px;
+    line-height: 0px;
     align-items: center;
     text-align: center;
     text-transform: uppercase;
-    color: #2F2D38;
-    border-radius: 5px;
+    color: #513888;
+    border-radius: 0px;
+    font-weight: 500;
 }
 
+.word-soup-grid tr:first-child td:first-child {
+    border-radius: 10px 0 0 0;
+}
+
+.word-soup-grid tr:first-child td:last-child {
+    border-radius: 0 10px 0 0;
+}
+
+.word-soup-grid tr:last-child td:last-child {
+    border-radius: 0 0 10px 0;
+}
+
+.word-soup-grid tr:last-child td:first-child {
+    border-radius: 0 0 0 10px;
+}
 
 .word-soup-cell.first-letter {
-    background-color: rgba(81, 56, 136, 0.8);
+    background-color: rgba(81, 56, 136, 0.0);
     color: #FBFBFE;
     transform: scale(1.1);
     z-index: 2;
@@ -240,7 +352,7 @@ input.crossword-input:focus {
 
 /* Стиль для выделенных ячеек */
 .word-soup-cell.selected {
-    background-color: rgba(81, 56, 136, 0.8);
+    background-color: rgba(81, 56, 136, 0.0);
     color:#FBFBFE;
 }
 
@@ -253,6 +365,7 @@ input.crossword-input:focus {
 /* Стиль для неправильного выбора */
 .word-soup-cell.incorrect {
     background-color: #ED7E98;
+    color:#FBFBFE;
     animation: shake 0.5s ease-in-out;
 }
 
@@ -270,13 +383,9 @@ input.crossword-input:focus {
 
 .victory-message {
     padding: 50px;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 700;
     font-size: 20px;
-    line-height: 26px;
+    line-height: 1.5;
     text-align: center;
-    letter-spacing: 0.5px;
     color: #FBFBFE;
     transition: transform 0.5s ease;
 }
@@ -284,141 +393,136 @@ input.crossword-input:focus {
 .success-message {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 50px;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 26px;
-    text-align: center;
-    letter-spacing: 0.5px;
+    gap: 30px;
+    font-size: 22px;
+    line-height: 1.5;
+    text-align: justify;
     color: #FBFBFE;
     transition: transform 0.5s ease;
+}
+
+.success-divider {
+    height: 2px;
+    background-color: #FBFBFE;
+    width: 100%;
+}
+
+.success-message h2 {
+    font-size: 30px;
+    text-align: center;
 }
 
 #loading-indicator {
     border-radius: 50%;
 }
 
-@media (max-width: 768px) {
-    #loading-indicator {
-        border-radius: 50% !important;
-    }
-
+@media (max-width: 1200px) {
     #crossword-and-clues {
-        gap: 10px;
-        align-items: flex-start;
-        box-sizing: border-box;
-        margin-bottom: 100px;
-        position: relative;
+        width: calc(90% - 20px);
     }
 
     #crossword-container, #clues-container {
-        backdrop-filter: none;
+        border-radius: 20px;
+        padding: 20px;
     }
 
     #clues-container {
         gap: 20px;
     }
 
-    .crossword-table {
-        margin: 10px;
-    }
-
     .crossword-table td {
-        width: 21px;
-        height: 21px;
-        border-radius: 3px;
-    }
-
-    td.crossword-cell span {
-        top: 5%;
-        left: 5%;
-        transform: translate(-5%, -5%);
-        font-weight: 600;
-        font-size: 11px;
-        line-height: 11px;
+        width: 40px;
+        height: 40px;
     }
 
     input.crossword-input {
-        width: 24px;
-        height: 24px;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
-        text-shadow: -2px 2px 5px rgba(47, 45, 56, 1);
-    }
-
-    .clues-section {
-        gap: 10px;
-    }
-
-    .clues-section h3 {
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 21px;
-    }
-
-    .word-list {
-        gap: 5px;
-    }
-
-    .word-item {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .word-item span {
-        font-size: 14px;
-        line-height: 21px;
-        flex: 1;
+        width: 40px;
+        height: 40px;
     }
 
     .show-answer-button {
-        width: 20px;
-        height: 20px;
-        visibility: visible;
-    }
-
-    .word-soup-container {
-        margin: 7px;
-    }
-
-    .word-soup-grid {
+        height:fit-content;
+        gap: 5px;
+        padding: 2px 8px;
+        font-size: 20px;
         border-radius: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
     }
-    
+
     .word-soup-cell {
-        width: 20px;
-        height: 20px; 
-        padding: 0;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 14px;
-        border-radius: 3px;
+        width: 35px; 
+        height: 35px;
     }
 
-    .word-soup-grid, .word-soup-cell {
-        -webkit-touch-callout: none;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    .victory-message {
-        padding: 10px;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
+    .success-message h2 {
+        font-size: 25px;
     }
 
     .success-message {
-        gap: 5px;
-        padding: 10px;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
+        gap: 20px;
+        font-size: 20px;
+    }
+}
+
+
+
+
+@media (max-width: 1199px) and (min-width: 601px) {
+    #crossword-and-clues {
+        width: calc(100% - 12px);
+        padding: 90px 12px 12px 0;
+    }
+
+    #crossword-container, #clues-container {
+        border-radius: 15px;
+        padding: 15px;
+    }
+
+    #crossword-container {
+        overflow: auto;
+        scrollbar-width: none;
+    }
+
+    #clues-container {
+        gap: 20px;
+    }
+
+    .crossword-table td {
+        width: 40px;
+        height: 40px;
+    }
+
+    input.crossword-input {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+
+    .word-soup-cell {
+        width: 30px;
+        height: 30px;
+    }
+
+    .success-message h2 {
+        font-size: 25px;
+    }
+
+    .success-message {
+        gap: 20px;
+        font-size: 20px;
+    }
+
+    .word-soup-container, .word-soup-grid {
+        border-radius: 10px;
     }
 }
 
@@ -429,128 +533,84 @@ input.crossword-input:focus {
     }
 }
 
-
-
-@media (max-width: 850px) and (min-width: 769px) {
-    #loading-indicator, #loading-spinner {
-        border-radius: 50%;
-    }
-
+@media (max-width: 600px) {
     #crossword-and-clues {
-        gap: 10px;
-        align-items: flex-start;
-        box-sizing: border-box;
-        margin-bottom: 100px;
-        position: relative;
+        width: calc(100% - 6px);
+        padding: 75px 6px 20px 0;
     }
 
     #crossword-container, #clues-container {
-        backdrop-filter: none;
+        border-radius: 13px;
+        padding: 10px;
+    }
+
+    #crossword-container {
+        overflow: auto;
+        scrollbar-width: none;
     }
 
     #clues-container {
-        gap: 30px;
-    }
-
-    .crossword-table {
-        margin: 20px;
+        gap: 20px;
     }
 
     .crossword-table td {
         width: 30px;
         height: 30px;
-        border-radius: 5px;
-    }
-
-    td.crossword-cell span {
-        top: 5%;
-        left: 5%;
-        transform: translate(-5%, -5%);
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 14px;
     }
 
     input.crossword-input {
         width: 30px;
         height: 30px;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
-        text-shadow: -2px 2px 5px rgba(47, 45, 56, 1);
+        font-size: 18px;
     }
 
-    .clues-section {
-        gap: 15px;
+    td.crossword-cell span {
+        font-size: 12px;
     }
 
     .clues-section h3 {
-        font-weight: 400;
         font-size: 18px;
-        line-height: 27px;
-    }
-
-    .word-list {
-        gap: 10px;
-    }
-
-    .word-item {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
     }
 
     .word-item span {
-        font-size: 16px;
-        line-height: 24px;
-        flex: 1;
+        font-size: 18px;
     }
 
     .show-answer-button {
-        width: 24px;
-        height: 24px;
-        visibility: visible;
-    }
-
-    .word-soup-container {
-        margin: 10px;
-    }
-
-
-    .word-soup-grid {
-        border-radius: 10px;
-        
-    }
-    
-    .word-soup-cell {
-        width: 25px;
-        height: 25px; 
-        padding: 0;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 16px;
+        padding: 2px 4px;
+        font-size: 18px;
         border-radius: 5px;
     }
 
-    .word-soup-grid, .word-soup-cell {
-        -webkit-touch-callout: none;
-        -webkit-tap-highlight-color: transparent;
+    .show-answer-button span {
+        font-size: 18px;
     }
 
-    .victory-message {
-        padding: 15px;
-        font-weight: 500;
+    .show-answer-button svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .word-soup-container, .word-soup-grid {
+        border-radius: 10px;
+    }
+
+
+    .word-soup-cell {
+        width: 25px;
+        height: 25px;
         font-size: 18px;
-        line-height: 27px;
+        padding: 0 4px;
+        line-height: 1.5;
+    }
+
+    .success-message h2 {
+        font-size: 16px;
     }
 
     .success-message {
-        gap: 10px;
-        padding: 15px;
-        font-weight: 500;
-        font-size: 18px;
-        line-height: 27px;
+        gap: 20px;
+        font-size: 16px;
     }
 }
 

@@ -8,7 +8,6 @@ export class CluesDisplay {
      */
     static displayCrosswordClues(words) {
         const cluesContainer = document.getElementById('clues-container');
-        cluesContainer.style.padding = '5%';
         cluesContainer.innerHTML = '';
   
         const acrossClues = words.filter(wordData => wordData.orientation === 'across')
@@ -29,7 +28,6 @@ export class CluesDisplay {
      */
     static displayWordSoupClues(words) {
         const cluesContainer = document.getElementById('clues-container');
-        cluesContainer.style.padding = '5%';
         cluesContainer.innerHTML = '';
   
         // Преобразуем слова в формат для отображения
@@ -71,7 +69,7 @@ export class CluesDisplay {
                 const clueTextarea = document.createElement('textarea');
                 clueTextarea.className = 'editable-clue-textarea';
                 clueTextarea.value = wordData.clue;
-                clueTextarea.rows = 3;
+                clueTextarea.rows = 2;
                 clueTextarea.oninput = (e) => {
                     if (onItemChange) {
                         onItemChange(itemIdentifier, 'clue', e.target.value);
@@ -79,8 +77,7 @@ export class CluesDisplay {
                 };
                 li.appendChild(clueTextarea);
 
-                const wordInput = document.createElement('input');
-                wordInput.type = 'text';
+                const wordInput = document.createElement('textarea');
                 wordInput.className = 'editable-word-input';
                 wordInput.value = wordData.word || wordData.answer || '';
                 wordInput.oninput = (e) => {
@@ -95,11 +92,16 @@ export class CluesDisplay {
                 clueText.textContent = wordData.clue;
                 li.appendChild(clueText);
 
-                const showAnswerButton = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                showAnswerButton.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                showAnswerButton.setAttribute('viewBox', '0 0 24 24');
-                showAnswerButton.setAttribute('fill', 'none');
+                const showAnswerButton = document.createElement('button');
                 showAnswerButton.classList.add('show-answer-button');
+                showAnswerButton.type = 'button';
+
+                // === создаём SVG ===
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('fill', 'none');
+                svg.classList.add('show-answer-icon');
 
                 const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path1.setAttribute('stroke', '#62E953');
@@ -115,14 +117,35 @@ export class CluesDisplay {
                 path2.setAttribute('stroke-width', '2');
                 path2.setAttribute('d', 'M12 17a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z');
 
-                showAnswerButton.appendChild(path1);
-                showAnswerButton.appendChild(path2);
+                svg.appendChild(path1);
+                svg.appendChild(path2);
 
+                // svg изначально в кнопке
+                showAnswerButton.appendChild(svg);
+
+                // состояние
+                let answerShown = false;
+                const answerWord = wordData.word || wordData.originalWord || wordData.answer;
+
+                // переключатель
                 showAnswerButton.addEventListener('click', () => {
-                    showAnswerButton.remove();
-                    const displayWord = wordData.word || wordData.originalWord || wordData.answer;
-                    clueText.textContent += ` (${displayWord})`;
+                    answerShown = !answerShown;
+
+                    // очистить кнопку
+                    showAnswerButton.innerHTML = '';
+
+                    if (answerShown) {
+                        // показать слово внутри кнопки
+                        const answerSpan = document.createElement('span');
+                        answerSpan.className = 'shown-answer-text';
+                        answerSpan.textContent = answerWord;
+                        showAnswerButton.appendChild(answerSpan);
+                    } else {
+                        // вернуть SVG обратно
+                        showAnswerButton.appendChild(svg);
+                    }
                 });
+
                 li.appendChild(showAnswerButton);
             }
             list.appendChild(li);
@@ -141,7 +164,6 @@ export class CluesDisplay {
     static renderEditable(wordsToEdit, gameType, onItemChangeCallback) {
         const cluesContainer = document.getElementById('clues-container');
         if (!cluesContainer) return;
-        cluesContainer.style.padding = '5%';
         cluesContainer.innerHTML = '';
 
         if (gameType === 'crossword') {

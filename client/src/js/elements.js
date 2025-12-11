@@ -15,5 +15,6 @@ export const elements = {
         this.totalWordsInput = document.getElementById('total-words');
         this.crosswordContainer = document.getElementById('crossword-container');
         this.cluesContainer = document.getElementById('clues-container');
+        this.preloaderContainer = document.getElementById('preloader-container'); 
     }
 };

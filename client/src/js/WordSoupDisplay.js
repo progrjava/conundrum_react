@@ -278,8 +278,15 @@ export class WordSoupDisplay extends DisplayBase {
         const successMessage = DisplayBase.createElement('div');
         successMessage.classList.add('success-message');
         successMessage.innerHTML = `
-            <h2>Поздравляем!</h2>
-            <p>Вы нашли все слова!</p>
+            <div>
+                <h2>Поздравляем! Вы нашли все слова!</h2>
+                <div class='success-divider'></div>
+            </div>
+            <div>
+                <p>Иногда важен не результат, который можно положить на полку, а сам процесс.</p>
+                <p>Этот момент вашей победы навсегда останется в памяти...</p> 
+                <p>Ну, или хотя бы в хорошем настроении на сегодня! Отличная работа!</p>
+            </div>
         `;
 
         elements.crosswordContainer.appendChild(successMessage);

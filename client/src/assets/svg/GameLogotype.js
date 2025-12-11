@@ -2,8 +2,8 @@
 import React from 'react';
 
 const GameLogotype = () => (
-    <svg id='game-logotype' xmlns="http://www.w3.org/2000/svg" viewBox='0 0 1000 124' fill="none">
-                        <path fill="#FBFBFE" fill-Opacity="0.8" d="M64.104 121.404c-11.586 
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 1000 124' fill="none">
+                        <path fill="#FBFBFE" fill-Opacity="1.0" d="M64.104 121.404c-11.586 
                             0-22.316-2.717-32.159-8.151-9.859-5.434-17.639-12.811-23.355-22.131C2.858 
                             81.817 0 71.677 0 60.702c0-10.974 2.858-21.114 8.59-30.42 5.716-9.32 
                             13.512-16.681 23.355-22.13C41.788 2.716 52.518 0 64.104 

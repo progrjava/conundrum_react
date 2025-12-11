@@ -13,7 +13,7 @@ const ProfileInfo = ({
     onLogout 
 }) => {
     return (
-        <section className='about-account-info'>
+        <section className='about-account-info profile-info-left'>
             <div className='profile-title'>
                 <h1>Личный кабинет</h1>
                 <div className='horizontal-line'></div>
@@ -77,7 +77,7 @@ const ProfileInfo = ({
             </div>
             <div className='account-buttons'>
                 <button type='submit' onClick={onUpdateProfile} className='update-account-button'>
-                    Обновить данные
+                    Обновить
                 </button>
                 <button type='submit' onClick={onLogout} className='log-out-button'>
                     Выйти

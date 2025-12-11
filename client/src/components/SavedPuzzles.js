@@ -7,6 +7,7 @@ import {
     deletePuzzleFromSupabase
 } from '../services/puzzleService';
 import { UIUtils } from '../js/UIUtils';
+import Preloader from '../assets/svg/Preloader';
 
 const gameType = {
     'crossword': 'Кроссворд',
@@ -168,13 +169,8 @@ const SavedPuzzles = () => {
             <div className='saved-games-and-tags'>
                 <section className='user-saved-games'>
                     {isLoading 
-                    ? <div class="loading-spinner-profile">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-                            <path fill="#FBFBFE" stroke="#FBFBFE" stroke-width="15" 
-                                d="M148 84.7l13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z">
-                            </path>
-                        </svg>
-                    </div>
+                    ? 
+                        <Preloader/>
                     : 
                     <ul className='saved-games-list'>
                         {filteredPuzzles.map((puzzle, puzzleIndex) => (
@@ -188,8 +184,8 @@ const SavedPuzzles = () => {
                                 </span>
                                 <div className='saved-game-info' onClick={() => handleLoadPuzzle(puzzle.id)}>
                                     <div>
-                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M4 12H20M4 8H20M4 16H12" stroke="#ED7E98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3 2a1 1 0 00-1 1v3a1 1 0 002 0 2 2 0 012-2h2v10.999A1 1 0 017 16h-.001A1 1 0 007 18h6a1 1 0 100-2 1 1 0 01-1-1V4h2a2 2 0 012 2 1 1 0 102 0V3a1 1 0 00-1-1H3z" fill="#5C5F62"/>
                                         </svg>
                                         <p>{puzzle.name}</p>
                                     </div>
@@ -291,7 +287,7 @@ const SavedPuzzles = () => {
                 <section className='user-tags'>
                     <div className='user-tags-content'>
                         <h2>
-                            Теги
+                            Поиск по тегам 
                         </h2>
                         <input 
                             type='text'

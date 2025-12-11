@@ -1,13 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 .login-account {
     display: inline-block;
     padding: 55px;
     background: #2F2D38;
-    border-radius: 15px;
-    margin-left: 30px;
+    border-radius: 20px;
+    margin: auto;
     width: 530px;
 }
+
+.login-account::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+.login-account::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
 
 .login-account-info {
     display: flex;
@@ -18,8 +49,7 @@
 .back-to-main-page {
     cursor: pointer;
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 30px;
 }
 
 .back-to-main-page:hover path{
@@ -29,11 +59,9 @@
 
 .login-title {
     display: block;
-    line-height: 1;
+    line-height: 1.5;
     margin: 15px 0 55px 0;
-    font-weight: 700;
     font-size: 56px;
-    letter-spacing: 0.5px;
     align-self: center;
 }
 
@@ -46,10 +74,8 @@
 }
 
 .if-have-not-account p {
-    font-weight: 500;
     font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
+    line-height: 1.5;
 }
 
 .sign-up-button {
@@ -58,14 +84,10 @@
     justify-content: center;
     align-items: center;
     padding: 0px;
-    font-weight: 500;
     font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
+    line-height: 1.5;
     background-color: transparent;
     border: none;
-    font-family: 'Roboto Slab';
-    font-style: normal;
     cursor: pointer;
 }
 
@@ -87,14 +109,10 @@
 .log-login-input {
     flex: 1;
     border-radius: 15px;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 500;
     font-size: 16px;
-    line-height: 24px;
+    line-height: 1.5;
     display: flex;
     align-items: center;
-    letter-spacing: 0.5px;
     padding: 10px 24px;
     border: none;
 }
@@ -115,14 +133,10 @@
 .log-password-input {
     flex: 1;
     border-radius: 15px;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 500;
     font-size: 16px;
-    line-height: 24px;
+    line-height: 1.5;
     display: flex;
     align-items: center;
-    letter-spacing: 0.5px;
     padding: 10px 24px;
     border: none;
 }
@@ -149,12 +163,8 @@
     position: absolute;
     text-align: center;
     margin-top: 25px;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 400;
     font-size: 18px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
+    line-height: 1.5;
     color:#14c700;
 }
 
@@ -170,15 +180,11 @@
     border-radius: 15px;
     background: transparent;
     cursor: pointer;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 700;
     font-size: 18px;
-    line-height: 24px;
+    line-height: 1.5;
     display: flex;
     align-items: center;
     text-align: center;
-    letter-spacing: 0.5px;
 }
 
 .login-account-button {
@@ -205,9 +211,8 @@
     }
 
     .login-title {
-        line-height: 36px;
+        line-height: 1.5;
         margin: 10px 0 30px 0;
-        font-weight: 500;
         font-size: 24px;
     }
 
@@ -217,15 +222,13 @@
     }
 
     .if-have-not-account p {
-        font-weight: 400;
         font-size: 14px;
-        line-height: 21px;
+        line-height: 1.5;
     }
 
     .sign-up-button {
-        font-weight: 400;
         font-size: 14px;
-        line-height: 21px;
+        line-height: 1.5;
     }
     
     .log-input-data {
@@ -235,9 +238,8 @@
 
     .log-login-input, .log-password-input {
         border-radius: 10px;
-        font-weight: 500;
         font-size: 14px;
-        line-height: 21px;
+        line-height: 1.5;
         padding: 5px 15px;
     }
 
@@ -255,16 +257,15 @@
     .login-message {
         margin-top: 25px;
         font-size: 14px;
-        line-height: 21px;
+        line-height: 1.5;
         color:#14c700;
     }
     
     .login-account-button {
         padding: 8px 20px;
         border-radius: 10px;
-        font-weight: 500;
         font-size: 16px;
-        line-height: 24px;
+        line-height: 1.5;
         margin-top: 100px;
         margin-bottom: 20px;
     }
@@ -286,23 +287,14 @@
     }
 
     .login-title {
-        line-height: 39px;
+        line-height: 1.5;
         margin: 10px 0 30px 0;
-        font-weight: 500;
         font-size: 26px;
     }
 
     .if-have-not-account {
         gap: 10px;
         margin-bottom: 28px;
-    }
-
-    .if-have-not-account p {
-        font-weight: 400;
-    }
-
-    .sign-up-button {
-        font-weight: 400;
     }
     
     .log-input-data {
@@ -312,9 +304,8 @@
 
     .log-login-input, .log-password-input {
         border-radius: 10px;
-        font-weight: 500;
         font-size: 16px;
-        line-height: 24px;
+        line-height: 1.5;
         padding: 5px 15px;
     }
 
@@ -333,16 +324,15 @@
     .login-message {
         margin-top: 25px;
         font-size: 16px;
-        line-height: 24px;
+        line-height: 1.5;
         color:#14c700;
     }
     
     .login-account-button {
         padding: 8px 20px;
         border-radius: 10px;
-        font-weight: 500;
         font-size: 18px;
-        line-height: 27px;
+        line-height: 1.5;
         margin-top: 100px;
         margin-bottom: 20px;
     }

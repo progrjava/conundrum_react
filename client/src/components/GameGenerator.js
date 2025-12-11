@@ -26,6 +26,10 @@ import {
 import SaveButton from '../assets/svg/SaveButton';
 import DownloadPdf from '../assets/svg/DownloadPdf';
 import { saveLtiConfiguration, getLtiConfiguration } from '../services/ltiConfigService';
+import Header from './Header';
+import GameMenu from './GameMenu';
+import Preloader from '../assets/svg/Preloader';
+import { elements } from '../js/elements';
 
 class GameGenerator extends Component {
     constructor(props) {
@@ -51,6 +55,9 @@ class GameGenerator extends Component {
             originalPuzzleNameForEdit: '',
             resourceLinkId: null,
             isConfigureMode: false,
+            isFileLoaded: false,
+            fileLoadProgress: 0,
+            fileLoadError: false
         };
 
         this.crosswordFormRef = createRef();
@@ -609,6 +616,7 @@ class GameGenerator extends Component {
             return;
         }
         
+        this.setState({ isEditing: false });
         DisplayBase.displayLoadingIndicator();
 
         try {
@@ -648,7 +656,7 @@ class GameGenerator extends Component {
                     name: puzzleNameForSave,
                     game_data: updatedGameDataForSave
                 });
-                UIUtils.showSuccess(`Пазл "${puzzleNameForSave}" успешно обновлен!`);
+                
                 this.setState({
                     currentGameData: updatedGameDataForSave,
                     isEditing: false,
@@ -656,11 +664,13 @@ class GameGenerator extends Component {
                     hasUnsavedChanges: false,
                     originalPuzzleNameForEdit: puzzleNameForSave
                 }, () => {
+                    UIUtils.showSuccess(`Пазл "${puzzleNameForSave}" успешно обновлен!`);
                     this.displayGeneratedGameWithCurrentData();
                     if (this.crosswordContainerRef.current) {
                         this.crosswordContainerRef.current.classList.remove('grid-disabled');
                     }
                 });
+                
             } else {
                 if (!puzzleNameForSave.trim()) {
                     UIUtils.showError("Пожалуйста, введите название для нового пазла.");
@@ -717,10 +727,18 @@ class GameGenerator extends Component {
         }
 
         DisplayBase.clearGameField();
+
+        
+
         if (this.cluesContainerRef.current) {
             this.cluesContainerRef.current.innerHTML = '';
         } else {
             console.warn("Clues container ref is not available in displayGeneratedGameWithCurrentData");
+        }
+
+        // Показываем контейнеры
+        if (this.crosswordContainerRef.current) {
+            this.crosswordContainerRef.current.style.display = 'flex'; // ИЛИ 'block' в зависимости от CSS
         }
         
         this.activityTracker.reset();
@@ -812,6 +830,73 @@ class GameGenerator extends Component {
         }
     }
 
+    handleFileSelected = (e) => {
+        const file = e.target.files[0];
+
+        // Сброс если файла нет
+        if (!file) {
+            this.setState({ 
+                isFileLoaded: false,
+                fileLoadProgress: 0,
+                fileLoadError: false
+            });
+            return;
+        }
+
+        // === Ограничение размера ===
+        const MAX_SIZE_MB = 30;
+        const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+        if (file.size > MAX_SIZE_BYTES) {
+            UIUtils.showError(`Файл слишком большой. Максимальный размер: ${MAX_SIZE_MB} МБ.`);
+            e.target.value = "";
+            this.setState({ 
+                isFileLoaded: false,
+                fileLoadProgress: 0,
+                fileLoadError: true
+            });
+            return;
+        }
+
+        // === Чтение файла ===
+        const reader = new FileReader();
+
+        // ПРОГРЕСС
+        reader.onprogress = (event) => {
+            if (event.lengthComputable) {
+                const percent = Math.round((event.loaded / event.total) * 100);
+                this.setState({ 
+                    fileLoadProgress: percent,
+                    fileLoadError: false
+                });
+            }
+        };
+
+        // УСПЕШНО
+        reader.onload = () => {
+            this.setState({ 
+                isFileLoaded: true,
+                fileLoadProgress: 100,
+                fileLoadError: false
+            });
+        };
+
+        // ОШИБКА
+        reader.onerror = () => {
+            UIUtils.showError("Ошибка чтения файла");
+            this.setState({ 
+                isFileLoaded: false,
+                fileLoadProgress: 0,
+                fileLoadError: true
+            });
+        };
+
+        // Начинаем чтение
+        reader.readAsArrayBuffer(file);
+    };
+
+
+
     render() {
         const { isBlackTheme, toggleTheme, user, isAuth } = this.props;
         const urlParams = new URLSearchParams(window.location.search);
@@ -832,25 +917,219 @@ class GameGenerator extends Component {
         const shouldShowSidebar = isConfigureMode;
         return (
             <>
-                {!isLTI && (
-                    <header className={`main-page-header ${isAboutVisible || isManualVisible ? 'hidden' : ''}`} id='game-header'>
-                        <div className='go-to-profile' id='game-go-to-profile' onClick={this.navToProfile}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 40 40' fill="none">
-                                <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                d="M8 33.333v-1.666C8 25.223 13.223 20 19.667 20c6.443 0 11.666 5.223 11.666 11.667v1.666"/>
-                                <path stroke="#2F2D38" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                d="M19.667 20a6.667 6.667 0 1 0 0-13.333 6.667 6.667 0 0 0 0 13.333Z"/>
-                            </svg>
-                        </div>
-                        <button id='game-about-popup-button' className={`about-button ${isAboutVisible ? 'pressed' : ''}`} onClick={this.toggleAboutPopup}>О проекте</button>
-                        <button id='game-manual-popup-button' className={`manual-button ${isManualVisible ? 'pressed' : ''}`} onClick={this.toggleManualPopup}>Инструкция</button>
-                        <AboutPopup isVisible={isAboutVisible} page='game'/>
-                        <ManualPopup isVisible={isManualVisible} page='game'/>
-                    </header>
-                )}
+                {/*{!isLTI && (
+                    <Header 
+                        isBlackTheme={isBlackTheme} 
+                        toggleTheme={toggleTheme}
+                        isAuth={isAuth}
+                    />
+                )}*/}
                 <main id='game-main-page'>
-                    <GameLogotype />
-                    {shouldShowSidebar && (
+                    <GameMenu 
+                        isAuth={isAuth}
+                        isBlackTheme={isBlackTheme} 
+                        toggleTheme={toggleTheme}
+                        isLTI={isLTI}
+                        isAuthenticated={isAuthenticated}
+                        isCurrentGameData={this.state.currentGameData}
+                        isEditing={this.state.isEditing}
+                        handleEnterEditMode={this.handleEnterEditMode}
+                        handleActualSavePuzzle={this.handleActualSavePuzzle}
+                        handleDownloadPdf={this.handleDownloadPdf}
+                        isLoading={this.state.isLoading}
+                        toggleFormCreatingPuzzle={this.toggleFormCreatingPuzzle}
+                        isFormCreatingPuzzle={isFormCreatingPuzzle}
+                    />
+                    <div className="background-video-main red"/>
+                    <div className="ellipse-bg red"></div>
+                    <div className='main-logo-title red'>
+                        <GameLogotype />
+                    </div>
+                    <section className={`creating-puzzle-input-data ${isFormCreatingPuzzle ? 'visible' : 'hidden'}`}>
+                        <form id='crossword-form' encType='multipart/form-data' 
+                        onSubmit={this.handleSubmit} ref={this.crosswordFormRef}>
+                            <input 
+                                className='input-puzzle-name' 
+                                type='text' 
+                                placeholder='НАЗВАНИЕ'
+                                onChange={(e) => this.setState({ puzzleNameForSave: e.target.value } )}required 
+                            />
+                            <div className='input-type-of-puzzle'>
+                                <h2>ВИД ГОЛОВОЛОМКИ</h2>
+                                <div>
+                                    <input type="radio" id="crossword" value='crossword' name="gameType" ref={this.gameTypeRef} required/>
+                                    <label htmlFor="crossword">Кроссворд</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="fillword" value='wordsoup' name="gameType" ref={this.gameTypeRef} required/>
+                                    <label htmlFor="fillword">Филворд</label>
+                                </div>
+                            </div>
+                            <div className='input-interaction-format'>
+                                <h2>ФОРМАТ ВВОДА</h2>
+                                <div>
+                                    <input 
+                                    type="radio" 
+                                    id="set-topic" 
+                                    value='topic' 
+                                    name='inputType' 
+                                    onChange={this.handleInteractionFormatChange}
+                                    required
+                                    ref={this.inputTypeRef}/>
+
+                                    <label htmlFor="set-topic">Задать тему</label>
+                                    
+                                        <div className='topic-input'>
+                                            <input
+                                                ref={this.topicRef}
+                                                type='text'
+                                                id='topic'
+                                                name='topic'
+                                                placeholder='Например: Фрукты'
+                                                style={{ display: 'none' }}
+                                            />
+                                        </div>
+                                </div>
+                                <div>
+                                    <input 
+                                    type="radio" 
+                                    id="set-text" 
+                                    value='text' 
+                                    name='inputType' 
+                                    onChange={this.handleInteractionFormatChange}
+                                    required
+                                    ref={this.inputTypeRef}/>
+
+                                    <label htmlFor="set-text">Задать текст</label>
+                                    
+                                        <div className='text-input'>
+                                            <textarea
+                                                ref={this.documentTextRef}
+                                                className='text-input-textarea'
+                                                id='document'
+                                                name='text'
+                                                placeholder='Например: Однажды весною, в час небывало жаркого заката...'
+                                                style={{ display: 'none' }}
+                                            />
+                                        </div>
+                                </div>
+                                <div>
+                                    <input 
+                                    type="radio" 
+                                    id="upload-file" 
+                                    value='file' 
+                                    name='inputType' 
+                                    onChange={this.handleInteractionFormatChange}
+                                    required
+                                    ref={this.inputTypeRef}/>
+                                    <label htmlFor="upload-file">Загрузить файл</label>
+
+                                        <div className='file-input' id='file-input-div' style={{ display: 'none' }}>
+                                            <input type='file' 
+                                            className='file-input-area' 
+                                            id='file-upload' 
+                                            
+                                            ref={this.fileInputRef}
+                                            name='file-upload'
+                                            onChange={this.handleFileSelected}/>
+
+                                            <label htmlFor="file-upload" className="file-input-label">
+                                                {/* Ошибка */}
+                                                {this.state.fileLoadError && (
+                                                    <div className="file-load-indicator error">
+                                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-1.5-5.009c0-.867.659-1.491 1.491-1.491.85 0 1.509.624 1.509 1.491 0 .867-.659 1.509-1.509 1.509-.832 0-1.491-.642-1.491-1.509zM11.172 6a.5.5 0 0 0-.499.522l.306 7a.5.5 0 0 0 .5.478h1.043a.5.5 0 0 0 .5-.478l.305-7a.5.5 0 0 0-.5-.522h-1.655z"/>
+                                                        </svg>
+                                                        Ошибка загрузки
+                                                    </div>
+                                                )}
+                                                
+                                                {/* Прогресс */}
+                                                {!this.state.fileLoadError && this.state.fileLoadProgress > 0 && this.state.fileLoadProgress < 100 && (
+                                                    <div className="file-load-indicator loading">
+                                                        <div className="file-progress-bar">
+                                                            <div 
+                                                                className="file-progress-fill"
+                                                                style={{ width: `${this.state.fileLoadProgress}%` }}
+                                                            />
+                                                        </div>
+                                                        <span>Загружаем файл: {this.state.fileLoadProgress}%</span>
+                                                    </div>
+                                                )}
+
+                                                {/* Все загружено */}
+                                                {this.state.isFileLoaded && !this.state.fileLoadError && this.state.fileLoadProgress === 100 && (
+                                                    <div className="file-load-indicator success">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" 
+                                                             viewBox="0 0 52 52" enable-background="new 0 0 52 52">
+                                                            <path fill="#4dc83f" d="M26,2C12.7,2,2,12.7,2,26s10.7,24,24,24s24-10.7,24-24S39.3,2,26,2z M39.4,20L24.1,35.5
+                                                            c-0.6,0.6-1.6,0.6-2.2,0L13.5,27c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l4.4,4.5c0.4,0.4,1.1,0.4,1.5,0L35,15.5
+                                                            c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C40.1,18.3,40.1,19.3,39.4,20z"/>
+                                                        </svg>
+                                                        Файл загружен
+                                                    </div>
+                                                )}
+
+                                                {/* Исходная иконка, если ничего не происходит */}
+                                                {this.state.fileLoadProgress === 0 && !this.state.isFileLoaded && !this.state.fileLoadError && (
+                                                    <div className="file-load-indicator choosing">
+                                                        <svg  viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" >
+                                                            <path d="M15.85 3.15l-2.99-3A.508.508 0 0 0 12.5 0H3.4A1.417 1.417 0 0 0 2 1.43v15.14A1.417 1.417 0 0 0 3.4 18h11.2a1.417 1.417 0 0 0 1.4-1.43V3.5a.47.47 0 0 0-.15-.35zM5.026 2H10a1 1 0 0 1 0 2H5.026a1 1 0 0 1 0-2zM13 16H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2z"/>
+                                                        </svg>
+                                                        Выберите файл
+                                                    </div>
+                                                    
+                                                )}
+                                            </label>
+
+                                        </div>
+                                </div>
+                            </div>
+                            <div className='input-difficulty-of-game'>
+                                <h2>СЛОЖНОСТЬ</h2>
+                                <div>
+                                    <input type="radio" id="easy" value='easy' name="difficulty" defaultChecked={false}/>
+                                    <label htmlFor="easy">Легко</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="normal" value='normal' name="difficulty" defaultChecked={true}/>
+                                    <label htmlFor="normal">Нормально</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="hard" value='hard' name="difficulty" defaultChecked={false}/>
+                                    <label htmlFor="hard">Сложно</label>
+                                </div>
+                            </div>
+                            <div className='input-puzzle-size'>
+                                <h2>КОЛИЧЕСТВО СЛОВ</h2>
+                                <input type="number" ref={this.totalWordsRef} id='total-words' name="totalWords" min="5" max="20" step="1" required/>
+                            </div>
+                            {/*<div className='open-full-settings-button'>
+                                <h3 onClick={this.toggleSettings}>Продвинутые настройки</h3>
+                                <div className={`input-difficulty ${this.state.isSettingsOpen ? 'open' : ''}`}>
+                                    <h2 className='difficulty-choice'>СЛОЖНОСТЬ</h2>
+                                    <div className='difficulty-levels'>
+                                        <div>
+                                            <input type="radio" id="easy" value='easy' name="difficulty" defaultChecked={false}/>
+                                            <label htmlFor="easy">Легко</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="normal" value='normal' name="difficulty" defaultChecked={true}/>
+                                            <label htmlFor="normal">Нормально</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="hard" value='hard' name="difficulty" defaultChecked={false}/>
+                                            <label htmlFor="hard">Сложно</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*/}
+                            <button type='submit' className='generate-puzzle-button'>
+                                {isLTI && isConfigureMode ? 'Сохранить конфигурацию' : 'Сгенерировать'}
+                            </button>
+                        </form>
+                    </section>
+                    {/*{shouldShowSidebar && (
                         <>
                             <section className={`game-generator-slidebar-hidden ${isSlidebarVisible ? '' : 'visible'}`}>
                                 <div className='generator-slidebar-hidden'>
@@ -865,7 +1144,7 @@ class GameGenerator extends Component {
                         </div>
 
                                 </div>
-                            </section>
+                            </section>}
                             <section className={`game-generator-slidebar-visible ${isSlidebarVisible ? 'visible' : ''}`}>
                                 <div className='generator-slidebar-visible'>
                                     <div className='game-menu-handler-open' onClick={this.toggleSlidebar}>
@@ -1038,57 +1317,54 @@ class GameGenerator extends Component {
                                 </div>
                             </section>
                         </>
-                    )}
-
+                    )}*/}
                     <section id='dispay-game-on-screen'>
                         <section id='crossword-and-clues'>
+                            <div id="preloader-container" style={{display: 'none'}}>
+                                <Preloader/>
+                            </div>
+                            {(!this.state.isEditing) && (
+                                <div id="crossword-container" ref={this.crosswordContainerRef} className={this.state.isEditing ? 'grid-disabled' : ''} style={{display: 'none'}}></div>
+                            )}
                             <section className='puzzle-info-and-iditing'>
-                                <div id="crossword-container" ref={this.crosswordContainerRef} className={this.state.isEditing ? 'grid-disabled' : ''}></div>
                                 {this.state.isEditing && (
-                                    <div className='edit-puzzle-info-wrapper'>
-                                        <input 
-                                            type="text"
-                                            value={this.state.puzzleNameForSave}
-                                            onChange={(e) => this.handlePuzzleNameChangeInEdit(e.target.value)}
-                                            placeholder="Название пазла"
-                                            className="puzzle-name-edit-input"
-                                        />
-                                        <div className='edit-puzzle-info-buttons'>
-                                            <button
-                                                className="game-action-btn save-changes-btn"
-                                                onClick={this.handleSaveChangesAndRegenerate}
-                                                title='Сохранить изменения и перегенерировать сетку'
-                                                disabled={this.state.isLoading}
-                                            >
-                                                {this.state.isLoading ? "Сохранение..." : "Сохранить"}
-                                            </button>
-                                            <button
-                                                className="game-action-btn cancel-edit-btn"
-                                                onClick={this.handleCancelEdit}
-                                                title='Отменить редактирование'
-                                                disabled={this.state.isLoading}
-                                            >
-                                                Отмена
-                                            </button>
+                                    <div className='edit-puzzle-info-container'>
+                                        <div className='edit-puzzle-info-wrapper'>
+                                            <input 
+                                                type="text"
+                                                value={this.state.puzzleNameForSave}
+                                                onChange={(e) => this.handlePuzzleNameChangeInEdit(e.target.value)}
+                                                placeholder="Название пазла"
+                                                className="puzzle-name-edit-input"
+                                            />
+                                        </div>
+                                        <div className='edit-puzzle-info-wrapper'>
+                                            <div className='edit-puzzle-info-buttons'>
+                                                <button
+                                                    className="game-action-btn save-changes-btn"
+                                                    onClick={this.handleSaveChangesAndRegenerate}
+                                                    title='Сохранить изменения и перегенерировать сетку'
+                                                    disabled={this.state.isLoading}
+                                                >
+                                                    {this.state.isLoading ? "Сохранение..." : "Сохранить"}
+                                                </button>
+                                                <button
+                                                    className="game-action-btn cancel-edit-btn"
+                                                    onClick={this.handleCancelEdit}
+                                                    title='Отменить редактирование'
+                                                    disabled={this.state.isLoading}
+                                                >
+                                                    Отмена
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
+                                <div id="clues-container" ref={this.cluesContainerRef} style={{display: 'none'}}></div>
                             </section>
-                            
-                            <div id="clues-container" ref={this.cluesContainerRef} style={{ padding: '0px' }}></div> 
                         </section>
                     </section>
-                    
-                    {!isLTI && (
-                        <div className='game-theme-changer'>
-                            <ThemeChanger
-                                isBlackTheme={isBlackTheme}
-                                toggleTheme={toggleTheme}
-                                page='game' />
-                        </div>
-                    )}
-
-                    {!isLTI && isAuthenticated && this.state.currentGameData && (
+                    {/*{!isLTI && isAuthenticated && this.state.currentGameData && (
                         <div className="game-actions">
                             {!this.state.isEditing && this.state.currentGameData && (
                                 <button
@@ -1124,7 +1400,7 @@ class GameGenerator extends Component {
                                 </>
                             )}
                         </div>
-                    )}
+                    )}*/}
                 </main>
             </>
         );

@@ -6,8 +6,8 @@ import '../css/main.css';
 const MainPage = ({ isBlackTheme, toggleTheme, isAuth }) => {
   return (
     <>
-      <Header isAuth={isAuth}/>
-      <Main isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/>
+      <Header isAuth={isAuth} isBlackTheme={isBlackTheme} toggleTheme={toggleTheme}/>
+      <Main/>
     </>
   );
 };

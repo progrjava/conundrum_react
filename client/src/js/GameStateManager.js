@@ -45,8 +45,15 @@ export class GameStateManager extends DisplayBase {
         const successMessage = document.createElement('div');
         successMessage.classList.add('success-message');
         successMessage.innerHTML = `
-            <h2>Поздравляем!</h2>
-            <p>Вы успешно решили кроссворд!</p>
+            <div>
+                <h2>Поздравляем! Вы успешно решили кроссворд!</h2>
+                <div class='success-divider'></div>
+            </div>
+            <div>
+                <p>Главный трофей — не сохранённый файл, а новые нейронные связи в вашей голове.</p>
+                <p>Ваша победа — лучший результат. Возвращайтесь за новыми победами!</p> 
+                <p>Или помучаем нейронную сеть еще немного, сгенерируем еще одну игру?</p>
+            </div>
         `;
 
         if (elements.crosswordContainer) {

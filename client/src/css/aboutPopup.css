@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 #game-about-popup {
     background: rgba(81, 56, 136, 0.8);
@@ -6,9 +6,10 @@
 
 .about-popup {
     position: absolute;
+    box-sizing: border-box;
     left: 50%;
     top: 0;
-    padding: 80px 32px 16px 32px;
+    padding: 56px 12px 12px 12px;
     border-radius: 15px;
     z-index: -1;
     opacity: 0;
@@ -30,7 +31,7 @@
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translate(-50%, -5px);
+        transform: translate(-50%, 0);
     }
     to {
         opacity: 1;
@@ -45,54 +46,47 @@
     }
     to {
         opacity: 0;
-        transform: translate(-50%, -5px);
+        transform: translate(-50%, 0);
     }
 }
 
 .about-popup-div {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    border-radius: 15px;
-    width: 560px;
-}
-
-.about-popup-div .site-logo{
-    display: block;
-    width: 402px;
-    height: 48px;
+    padding: 15px;
+    border-radius: 9px;
+    width: 1200px;
+    max-height: 70vh;
+    overflow-y: auto;
+    border: 2px solid;
 }
 
 .about-popup-div .logotype {
     display: block;
-    margin-top: 32px;
-    width: 512px;
-    height: 106px;
+    margin-top: 20px;
+    width: 460px;
 }
 
 .about-popup-paragraphs {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-top: 16px;
-    line-height: 24px;
+    gap: 10px;
+    text-align: justify;
 }
 
-.about-popup-text h3 {
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
+.about-popup-paragraphs h3, .about-popup-paragraphs p {
+    font-size: 20px;
 }
 
-.about-popup-text span {
-    color: #ED7E98;
+.about-popup-paragraphs h3 {
+    font-weight: 600;
+    font-size: 22px;
+    text-decoration: underline;
+    text-underline-offset: 10px;
 }
 
-.about-popup-text .paragraph {
-    margin-top: 16px;
-}
 
 @media (max-width: 820px) {
     .about-popup {
@@ -135,17 +129,15 @@
 
     .about-popup-paragraphs {
         text-align: justify;
-        font-weight: 400;
         font-size: 14px;
         gap: 8px;
         margin-top: 8px;
-        line-height: 16px;
+        line-height: 1.5;
     }
 
     .about-popup-text h3 {
-        font-weight: 400;
         font-size: 14px;
-        line-height: 16px;
+        line-height: 1.5;
     }
 
     .about-popup-text .paragraph {

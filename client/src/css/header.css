@@ -1,74 +1,160 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 .main-page-header {
+    box-sizing: border-box;
     position: relative;
     display: flex;
-    padding: 16px 32px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 6px 22px;
     border-radius: 15px;
     max-width: 100%;
     width: fit-content; 
     z-index: 1000;
-    margin: 20px auto 0 auto;
+    margin: 12px auto 0 auto;
 }
 
+
+
 .main-page-header button{
-    padding: 11px 35px;
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 14px;
+    font-size: 20px;
     text-align: center;
-    letter-spacing: 0.5px;
-    border: 1px solid transparent;
+    border: none;
     background: transparent;
     cursor: pointer;
 }
 
+.main-page-header .go-main-page-button {
+    padding: 0px;
+    svg {
+        height: 40px;
+    }
+}
+
+.main-page-header .go-main-page-button svg path:hover {
+    fill: rgba(237, 126, 152, 1);
+}
+
 .main-page-header button:hover {
-    color: rgba(237, 126, 152, 0.8);
+    color: rgba(237, 126, 152, 1);
 }
 
-.main-page-header button:active {
-    color: rgba(237, 126, 152, 0.8);
-    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+.main-page-header button:not(.go-main-page-button):active {
+    color: rgba(237, 126, 152, 1);
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.5);
     border-radius: 15px;
 }
 
-.start-button {
-    border-radius: 15px;
-    margin-right: 20px;
+.main-page-header .start-button,
+.main-page-header .go-to-profile-button-if-logged-in {
+    padding: 7px;
+    svg {
+        width: 26px;
+    }
 }
 
-.start-button:hover {
-    border: 1px solid rgba(237, 126, 152, 0.8);
-    color: rgba(237, 126, 152, 0.8);
-    transition: all 0.2s ease;
+.main-page-header .start-button:hover {
+    svg {
+        fill: rgba(237, 126, 152, 1);
+        transition: fill 0.2s ease;
+    }
 }
 
-.start-button:active {
-    border: 1px solid rgba(237, 126, 152, 0.8);
-    color: rgba(237, 126, 152, 0.8);
-    transition: all 0.2s ease;
+.main-page-header .go-to-profile-button-if-logged-in:hover {
+    svg {
+        path {
+            fill: rgba(237, 126, 152, 1);
+            transition: fill 0.2s ease;
+        }
+    }
 }
 
-@media (max-width: 820px) {
+.functional-buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+
+
+@media (max-width: 550px) {
     .main-page-header {
-        padding: 10px 20px;
+        gap: 7px;
+        padding: 6px 10px;
         border-radius: 10px;
-        max-width: 85%;
-        margin: 10px auto 0 auto;
+        max-width: 98%;
+        margin: 8px auto 0 auto;
     }
 
     .main-page-header button{
-        padding: 5px 5px;
-        font-size: 16px;
-        line-height: 1.5;
-        border-radius: 10px;
-        font-weight: 400;
+        padding: 1px 8px;
+        font-size: 18px;
     }
 
-    .start-button {
-        border-radius: 10px;
-        margin-right: 10px;
+    .main-page-header .go-main-page-button {
+        svg {
+            height: 20px;
+        }
+    }
+
+    .main-page-header button:not(.go-main-page-button):active {
+        border-radius: 5px;
+    }
+
+    .main-page-header .about-button {
+        display: none;
+    }
+
+    .main-page-header .start-button,
+    .main-page-header .go-to-profile-button-if-logged-in, 
+    .main-page-header .theme-changer-button {
+        padding: 5px;
+        svg {
+            width: 18px;
+        }
+    }
+}
+
+@media (max-width: 820px) and (min-width: 549px) {
+    .main-page-header {
+        gap: 15px;
+        padding: 6px 15px;
+        border-radius: 13px;
+        max-width: 95%;
+        margin: 12px auto 0 auto;
+    }
+
+    .main-page-header button{
+        padding: 4px 14px;
+        font-size: 20px;
+    }
+
+    .main-page-header .go-main-page-button {
+        svg {
+            height: 30px;
+        }
+    }
+
+    .main-page-header button:not(.go-main-page-button):active {
+        border-radius: 15px;
+    }
+
+    .main-page-header .about-button {
+        display: none;
+    }
+
+    .main-page-header .start-button,
+    .main-page-header .go-to-profile-button-if-logged-in, 
+    .main-page-header .theme-changer-button {
+        padding: 5px;
+        svg {
+            width: 26px;
+        }
     }
 }

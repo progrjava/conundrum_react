@@ -17,7 +17,15 @@
     position: relative;
     flex: 1;
     overflow-y: auto;
-    background: #ED7E98;
+    background: rgba(237, 126, 152, 1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     height: 100%;
     min-width: 700px;
@@ -45,16 +53,50 @@
     gap: 10px;
     padding: 10px;
     border-radius: 10px;
-    font-size: 18px;
+    font-size: 20px;
     width: 100%;
+    overflow: hidden;
     transition: 
         background-color 0.3s ease,
         border-color 0.3s ease;
 }
 
+.saved-games-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+.saved-games-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
 .saved-games-item:hover {
-    background-color: #513888;
-    border-color: transparent;
+    background-color: rgba(81, 56, 136, 0.6);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(81, 56, 136, 0.5);
 
     .puzzle-delete-button {
         display: flex;
@@ -89,12 +131,13 @@
 .saved-game-info div {
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    align-items: center;
+    gap: 10px;
 }
 
 .saved-game-info div svg {
     display: block;
-    height: 1.2em;
+    height: 1.1em;
 }
 
 
@@ -162,7 +205,7 @@
     background: transparent;
     border: none;
     color: #FBFBFE;
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1.5;
     width: 80%;
 }
@@ -180,8 +223,7 @@
     height: calc(100% - 4px);
     aspect-ratio: 1;
     color: #FBFBFE;
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 20px;
 }
 
 .new-tag-input:focus {
@@ -190,7 +232,15 @@
 
 .user-tags {
     flex: 0 0 1; 
-    background: #ED7E98;
+    background: rgba(237, 126, 152, 1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     height: 100%;
 }
@@ -213,12 +263,42 @@
 
 .search-tags-input {
     display: flex;
-    border: none;
     border-radius: 15px;
-    padding: 5px 10px;
-    font-size: 18px;
-    font-weight: 400;
-    width: calc(90% - 20px);
+    padding: 6px 12px;
+    font-size: 20px;
+    width: calc(95% - 24px);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-tags-input::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+.search-tags-input::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
 }
 
 .search-tags-input:focus {
@@ -232,7 +312,7 @@
     gap: 5px;
     overflow-y: auto;
     scrollbar-width: none;
-    width: 90%;
+    width: 95%;
 }
 
 .user-tags-list::-webkit-scrollbar {
@@ -245,13 +325,45 @@
     flex-direction: row;
     align-items: center;
     justify-content: justify;
-    padding: 5px 10px;
+    padding: 3px 10px;
     border-radius: 15px;
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 20px;
     cursor: pointer;
     width: 100%;
+    overflow: hidden;
+    position: relative;
 }
+
+.user-tags-item.selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+.user-tags-item.selected::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
 
 
 @media (max-width: 1400px) and (min-width: 821px) {
@@ -268,7 +380,7 @@
     }
 }
 
-@media (max-width: 820px) and (min-width: 501px) {
+@media (max-width: 820px) and (min-width: 550px) {
     .user-saved-games-and-tags {
         width: 100%;
         min-height: 1000px;
@@ -307,7 +419,7 @@
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 549px) {
     .user-saved-games-and-tags {
         width: 100%;
         min-height: 1000px;
@@ -327,7 +439,7 @@
     }
 
     .saved-games-item {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .puzzle-delete-button {
@@ -347,11 +459,11 @@
     }
 
     .new-tag-input {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .tag-save-button {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .user-tags {
@@ -360,11 +472,11 @@
     }
 
     .user-tags-content h2 {
-        font-size: 18px;
+        font-size: 20px;
     }
 
     .search-tags-input {
-        font-size: 16px;
+        font-size: 18px;
     }
 
 
@@ -383,6 +495,6 @@
     }
 
     .user-tags-item {
-        font-size: 16px;
+        font-size: 18px;
     }
 }

@@ -1,0 +1,28 @@
+.main-page-header .theme-changer-button {
+    padding: 7px;
+    svg {
+        width: 26px;
+    }
+}
+
+.main-page-header .theme-changer-button:hover {
+    svg path {
+        stroke: rgba(237, 126, 152, 1);
+        transition: stroke 0.2s ease;
+    }
+}
+
+@media (max-width: 550px) {
+    .main-page-header .theme-changer-button {
+        padding: 2px;
+        svg {
+            width: 18px;
+        }
+    }
+}
+
+@media (max-width: 820px) and (min-width: 549px) {
+
+}
+
+

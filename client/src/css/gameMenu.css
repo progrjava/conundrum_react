@@ -1,0 +1,128 @@
+.game-menu-sidebar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    border-radius: 15px;
+    z-index: 5;
+
+    /* Анимация высоты */
+    overflow: hidden;
+    max-height: 44px; /* только кнопка-тогглер */
+    transition: max-height 0.35s ease;
+}
+
+.game-menu-sidebar.open {
+    max-height: 700px; 
+    transition: max-height 0.35s ease;
+    overflow: hidden;
+}
+
+.game-menu-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+.game-menu-sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
+
+/* === КНОПКИ === */
+
+.game-menu-sidebar button {
+    position: relative;
+    background-color: transparent;
+    padding: 7px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+/* === СОДЕРЖИМОЕ МЕНЮ, КРОМЕ ТОГГЛЕРА === */
+
+.game-menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+
+    /* Скрыто по умолчанию */
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* При открытии плавно показываем */
+.game-menu-sidebar.open .game-menu-content {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.open-game-form-button svg {
+    transition: transform 0.3s ease;
+}
+
+.open-game-form-button.clicked svg {
+    border-radius: 50%;
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 600px) {
+  .game-menu-sidebar {
+    top: 10px;
+    left: 10px;
+    padding: 3px;
+    border-radius: 10px;
+    z-index: 5;
+    max-height: 35px;
+  }
+
+  .game-menu-sidebar.open {
+    max-height: 500px; 
+  }
+
+  .game-menu-sidebar button {
+    padding: 5px;
+    border-radius: 10px;
+  }
+
+  .game-menu-sidebar button svg {
+    width: 25px !important;
+  }
+
+  .game-menu-content {
+    gap: 7px;
+    margin-top: 7px;
+    transform: translateY(-10px);
+  }
+
+
+}

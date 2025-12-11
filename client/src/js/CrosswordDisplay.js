@@ -66,6 +66,61 @@ export class CrosswordDisplay extends DisplayBase {
                         maxLength: '1',
                         className: 'crossword-input'
                     }, '', td);
+
+                    // === ДОБАВЛЕНИЕ КЛАССОВ first-letter / last-letter и horizontal / vertical ===
+
+                    // Находим ВСЕ слова, которые проходят через эту клетку
+                    const relatedWords = words.filter(word => {
+                        let x = word.startx - 1;
+                        let y = word.starty - 1;
+                        for (let i = 0; i < word.answer.length; i++) {
+                            if (x === colIndex && y === rowIndex) return true;
+                            if (word.orientation === "across") x++;
+                            else if (word.orientation === "down") y++;
+                        }
+                        return false;
+                    });
+
+                    relatedWords.forEach(word => {
+                        let x = word.startx - 1;
+                        let y = word.starty - 1;
+
+                        for (let i = 0; i < word.answer.length; i++) {
+                            if (x === colIndex && y === rowIndex) {
+
+                                // 1. Первая буква
+                                //if (i === 0) td.classList.add("first-letter");
+
+                                // 2. Последняя буква
+                                //if (i === word.answer.length - 1) td.classList.add("last-letter");
+
+                                // 3. Направление слова
+                                //if (word.orientation === "across") td.classList.add("horizontal");
+                                //if (word.orientation === "down") td.classList.add("vertical");
+
+                                if (i === 0 && word.orientation === "across") 
+                                    td.classList.add('first-letter-horizontal');
+
+                                if (i === 0 && word.orientation === "down") 
+                                    td.classList.add('first-letter-vertical');
+
+                                if (i === word.answer.length - 1 && word.orientation === "across") 
+                                    td.classList.add('last-letter-horizontal');
+
+                                if (i === word.answer.length - 1 && word.orientation === "down") 
+                                    td.classList.add('last-letter-vertical');
+                                
+                            }
+
+                            if (word.orientation === "across") x++;
+                            else if (word.orientation === "down") y++;
+                        }
+                    });
+
+                    // Если клетка участвует в двух словах — это перекрестие
+                    if (relatedWords.length > 1) {
+                        td.classList.add("cross");
+                    }
                 } else {
                     this.createElement('td', { className: 'black-cell' }, '', tr);
                 }

@@ -1,18 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Roboto Slab';
+    font-family: "Rubik", sans-serif;
     font-style: normal;
-    letter-spacing: 0.5px;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 body {
     overflow: hidden;
-    font-family: 'Roboto Slab';
+    font-family: "Rubik", sans-serif;
     font-style: normal;
-    letter-spacing: 0.5px;
+    font-weight: 400;
+    line-height: 1.5;
     color: #FBFBFE;
 }
 
@@ -25,16 +27,92 @@ html, body {
 }
 
 .black-theme {
-    .main-page-header {
-        background: rgba(47, 45, 56, 0.8);
+    .game-menu-sidebar button svg {
+        display: block;
+        width: 30px;
+    }
+
+    .game-menu-sidebar button svg path {
+        fill: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .game-menu-sidebar button:hover {
+        svg path {
+            fill: #ED7E98;
+        }
+
+        .theme-switcher-icon.sun path {
+            stroke: #ED7E98;
+        }
+    }
+
+    .game-menu-content .theme-changer-button .theme-switcher-icon.sun path{
+        stroke: #fff;
+    }
+
+    .game-menu-content .theme-changer-button .theme-switcher-icon.moon path{
+        stroke: none;
+    }
+
+    .game-menu-sidebar {
+        background-color: rgba(81, 56, 136, 0.5);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: background-color 0.5s ease, border 0.5s ease;
+    }
+    
+    .log-out-button {
+        background-color: #ED7E98;
+        border: none;
+        color: #2F2D38;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .update-account-button {
+        background-color: rgba(251, 251, 254, 0.8);
+        border: none;
+        color: #2F2D38;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+
+    .saved-game-info div svg path {
+        fill:#FBFBFE;
+    }
+
+    .saved-game-info div svg rect {
+        stroke: #FBFBFE;
+    }
+
+    .background-video-main {
+        background: #2F2D38;
         transition: background-color 0.5s ease;
     }
+    
+    .main-page-header {
+        background: rgba(47, 45, 56, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+        transition: background-color 0.5s ease, border 0.5s ease;     
+    }
 
-
-    .start-button {
+    /*.start-button {
         border: 1px solid #FBFBFE;
         transition: border 0.5s ease;
-    }
+    }*/
 
 
     .main-page-header button {
@@ -42,16 +120,22 @@ html, body {
         transition: color 0.5s ease;
     }
 
-
-
-    .main-logo-title svg path {
-        fill: #2F2D38;
+    .main-page-header .go-main-page-button svg path,
+    .main-page-header .start-button svg,
+    .main-page-header .go-to-profile-button-if-logged-in svg path
+    {
+        fill: #FBFBFE;
         transition: fill 0.5s ease;
     }
+    
+    .main-page-header .theme-changer-button svg path {
+        stroke: #FBFBFE;
+        transition: stroke 0.5s ease;
+    }
 
-    .main-logo-title h1 {
-        color: rgba(47, 45, 56, 0.8);
-        transition: color 0.5s ease;
+    .main-logo-title svg path {
+        fill: #393743;
+        transition: fill 0.5s ease;
     }
 
     .theme-changer {
@@ -85,7 +169,7 @@ html, body {
     }
 
     .about-button.pressed, .manual-button.pressed {
-        background: #FBFBFE;
+        background: #ED7E98;
         color: #2F2D38;
         border-radius: 15px;
         transition: background-color 0.5s ease, color 0.5s ease;
@@ -103,15 +187,35 @@ html, body {
         transition: fill 0.5s ease;
     }
 
-
     .about-popup, .manual-popup {
         background: #2F2D38;
         transition: background-color 0.5s ease;
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(251, 251, 254, 1);
+        -moz-box-shadow: 0px 0px 10px 0px rgba(251, 251, 254, 1);
+        box-shadow: 0px 0px 10px 0px rgba(251, 251, 254, 1);
     }
 
     .about-popup-div, .manual-popup-div {
-        background: #513888;
-        transition: background-color 0.5s ease;
+        /*background-color: rgba(237, 126, 152, 0.8);*/
+        background-color: transparent;
+        border-color: #FBFBFE;
+        transition: background-color 0.5s ease, border-color 0.5s ease;
+    }
+
+    .about-popup-paragraphs, .manual-popup-paragraphs {
+        color: #FBFBFE;
+        h3 {
+            color: #ED7E98;
+        }
+        transition: color 0.5s ease;
+    }
+
+    .manual-popup-paragraphs-divider {
+        background-color: #FBFBFE;
+    }
+
+    .logotype-container svg path:first-child {
+        fill: #ED7E98;
     }
 
     #game-about-popup-div, #game-about-popup-div {
@@ -156,12 +260,22 @@ html, body {
     }
 
     .register-account, .login-account {
-        background: #2F2D38;
-        transition: background-color 0.5s ease;
+        background: rgba(47, 45, 56, 0.4);
+        background: rgba(47, 45, 56, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+        transition: background-color 0.5s ease, border 0.5s ease;
     }
 
+
     .back-to-main-page path {
-        stroke:#FBFBFE;
+        stroke:#2F2D38;
         transition: stroke 0.5s ease;
     }
 
@@ -176,8 +290,12 @@ html, body {
     }
 
     .sign-in-button, .sign-up-button {
-        color: #62E953;
+        color: #ED7E98;
         transition: color 0.5s ease;
+    }
+
+    .reg-input-data input::placeholder{
+        color:#2F2D38;
     }
 
     .reg-login-input, .reg-password-input, .reg-input-password-div,
@@ -223,10 +341,25 @@ html, body {
         transition: background-color 0.5s ease;
     }
 
-    .create-account-button, .login-account-button {
-        border: 1px solid #FBFBFE;
-        color: #FBFBFE;
+    .create-account-button, .back-to-main-page-button, .login-account-button {
+        /*border: 1px solid #FBFBFE;*/
+        color: #2F2D38;
         transition: border 0.5s ease, color 0.5s ease;
+    }
+
+    .create-account-button, .back-to-main-page-button {
+        background: #ED7E98;
+        transition: background-color 0.5s ease;
+    }
+
+    .back-to-main-page-button {
+        background-color: #FBFBFE;
+        opacity: 0.8;
+    }
+
+    .back-to-main-page-button:hover, .create-account-button:hover {
+        transform: scale(1.02);
+        transition: all 0.1s ease;
     }
 
     .sign-up-logotype path, .personal-account-logotype path {
@@ -240,9 +373,17 @@ html, body {
     }
 
     .about-account-info {
-        background: #2F2D38;
+        background: rgba(47, 45, 56, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
         color: #FBFBFE;
-        transition: background-color 0.5s ease, color 0.5s ease;
+        transition: background-color 0.5s ease, color 0.5s ease, border 0.5s ease;
     }
 
     .user-avatar {
@@ -257,8 +398,6 @@ html, body {
     }
 
     .update-account-button {
-        color:#FBFBFE;
-        border: 1px solid #FBFBFE;
         transition: color 0.5s ease, border 0.5s ease;
     }
 
@@ -319,20 +458,16 @@ html, body {
         transition: stroke 0.5s ease;
     }
 
-    #game-main-page {
-        background-color: #2F2D38;
-        transition: background-color 0.5s ease;
-    }
-
     #game-logotype path {
         fill: #FBFBFE;
         transition: fill 0.5s ease;
     }
 
     .creating-puzzle-input-data {
-        background-color: #2F2D38;
+        background: rgba(81, 56, 136, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         color: #FBFBFE;
-        transition: background-color 0.5s ease, color 0.5s ease;
+        transition: background-color 0.5s ease, color 0.5s ease, border 0.5s ease;
     }
 
     .input-puzzle-name {
@@ -351,8 +486,30 @@ html, body {
     }
     
     input[type="radio"] + label::before {
+        box-sizing: border-box;
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(237, 126, 152, 1);
+        border-radius: 50%; 
         background-color: #2F2D38;
         transition: background-color 0.5s ease;
+    }
+
+    @media (max-width: 600px) {
+
+        input[type="radio"] + label::before {
+            width: 13px;
+            height: 13px;
+        }
+
+        .creating-puzzle-input-data {
+            background: rgba(81, 56, 136, 0.6);
+        }
     }
 
     .input-puzzle-size input {
@@ -361,13 +518,13 @@ html, body {
     }
 
     .generate-puzzle-button {
-        color: #2F2D38;
-        transition: color 0.5s ease;
+        color: #FBFBFE;
+        transition: color 0.4s ease;
     }
 
 
     .topic-input input, .text-input-textarea {
-        background-color: #2F2D38;
+        background-color: transparent;
         color: #FBFBFE;
         transition: color 0.5s ease, background-color 0.5s ease;
     }
@@ -387,10 +544,7 @@ html, body {
         transition: background-color 0.5s ease;
     }
 
-    input[name='difficulty'] + label::before {
-        border: 2px solid rgba(47, 45, 56, 0.8);
-        transition: border 0.5s ease;
-    }
+    
 
     .horizontal-line {
         border-bottom: 1px solid #FBFBFE;
@@ -401,8 +555,15 @@ html, body {
     }
 
     .saved-games-item {
-        background: #2F2D38;
-        border: 1px solid #FBFBFE;
+        background: rgba(47, 45, 56, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
     }
 
     .saved-games-tags li {
@@ -414,8 +575,17 @@ html, body {
     }
 
     .search-tags-input {
-        background-color: #2F2D38;
+        background-color: rgba(47, 45, 56, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
         color: #FBFBFE;
+        transition: all 0.5s ease;
     }
 
     .search-tags-input::placeholder {
@@ -437,10 +607,20 @@ html, body {
     }
 
     .user-tags-item.selected {
-        background: #513888;
-        border-color:transparent;
+        background: rgba(81, 56, 136, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 7px 12px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
         color: #FBFBFE;
     }
+
+
 
     .game-actions button {
         background: #FBFBFE;
@@ -457,32 +637,240 @@ html, body {
             stroke: #FBFBFE;
         }
     }
-}
 
-.white-theme {
-    .main-page-header {
-        background: rgba(251, 251, 254, 0.8);
-        transition: background-color 0.5s ease;
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
     }
 
-    .start-button {
-        border: 1px solid #2F2D38;
+    ::-webkit-scrollbar-thumb {
+        background: rgba(237, 126, 152, 0.8);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(237, 126, 152, 0.8);
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(237, 126, 152, 0.8) transparent;
+    }
+
+    .input-puzzle-name {
+        border: 2px solid #ED7E98;
         transition: border 0.5s ease;
     }
 
-    .main-page-header button {
-        color: #2F2D38;
+    input[type="radio"]:checked + label::before {
+        background: rgba(98, 233, 83, 1);
+        border: none;
+    }
+
+    input[type="radio"]:checked + label {
+        color: #62E953;
+    }
+
+    .topic-input input, .text-input-textarea, .file-input {
+        border: 2px solid #ED7E98;
+        transition: border 0.5s ease;
+    }
+
+    .file-input-label svg path {
+        fill: #ED7E98;
+        transition: fill 0.5s ease;
+    }
+
+    .file-load-indicator {
+        color: #fff;
         transition: color 0.5s ease;
+    }
+
+    .file-progress-bar {
+        background-color: #FBFBFE;
+        transition: background-color 0.5s ease;
+    }
+
+    .file-progress-fill {
+        background: #ED7E98;
+        transition: background-color 0.5s ease;
+    }
+
+    .file-load-indicator.success {
+        color: #4dc83f;
+        transition: color 0.5s ease;
+    }
+
+    .file-load-indicator.success svg path {
+        fill:#4dc83f;
+        transition: fill 0.5s ease;
+    }
+
+    .file-load-indicator.error {
+        color: #ED7E98;
+        transition: color 0.5s ease;
+    }
+
+    .file-load-indicator.choosing {
+        color: #ED7E98;
+        transition: color 0.5s ease;
+    }
+
+    .input-puzzle-size input {
+        border: 2px solid #ED7E98;
+        transition: border 0.5s ease;
+    }
+
+    .generate-puzzle-button {
+        background-color: #ED7E98;
+        transition: background-color 0.5s ease;
+    }
+
+    .generate-puzzle-button:hover {
+        color: #513888;  
+        border: 2px solid #FBFBFE; 
+        background-color: #FBFBFE; 
+        transition: 
+            background-color 0.5s ease,
+            color 0.5s ease,
+            border 0.5s ease;
+            
+    }
+}
+
+.white-theme {
+    .game-menu-sidebar button svg {
+        display: block;
+        width: 30px;
+    }
+
+    .game-menu-sidebar button svg path {
+        fill: #513888;
+        transition: all 0.3s ease;
+    }
+
+    .game-menu-sidebar button:hover {
+        svg path {
+            fill: #2F2D38;
+        }
+
+        .theme-switcher-icon.sun path {
+            stroke: #2F2D38;
+        }
+
+        .theme-switcher-icon.moon path {
+            stroke: #2F2D38;
+        }
+    }
+
+    .game-menu-content .theme-changer-button .theme-switcher-icon.sun path{
+        stroke: #513888;
+    }
+
+    .game-menu-content .theme-changer-button .theme-switcher-icon.moon path{
+        stroke: #513888;
+    }
+
+    .game-menu-sidebar {
+        background-color: rgba(251, 251, 254, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: background-color 0.5s ease, border 0.5s ease;
+    }
+    
+    .log-out-button {
+        background-color: #ED7E98;
+        border: none;
+        color: #FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    
+    .update-account-button {
+        background: rgba(81, 56, 136, 0.6);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: none;
+        color: #FBFBFE;
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .saved-game-info div svg path {
+        fill:#2F2D38;
+    }
+
+    .saved-game-info div svg rect {
+        stroke: #2F2D38;
+    }
+
+    .background-video-main {
+        background: #513888;
+        transition: background-color 0.5s ease;
+    }
+
+    .background-video-main.red {
+        background: #ffa3b8;
+        transition: background-color 0.5s ease;
+    }
+
+
+    .main-page-header {
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+        transition: background-color 0.5s ease, border 0.5s ease;
+    }
+
+    /*.start-button {
+        border: 1px solid #2F2D38;
+        transition: border 0.5s ease;
+    }*/
+
+    .main-page-header button {
+        color: #513888;
+        transition: color 0.5s ease;
+    }
+
+    
+    .main-page-header .start-button svg,
+    .main-page-header .go-to-profile-button-if-logged-in svg path
+     {
+        fill: #513888;
+        transition: fill 0.5s ease;
+    }
+
+    .main-page-header .go-main-page-button svg path {
+        fill: #ED7E98;
+        transition: fill 0.5s ease;
+    }
+
+    .main-page-header .theme-changer-button svg path {
+        stroke: #513888;
+        transition: stroke 0.5s ease;
     }
 
     .main-logo-title svg path {
         fill: #FBFBFE;
         transition: fill 0.5s ease;
-    }
-
-    .main-logo-title h1 {
-        color: rgba(251, 251, 254, 0.8);
-        transition: color 0.5s ease;
     }
 
     .theme-changer {
@@ -516,7 +904,7 @@ html, body {
     }
 
     .about-button.pressed, .manual-button.pressed {
-        background: #2F2D38;
+        background: #513888;
         color: #FBFBFE;
         border-radius: 15px;
         transition: background-color 0.5s ease, color 0.5s ease;
@@ -538,11 +926,36 @@ html, body {
     .about-popup, .manual-popup {
         background: #FBFBFE;
         transition: background-color 0.5s ease;
+        -webkit-box-shadow: 0px 0px 10px 0px #2F2D38;
+        -moz-box-shadow: 0px 0px 10px 0px #2F2D38;
+        box-shadow: 0px 0px 10px 0px #2F2D38;
     }
 
     .about-popup-div, .manual-popup-div {
-        background: rgba(81, 56, 136, 0.8);
-        transition: background-color 0.5s ease;
+        background-color: transparent;
+        border-color: #2F2D38;
+        transition: background-color 0.5s ease, border-color 0.5s ease;
+    }
+
+    .about-popup-paragraphs, .manual-popup-paragraphs {
+        color: #2F2D38;
+        h3 {
+            color: #513888;
+        }
+        transition: color 0.5s ease;
+    }
+
+    .manual-popup-paragraphs-divider {
+        background-color: #513888;
+    }
+
+    .logotype-container svg  {
+        path:first-child {
+            fill: #513888;
+        }
+        path:nth-child(2) {
+            fill: #2F2D38;
+        }
     }
 
     #game-about-popup-div, #game-about-popup-div {
@@ -587,12 +1000,20 @@ html, body {
     }
 
     .register-account, .login-account {
-        background: #FBFBFE;
-        transition: background-color 0.5s ease;
+        background: rgba(251, 251, 254, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: background-color 0.5s ease, border 0.5s ease;
     }
 
     .back-to-main-page path {
-        stroke: #2F2D38;
+        stroke: #FBFBFE;
         transition: stroke 0.5s ease;
     }
 
@@ -607,7 +1028,7 @@ html, body {
     }
 
     .sign-in-button, .sign-up-button {
-        color: #14c700;
+        color: #ED7E98;
         transition: color 0.5s ease;
     }
 
@@ -654,10 +1075,47 @@ html, body {
         transition: background-color 0.5s ease;
     }
 
-    .create-account-button, .login-account-button {
-        border: 1px solid #2F2D38;
+    .create-account-button, .back-to-main-page-button, .login-account-button {
+        /*border: 1px solid #2F2D38;*/
         color: #2F2D38;
         transition: border 0.5s ease, color 0.5s ease;
+    }
+
+    .create-account-button, .back-to-main-page-button {
+        background: #ED7E98;
+        transition: background-color 0.5s ease;
+    }
+
+    .create-account-button:hover {
+        color: #FBFBFE;
+        background: #513888;
+        transition: all 0.3s ease;
+    }
+
+
+    .reg-input-data input::placeholder {
+        color:#FBFBFE;
+        opacity: 0.6;
+    }
+
+
+    .back-to-main-page-button {
+        background-color: #FBFBFE;
+        border-color: #2F2D38;
+        svg path {
+            stroke: #2F2D38;
+        }
+
+    }
+
+    .back-to-main-page-button:hover {
+        color: #ED7E98;
+        background: #2F2D38;
+        border-color: #ED7E98;
+        svg path {
+            stroke: #ED7E98;
+        }
+        transition: all 0.3s ease;
     }
 
     .sign-up-logotype path, .personal-account-logotype path  {
@@ -671,9 +1129,17 @@ html, body {
     }
 
     .about-account-info {
-        background: #FBFBFE;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
         color: #2F2D38;
-        transition: background-color 0.5s ease, color 0.5s ease;
+        transition: background-color 0.5s ease, color 0.5s ease, border 0.5s ease;
     }
 
     .user-avatar {
@@ -688,8 +1154,6 @@ html, body {
     }
 
     .update-account-button {
-        color:#2F2D38;
-        border: 1px solid #2F2D38;
         transition: color 0.5s ease, border 0.5s ease;
     }
 
@@ -706,25 +1170,21 @@ html, body {
     
 
     #game-about-popup-paragraphs h3{
-        font-weight: 700;
         color:#2F2D38;
         transition: color 0.5s ease;
     }
 
     #game-about-popup-paragraphs p{
-        font-weight: 700;
         color:#2F2D38;
         transition: color 0.5s ease;
     }
 
     #game-about-popup-div h2 {
-        font-weight: 700;
         color: #2F2D38;
         transition: color 0.5s ease;
     }
 
     #game-about-popup-div p {
-        font-weight: 700;
         color: #2F2D38;
         transition: color 0.5s ease;
     }
@@ -741,7 +1201,6 @@ html, body {
     }
 
     #game-manual-item2 label{
-        font-weight: 700;
         color:#2F2D38;
         transition: color 0.5s ease;
     }
@@ -756,20 +1215,16 @@ html, body {
         transition: stroke 0.5s ease;
     }
 
-    #game-main-page {
-        background-color: #FBFBFE;
-        transition: background-color 0.5s ease;
-    }
-
     #game-logotype path {
         fill: #2F2D38;
         transition: fill 0.5s ease;
     }
 
     .creating-puzzle-input-data {
-        background-color: #FBFBFE;
+        background-color: rgba(251, 251, 254, 0.4);
+        border: 1px solid rgba(251, 251, 254, 0.3);
         color: #2F2D38;
-        transition: background-color 0.5s ease, color 0.5s ease;
+        transition: background-color 0.5s ease, color 0.5s ease, border 0.5s ease;
     }
 
     .input-puzzle-name {
@@ -779,7 +1234,8 @@ html, body {
 
     .input-puzzle-name::placeholder {
         color: #2F2D38;
-        transition: color 0.5s ease;
+        font-weight: 500;
+        transition: color 0.5s ease, font-weight 0.5s ease;
     }
 
     input[type="radio"] + label {
@@ -788,8 +1244,30 @@ html, body {
     }
     
     input[type="radio"] + label::before {
+        box-sizing: border-box;
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid #513888;
+        border-radius: 50%; 
         background-color: #FBFBFE;
         transition: background-color 0.5s ease;
+    }
+
+    @media (max-width: 600px) {
+
+        input[type="radio"] + label::before {
+            width: 13px;
+            height: 13px;
+        }
+
+        .creating-puzzle-input-data {
+            background-color: rgba(251, 251, 255, 0.4);
+        }
     }
 
     .input-puzzle-size input {
@@ -799,11 +1277,11 @@ html, body {
 
     .generate-puzzle-button {
         color: #FBFBFE;
-        transition: color 0.5s ease;
+        transition: color 0.4s ease;
     }
 
     .topic-input input, .text-input-textarea {
-        background-color: rgba(251, 251, 254, 0.8);
+        background-color: transparent;
         color: #2F2D38;
         transition: color 0.5s ease, background-color 0.5s ease;
     }
@@ -823,10 +1301,7 @@ html, body {
         transition: background-color 0.5s ease;
     }
 
-    input[name='difficulty'] + label::before {
-        border: 2px solid rgba(251, 251, 254, 0.8);
-        transition: border 0.5s ease;
-    }
+    
 
     .horizontal-line {
         border-bottom: 1px solid #2F2D38;
@@ -837,12 +1312,26 @@ html, body {
     }
 
     .saved-games-item {
-        background: #FBFBFE;
-        border: 1px solid #2F2D38;
+        background: rgba(251, 251, 254, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
     }
 
     .saved-games-item:hover {
         color: #FBFBFE;
+        svg path {
+            fill: #FBFBFE;
+        }
+
+        svg rect {
+            stroke: #FBFBFE;
+        }
 
         .saved-games-tags li {
             border: 1px solid #FBFBFE;
@@ -858,12 +1347,21 @@ html, body {
     }
 
     .user-tags-content h2 {
-        color: #FBFBFE;
+        color: #2F2D38;
     }
 
     .search-tags-input {
-        background-color: #FBFBFE;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
         color: #2F2D38;
+        transition: all 0.5s ease;
     }
 
     .search-tags-input::placeholder {
@@ -886,8 +1384,16 @@ html, body {
     }
 
     .user-tags-item.selected {
-        background: #513888;
-        border-color:transparent;
+        background: rgba(81, 56, 136, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 7px 12px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 2px 1px rgba(255, 255, 255, 0.1);
         color: #FBFBFE;
     }
 
@@ -906,6 +1412,112 @@ html, body {
             stroke: #2F2D38;
         }
     }
+
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(81, 56, 136, 0.8);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(81, 56, 136, 0.8);
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(81, 56, 136, 0.8) transparent;
+    }
+
+    .input-puzzle-name {
+        border: 2px solid #513888;
+        transition: border 0.5s ease;
+    }
+
+    input[type="radio"]:checked + label::before {
+        background: #513888;
+        border: none;
+    }
+
+    input[type="radio"]:checked + label {
+        color: #513888;
+    }
+
+    .topic-input input, .text-input-textarea, .file-input {
+        border: 2px solid #513888;
+        transition: border 0.5s ease;
+    }
+
+    .file-input-label svg path {
+        fill: #513888;
+        transition: fill 0.5s ease;
+    }
+
+    .file-load-indicator {
+        color: #2F2D38;
+        transition: color 0.5s ease;
+    }
+
+    .file-progress-bar {
+        background-color: #513888;
+        transition: background-color 0.5s ease;
+    }
+
+    .file-progress-fill {
+        background: #513888;
+        transition: background-color 0.5s ease;
+    }
+
+    .file-load-indicator.success {
+        color: #513888;
+        transition: color 0.5s ease;
+    }
+
+    .file-load-indicator.success svg path {
+        fill:#513888;
+        transition: fill 0.5s ease;
+    }
+
+    .file-load-indicator.error {
+        color: #513888;
+        transition: color 0.5s ease;
+    }
+
+    .file-load-indicator.choosing {
+        color: #513888;
+        transition: color 0.5s ease;
+    }
+
+    .input-puzzle-size input {
+        border: 2px solid #513888;
+        transition: border 0.5s ease;
+    }
+
+    .generate-puzzle-button {
+        background-color: #513888;
+        transition: background-color 0.5s ease;
+    }
+
+    .generate-puzzle-button:hover {
+        color: #513888;  
+        border: 2px solid #513888; 
+        background-color: transparent; 
+        transition: 
+            background-color 0.5s ease,
+            color 0.5s ease,
+            border 0.5s ease;
+            
+    }
 }
 
 input[type='radio'] {
@@ -916,33 +1528,13 @@ input[type="radio"] + label {
     position: relative;
     padding-left: 24px;
     cursor: pointer;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
+    font-size: 20px;
+    line-height: 1.5;
 }
 
-input[type="radio"] + label::before {
-    box-sizing: border-box;
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(237, 126, 152, 0.8);
-    border-radius: 50%; 
-}
 
-input[type="radio"]:checked + label::before {
-    background: rgba(98, 233, 83, 0.8);
-    border: none;
-}
 
-input[type="radio"]:checked + label {
-    color: #62E953;
-}
+
 
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
@@ -954,28 +1546,12 @@ html {
     scroll-behavior: smooth; /* Плавный скроллинг */
 }
 
-::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(81, 56, 136, 0.8);
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-clip: padding-box;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(81, 56, 136, 0.8);
-}
-
-* {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(81, 56, 136, 0.8) transparent;
+@media (max-width: 600px) {
+    input[type="radio"] + label {
+        position: relative;
+        padding-left: 18px;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1.5;
+    }
 }

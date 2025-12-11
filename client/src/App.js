@@ -7,12 +7,23 @@ import GameGenerator from './components/GameGenerator';
 import { initializeSupabase } from './config/supabaseClient';
 
 const AppContent = () => {
-    const [isBlackTheme, setIsBlackTheme] = useState(true);
+    const [isBlackTheme, setIsBlackTheme] = useState(() => {
+        const saved = localStorage.getItem("theme");
+        return saved ? saved === "black" : true;
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null);
     const [supabaseInstance, setSupabaseInstance] = useState(null);
 
-    const toggleTheme = () => setIsBlackTheme(!isBlackTheme);
+    const toggleTheme = () => {
+        setIsBlackTheme(prev => {
+            const newValue = !prev;
+
+            localStorage.setItem("theme", newValue ? "black" : "white");
+
+            return newValue;
+        });
+    };
 
     useEffect(() => {
         let mounted = true;
@@ -85,7 +96,7 @@ const AppContent = () => {
         <div className={isBlackTheme ? 'black-theme' : 'white-theme'}>
             <Routes>
                 <Route path="/" element={<MainPage isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} isAuth={!!user} />} />
-                <Route path="/register" element={user ? <Navigate to="/account" /> : <SignInUp isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} supabase={supabaseInstance} />} />
+                <Route path="/register" element={user ? <Navigate to="/account" /> : <SignInUp supabase={supabaseInstance} />} />
                 <Route path="/gamegenerator" element={user ? <GameGenerator isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} user={user} isAuth={!!user} supabase={supabaseInstance} /> : <Navigate to="/register" />} />
                 <Route path="/account" element={user ? <PersonalAccount isBlackTheme={isBlackTheme} toggleTheme={toggleTheme} user={user} supabase={supabaseInstance} /> : <Navigate to="/register" />} />
                 <Route path="*" element={<Navigate to="/" />} />

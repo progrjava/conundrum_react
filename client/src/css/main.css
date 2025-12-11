@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 .background-video-main {
     position: absolute;
@@ -9,8 +8,30 @@
     height: 100%;
     object-fit: cover; 
     overflow: hidden;
-    z-index: -1; 
+    z-index: -1000; 
 }
+
+.ellipse-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 86%;     
+    height: 93%; 
+    background: #9B88F1;
+    border-radius: 30%;
+    filter: blur(100px);  
+    z-index: -10;          
+    pointer-events: none;
+}
+
+.ellipse-bg.red {
+    width: 86%;     
+    height: 93%; 
+    border-radius:30%;
+    background: rgba(237, 126, 152, 1);
+}
+
 
 .main-logo-title {
     position: absolute;
@@ -18,22 +39,13 @@
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: fit-content;
-    z-index: 10;
+    width: 52%;
+    z-index: -1;
 }
 
-.main-logo-title img {
+.main-logo-title svg {
     display: block;
-}
-
-.main-logo-title h1 {
-    font-family: 'Roboto Slab';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 50px;
-    line-height: 1.5;
+    width: 100%;
 }
 
 .theme-changer-main-page {
@@ -42,23 +54,38 @@
     bottom: 20px;
 }
 
+@media (max-width: 1200px) {
+    .main-logo-title {
+        width: 70%;
+    }
+}
+
 @media (max-width: 820px) {
     
 
     .main-logo-title {
-        width: 85%;
+        width: 70%;
     }
 
-    .main-logo-title img {
+    .main-logo-title svg {
         max-width: 100%;
-    }
-
-    .main-logo-title h1 {
-        font-size: 18px;
     }
 
     .theme-changer-main-page {
         left: 15px;
         bottom: 15px;
+    }
+
+    .ellipse-bg {
+        width: 93%;     
+        height: 86%; 
+        border-radius: 10%;
+        filter: blur(50px);  
+    }
+
+    .ellipse-bg.red {
+        width: 93%;     
+        height: 86%; 
+        border-radius: 10%;
     }
 }
