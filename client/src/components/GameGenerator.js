@@ -927,9 +927,38 @@ class GameGenerator extends Component {
         return (
             <>
                 <Helmet>
-                    <title>Генератор игр | Conundrum</title>
-                    <meta name="description" content="Генерация кроссвордов и филвордов для обучения. Загрузите текст или файл, и Conundrum создаст игру за секунды." />
-                    <meta name="keywords" content="образование, геймификация, кроссворд, филворд, LTI, Moodle, школа" />
+                    <title>Генератор головоломок и кроссвордов — CONUNDRUM</title>
+
+                    <meta
+                        name="description"
+                        content="Онлайн-генератор головоломок, кроссвордов и ребусов CONUNDRUM. Создавайте обучающие игры из текста или файлов за несколько шагов."
+                    />
+
+                    <meta name="robots" content="index, follow" />
+
+                    <link
+                        rel="canonical"
+                        href={`${window.BASE_URL || ''}/gamegenerator`}
+                    />
+
+                    {/* Open Graph */}
+                    <meta property="og:title" content="Генератор головоломок — CONUNDRUM" />
+                    <meta
+                        property="og:description"
+                        content="Создавайте кроссворды, ребусы и обучающие игры онлайн с помощью генератора CONUNDRUM."
+                    />
+                    <meta property="og:type" content="website" />
+                    <meta
+                        property="og:url"
+                        content={`${window.BASE_URL || ''}/gamegenerator`}
+                    />
+                    <meta
+                        property="og:image"
+                        content={`${window.BASE_URL || ''}/favicon.ico`}
+                    />
+
+                    {/* Twitter */}
+                    <meta name="twitter:card" content="summary_large_image" />
                 </Helmet>
                 {/*{!isLTI && (
                     <Header 

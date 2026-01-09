@@ -28,8 +28,12 @@ app.use(session({
 // === ПОДКЛЮЧЕНИЕ ВСЕХ API РОУТОВ ОДНОЙ СТРОКОЙ ===
 app.use('/api', apiRoutes);
 
-// === LTI и PDF ===
+// === HEALTH CHECK ===
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
+// === LTI и PDF ===
 app.post('/api/lti/submit-score', async (req, res) => {
     if (!req.session?.lti) return res.status(403).json({ error: 'No LTI session' });
     try {
