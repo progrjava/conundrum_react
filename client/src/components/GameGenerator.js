@@ -1412,7 +1412,12 @@ class GameGenerator extends Component {
                                         </div>
                                     </div>
                                 )}
-                                <div id="clues-container" ref={this.cluesContainerRef} style={{display: 'none'}}></div>
+                                {/* Скрываем clues-container для ребусов */}
+                                {currentGameData && currentGameData.gameType === 'rebus' ?
+                                    <div id="clues-container" ref={this.cluesContainerRef} style={{display: 'none', padding: 0}}></div>
+                                 :
+                                    <div id="clues-container" ref={this.cluesContainerRef} style={{display: 'none'}}></div>
+                                }
                             </section>
                         </section>
                     </section>
