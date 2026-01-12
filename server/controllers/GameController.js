@@ -2,7 +2,11 @@ const CrosswordGenerator = require('../services/CrosswordGenerator');
 const WordSoupGenerator = require('../services/WordSoupGenerator');
 const RebusGenerator = require('../services/RebusGenerator'); // <--- ДОБАВИЛИ ИМПОРТ
 const FileManager = require('../services/FileManager');
+const CircuitBreaker = require('../utils/CircuitBreaker');
+const RateLimiter = require('../utils/RateLimiter');
 
+const breaker = new CircuitBreaker();
+const limiter = new RateLimiter(20,60000);
 const crosswordGenerator = new CrosswordGenerator(process.env.OPENROUTER_API_KEY, process.env.OPENROUTER_API_URL);
 const wordSoupGenerator = new WordSoupGenerator(process.env.OPENROUTER_API_KEY, process.env.OPENROUTER_API_URL);
 const rebusGenerator = new RebusGenerator(process.env.OPENROUTER_API_KEY, process.env.OPENROUTER_API_URL); // <--- ИНИЦИАЛИЗАЦИЯ
@@ -10,34 +14,36 @@ const fileManager = new FileManager();
 
 // Логика генерации игры с нуля
 exports.generateGame = async (req, res) => {
+    if (!limiter.tryConsume()) {
+        return res.status(429).json({ error: 'Too many requests. Please wait a minute.' });
+    }
     try {
-        const { inputType, gameType, difficulty } = req.body;
-        const totalWords = parseInt(req.body.totalWords);
-        let text = '';
-        
-        // 1. Обработка входных данных
-        if (inputType === 'text') text = req.body.text;
-        else if (inputType === 'topic') text = req.body.topic;
-        else if (inputType === 'file' && req.file) {
-            fileManager.validateFileType(req.file.originalname);
-            fileManager.validateFileSize(req.file);
-            text = await fileManager.parseFile(req.file);
-        } else throw new Error('Invalid input type');
+        const gameData = await breaker.call(async () => {
+            const { inputType, gameType, difficulty } = req.body;
+            const totalWords = parseInt(req.body.totalWords);
+            let text = '';
+            
+            if (inputType === 'text') text = req.body.text;
+            else if (inputType === 'topic') text = req.body.topic;
+            else if (inputType === 'file' && req.file) {
+                text = await fileManager.parseFile(req.file);
+            } else throw new Error('Invalid input type');
 
-        if (!text?.trim()) throw new Error('Empty input text');
-        if (isNaN(totalWords) || totalWords < 1) throw new Error('Invalid words count');
-        
-        // 2. Вызов генераторов
-        let gameData;
-        if (gameType === 'wordsoup') {
-            gameData = await wordSoupGenerator.generateWordSoup(text, inputType, totalWords, difficulty || 'normal');
-        } else if (gameType === 'rebus') {
-            const rebusData = await rebusGenerator.generateRebus(text, inputType, totalWords, difficulty || 'normal');
-            gameData = { ...rebusData, gameType: 'rebus' };
-        } else {
-            const cwData = await crosswordGenerator.generateCrossword(text, inputType, totalWords, difficulty || 'normal');
-            gameData = { grid: cwData.crossword, words: cwData.words, layout: cwData.layout, crossword: cwData.crossword };
-        }
+            if (!text?.trim()) throw new Error('Empty input text');
+            
+            // Заменили внутреннее имя на result
+            let result; 
+            if (gameType === 'wordsoup') {
+                result = await wordSoupGenerator.generateWordSoup(text, inputType, totalWords, difficulty || 'normal');
+            } else if (gameType === 'rebus') {
+                result = await rebusGenerator.generateRebus(text, inputType, totalWords, difficulty || 'normal');
+                result.gameType = 'rebus';
+            } else {
+                const cwData = await crosswordGenerator.generateCrossword(text, inputType, totalWords, difficulty || 'normal');
+                result = { grid: cwData.crossword, words: cwData.words, layout: cwData.layout, crossword: cwData.crossword, gameType: 'crossword' };
+            }
+            return result; // Возвращаем результат во внешнюю константу gameData
+        });
         res.json(gameData);
 
     } catch (error) {
