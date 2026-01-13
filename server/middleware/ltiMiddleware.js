@@ -60,14 +60,13 @@ const initializeLTI = () => {
         console.log("Encoded Params:", encodedParams);
 
         // 2. Формируем базовую строку
-        const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-        // Используем HTTPS, если запрос пришел через ngrok (или другой HTTPS прокси)
-        const baseUrl = url.startsWith('https') ? url : `https://${req.get('host')}${req.originalUrl}`;
+        const baseUrl = `https://${req.get('host')}/api${req.originalUrl}`;
+        console.log("Fixed Base URL for signature:", baseUrl);
         const baseString = `POST&${encodeURIComponent(baseUrl)}&${encodeURIComponent(encodedParams)}`;
         console.log("Base String:", baseString);
 
         // 3. Формируем ключ для HMAC
-        const signingKey = `${encodeURIComponent(consumerSecret)}&`; // Добавляем '&' в конце
+        const signingKey = `${encodeURIComponent(consumerSecret)}&`; 
 
         // 4. Генерируем подпись
         const hash = crypto.createHmac('sha1', signingKey).update(baseString).digest('base64');
