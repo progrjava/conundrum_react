@@ -206,8 +206,10 @@ class GameGenerator extends Component {
                 return UIUtils.showError('Введите корректное количество слов (больше 0).');
             }
         
-            DisplayBase.displayLoadingIndicator();
-        
+            this.setState({ isLoading: true, currentGameData: null }); // Очищаем старую игру в React, чтобы она исчезла СРАЗУ
+            DisplayBase.displayLoadingIndicator(); // Показываем колесико
+            DisplayBase.clearGameField(); // Чистим зону кроссворда
+
             const formData = new FormData();
             formData.append('gameType', gameType);
             formData.append('inputType', inputType);
@@ -234,7 +236,12 @@ class GameGenerator extends Component {
             const data = await response.json();
             this.setState({ 
                 currentGameData: { ...data, gameType: gameType }, 
-                puzzleNameForSave: initialPuzzleName
+                puzzleNameForSave: initialPuzzleName,
+                isFormCreatingPuzzle: false, // Закрываем меню после успеха
+                isLoading: false 
+            }, () => {
+                this.displayGeneratedGameWithCurrentData();
+                DisplayBase.hideLoadingIndicator();
             });
     
             const handleAttemptCallback = (isCorrect) => {
@@ -261,12 +268,13 @@ class GameGenerator extends Component {
             });
 
             if (gameType === 'rebus') {
-                // Для ребусов НИЧЕГО не делаем. React сам их отрисует в render().
+                DisplayBase.hideLoadingIndicator();               
                 console.log("Rebus data loaded into state. React will now render it.");
             } else if (gameType === 'wordsoup') {
                 // Старая логика для филворда
                 if (data.grid && data.words) {
                     new WordSoupDisplay(data, handleAttemptCallback, handleGameCompleteCallback).display();
+                    DisplayBase.hideLoadingIndicator();
                 } else {
                     UIUtils.showError('Не удалось получить данные для филворда');
                 }
@@ -274,6 +282,7 @@ class GameGenerator extends Component {
                 // Старая логика для кроссворда
                 if (data.crossword && data.layout.result) {
                     CrosswordDisplay.displayCrossword(data.crossword, data.layout.result, handleAttemptCallback, handleGameCompleteCallback);
+                    DisplayBase.hideLoadingIndicator();
                 } else {
                     UIUtils.showError('Не удалось получить данные для кроссворда');
                 }
@@ -737,6 +746,7 @@ class GameGenerator extends Component {
         
 
         if (this.cluesContainerRef.current) {
+            this.cluesContainerRef.current.style.display = 'none';
             this.cluesContainerRef.current.innerHTML = '';
         } else {
             console.warn("Clues container ref is not available in displayGeneratedGameWithCurrentData");

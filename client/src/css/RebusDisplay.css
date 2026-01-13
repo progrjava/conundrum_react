@@ -205,3 +205,62 @@
         width: 100%;
     }
 }
+
+
+.rebus-interaction {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0 10px 0;
+}
+
+/* Поле ввода */
+.rebus-input {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #FBFBFE;
+    font-size: 18px;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    width: 200px;
+}
+
+.rebus-input:focus {
+    border-color: #c6b7f0;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 15px rgba(198, 183, 240, 0.3);
+}
+
+/* Статусы ответа */
+.rebus-input.correct {
+    border-color: #62E953;
+    background: rgba(98, 233, 83, 0.1);
+}
+
+.rebus-input.incorrect {
+    border-color: #ED7E98;
+    background: rgba(237, 126, 152, 0.1);
+}
+
+/* Кнопка проверить */
+.btn-check {
+    padding: 10px 20px;
+    background: #62E953;
+    color: #2F2D38;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-check:hover {
+    transform: scale(1.05);
+}
+
+.btn-check:active {
+    transform: scale(0.95);
+}
