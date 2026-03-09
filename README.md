@@ -1,56 +1,140 @@
-# Conundrum
+# Conundrum React
 
-## Архитектура
+Веб-приложение для генерации и прохождения обучающих головоломок на основе загруженного текста (кроссворд, филворд, ребус) с поддержкой LTI, PDF-экспорта и сохранения в Supabase.
 
-Проект состоит из двух сервисов:  
+## Что умеет проект
 
-1. **Backend (Node.js / Express)**  
-   - Обрабатывает API-запросы, LTI-интеграцию и генерацию PDF.  
-   - Подключается к Supabase для хранения данных.  
+- Генерация игровых заданий из пользовательского документа (`/api/generate-game`).
+- Поддержка нескольких режимов отображения (кроссворд, филворд, ребус).
+- Пересчёт раскладки кроссворда (`/api/recalculate-game-layout`).
+- Экспорт задания в PDF (`/api/generate-pdf`).
+- LTI-интеграция: запуск из LMS, определение ролей, отправка оценки.
+- Работа с Supabase для аутентификации и хранения данных.
 
-2. **Frontend (React SPA)**  
-   - Интерфейс пользователя, коммуникация с backend через Nginx.  
-   - Поддержка LTI и SPA-маршрутов.  
+## Стек
 
-**Nginx**  
-   - Реверс-прокси для API и статики.  
-   - Обеспечивает корректную работу SPA и скрывает реальные адреса backend.  
+**Frontend**
+- React (CRA)
+- React Router
+- Supabase JS Client
+- Nginx (раздача статики и проксирование)
 
-**Docker / docker-compose**  
-   - Backend и frontend в отдельных контейнерах.  
-   - Внутри Docker-сети контейнеры общаются напрямую.  
-   - Настроены health-check для контроля состояния сервисов.  
+**Backend**
+- Node.js + Express
+- Multer (загрузка файлов)
+- PDFKit
+- OAuth / LTI middleware
+- Supabase Admin API
 
-## Процесс развертывания
+**Инфраструктура**
+- Docker / Docker Compose
+- Разделение на 2 контейнера: `client` и `server`
+- Healthcheck для каждого сервиса
 
-Перед запуском проекта необходимо создать файлы `.env` для backend и frontend, ориентируясь на предоставленные `.env.example` файлы. Заполните все необходимые значения переменных окружения в этих файлах.  
+## Структура репозитория
 
-После того как переменные окружения настроены, проект можно развернуть одной командой:
+```text
+.
+├── client/                 # React-приложение
+├── server/                 # Express API + LTI + генерация PDF
+├── docker-compose.yml      # Оркестрация контейнеров
+└── README.md
+```
+
+## Переменные окружения
+
+> В репозитории сейчас нет `.env.example`, поэтому ниже — минимальный набор переменных по коду.
+
+### 1) Корневой `.env` (для сборки client в docker-compose)
+
+```env
+REACT_APP_API_URL=http://localhost
+REACT_APP_SUPABASE_URL=https://<project>.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=<anon-key>
+REACT_APP_BASE_URL=http://localhost
+```
+
+### 2) `server/.env`
+
+```env
+PORT=5000
+NODE_ENV=production
+
+# CORS / Session
+ALLOWED_ORIGINS=http://localhost
+SESSION_SECRET=<strong-session-secret>
+CLIENT_URL=http://localhost
+
+# Supabase
+SUPABASE_URL=https://<project>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
+SUPABASE_JWT_SECRET=<jwt-secret>
+
+# LTI
+LTI_KEY=<lti-consumer-key>
+LTI_SECRET=<lti-consumer-secret>
+
+# AI / генерация
+OPENROUTER_API_KEY=<openrouter-key>
+OPENROUTER_API_URL=<openrouter-api-url>
+FREEPIK_API_KEY=<freepik-key>
+```
+
+## Запуск через Docker Compose (рекомендуется)
 
 ```bash
 docker compose up -d --build
 ```
-Эта команда:
-- Собирает и запускает контейнеры backend и frontend.
-- Настраивает внутреннюю Docker-сеть, чтобы сервисы общались напрямую.
-- Поднимает все зависимости, включая Nginx для фронтенда и проксирования API-запросов.
 
-После успешного запуска (локально):
-- Фронтенд доступен в браузере по адресу http://localhost
- (порт 80).
-- Backend API доступен внутри сети docker (http://conundrum-server:5000)
+После запуска:
+- Frontend: `http://localhost`
+- Backend healthcheck: `http://localhost/api/health` (через прокси)  
+  (внутри контейнера backend слушает `5000`)
 
+Полезные команды:
 
-Health-check эндпоинты включены для проверки работоспособности сервисов:
-- Backend: /api/health
-- Frontend: доступность статической страницы /gamegenerator
-
-Для просмотра логов можно использовать:
 ```bash
+# Логи
 docker compose logs -f
+
+# Остановка
+docker compose down
 ```
 
-Для остановки контнейнеров:
+## Локальный запуск без Docker
+
+### Backend
+
 ```bash
-docker compose down
+cd server
+npm ci
+npm start
+```
+
+### Frontend
+
+```bash
+cd client
+npm ci
+npm start
+```
+
+## API (основные endpoint'ы)
+
+- `POST /api/generate-game` — генерация игры по загруженному файлу.
+- `POST /api/recalculate-game-layout` — перерасчёт layout кроссворда.
+- `POST /api/track-activity` — трекинг активности.
+- `POST /api/generate-pdf` — формирование PDF.
+- `POST /api/lti/submit-score` — отправка результата в LMS через LTI.
+- `GET /api/health` — проверка состояния backend.
+- `POST /lti/launch` — LTI launch с редиректом в клиент.
+
+## Тесты
+
+```bash
+# backend
+cd server && npm test
+
+# frontend
+cd client && npm test
 ```
